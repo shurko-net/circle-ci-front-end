@@ -1,6 +1,7 @@
-# Getting Started with Create React App
+# Circle CI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Do you want to find some news about IT wonderlands? We have a solution...
+Our goal - create a huge community of developers who wants to grow professionally.
 
 ## Available Scripts
 
