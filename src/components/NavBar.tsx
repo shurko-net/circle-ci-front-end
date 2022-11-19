@@ -5,10 +5,11 @@ import Text from './Text';
 
 const NavBarWrapper = styled.div`
     display: flex;
+    position: fixed;
     align-items: center;
     width: 100%;
     height: 60px;
-    background-color: #131515;
+    background-color: #339989;
     overflow: hidden;
     padding: 0px 15px;
 
