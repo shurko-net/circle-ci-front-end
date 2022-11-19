@@ -5,7 +5,7 @@ interface TextProps {
   color: string;
   weight: number;
   fSize: string;
-  children: string;
+  children: any;
 }
 
 const TextStyle = styled.span<{ color: string; weight: number; fSize: string }>`
