@@ -2,28 +2,61 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Text from './Text';
+import Button from './Button';
 
 const NavBarWrapper = styled.div`
-    display: flex;
-    position: fixed;
-    align-items: center;
     width: 100%;
-    height: 60px;
-    background-color: #339989;
+    height: 70px;
+    box-shadow:0 4px 10px rgba(0, 0, 0, .1);
+    background-color: #ffffff;
     overflow: hidden;
-    padding: 0px 15px;
-
+    
     a {
         text-decoration: none;
     }
 `;
 
+const Container = styled.div`
+  height: inherit;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const NavbarBrand = styled.div`
+  margin-left: 30%;
+  white-space:nowrap;
+`;
+
 function NavBar() {
   return (
     <NavBarWrapper>
-      <Link to="/">
-        <Text color="#FFFAFB" weight={700} fSize="28">Circle CI</Text>
-      </Link>
+      <Container>
+        <Link to="/">
+          <Text color="#131515" weight={700} fSize="33">
+            <div className="nowrap">
+              Circle CI
+            </div>
+          </Text>
+        </Link>
+        <NavbarBrand>
+          <Button>
+            Our story
+          </Button>
+          <Button>
+            Membership
+          </Button>
+          <Button>
+            Write
+          </Button>
+          <Button>
+            Sign In
+          </Button>
+          <Button>
+            Get started
+          </Button>
+        </NavbarBrand>
+      </Container>
     </NavBarWrapper>
   );
 }
