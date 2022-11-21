@@ -27,10 +27,6 @@ const NavbarBrand = styled.div`
   white-space:nowrap;
 `;
 
-// const Start = styled.button`
-
-// `;
-
 function NavBar() {
   return (
     <NavBarWrapper>
