@@ -27,6 +27,12 @@ const FooterForButton = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+
+    a {
+      display: inline-block;
+      margin-top: 100px;
+      border-radius: 100px;
+    }
 `;
 
 const Item = styled.div`
@@ -42,7 +48,7 @@ const Item = styled.div`
         border-right: 1px solid #131515;
     }
 
-    &.secondText {
+    &.second {
         font-family: 'Gt super text book', Georgia, sans-serif;
         text-align: center;
     }
@@ -56,14 +62,9 @@ const ButtonJoin = styled.button`
     color: #FCFCFC;
     border: none;
     transition: box-shadow 0.4s;
-    margin-top: 100px;
+    cursor: pointer;
     &:hover {
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    }
-
-    a {
-        text-decoration: none;
-        color: #FCFCFC;
     }
 `;
 
@@ -72,7 +73,9 @@ function Home() {
     <>
       <MainMotto>
         <Text color="#131515" weight={500} fSize="84">
-          Every idea must to be&nbsp;
+          <div className="nowrap">
+            Every idea must to be&nbsp;
+          </div>
         </Text>
         <Text color="#131515" weight={700} fSize="96">
           Circled.
@@ -94,14 +97,16 @@ function Home() {
             is to spread these ideas and deepen understanding of the world.
           </Text>
         </Item>
-        <Item className="secondText">
+        <Item className="second">
           <Text color="#131515" weight={700} fSize="96">
             Fill free yourself to join.
           </Text>
         </Item>
       </DoubleItems>
       <FooterForButton>
-        <ButtonJoin><Link to="/register">Join us! </Link></ButtonJoin>
+        <Link to="/register">
+          <ButtonJoin>Join us!</ButtonJoin>
+        </Link>
       </FooterForButton>
     </>
   );

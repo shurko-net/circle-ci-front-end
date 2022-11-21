@@ -6,3 +6,7 @@
 .App {
   font-family: 'Soehne web buch', sans-serif;
 }
+
+.nowrap {
+  white-space: nowrap;
+}
