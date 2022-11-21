@@ -11,7 +11,7 @@ const MainMotto = styled.div`
     justify-content: center;
     border-bottom: 1px solid #131515;
     font-family: 'Gt super text book', Georgia, sans-serif;
-    padding-top: 60px;
+    padding-top: 70px;
 `;
 
 const DoubleItems = styled.div`

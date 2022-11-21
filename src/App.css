@@ -11,6 +11,11 @@
   font-family: 'Soehne web buch', sans-serif;
 }
 
-.nowrap {
+.navbar-text {
   white-space: nowrap;
+  transition: color 0.1s;
+}
+
+.navbar-text:hover {
+    color:#7DE2D1;
 }

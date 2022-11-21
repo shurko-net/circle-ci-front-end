@@ -5,12 +5,12 @@ import Text from './Text';
 import Button from './Button';
 
 const NavBarWrapper = styled.div`
+    position: fixed;
     width: 100%;
     height: 70px;
     box-shadow:0 4px 10px rgba(0, 0, 0, .1);
     background-color: #ffffff;
     overflow: hidden;
-    
     a {
         text-decoration: none;
     }
@@ -34,7 +34,7 @@ function NavBar() {
       <Container>
         <Link to="/">
           <Text color="#131515" weight={700} fSize="33">
-            <div className="nowrap">
+            <div className="navbar-text">
               Circle CI
             </div>
           </Text>
