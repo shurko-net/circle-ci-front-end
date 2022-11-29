@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Text from './Text';
 import Button from './Button';
-import Login from '../pages/Login';
+import Modal from './Modal';
 
 const NavBarWrapper = styled.div`
     position: fixed;
@@ -60,7 +60,7 @@ function NavBar() {
               Get started
             </Button>
           </Link>
-          {modalActive && <Login active={modalActive} setActive={setModalActive} />}
+          {modalActive && <Modal active={modalActive} setActive={setModalActive} />}
         </NavbarBrand>
       </Container>
     </NavBarWrapper>
