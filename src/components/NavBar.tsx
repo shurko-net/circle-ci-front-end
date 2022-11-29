@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Text from './Text';
 import Button from './Button';
+import Login from '../pages/Login';
 
 const NavBarWrapper = styled.div`
     position: fixed;
@@ -11,6 +12,7 @@ const NavBarWrapper = styled.div`
     box-shadow:0 4px 10px rgba(0, 0, 0, .1);
     background-color: #ffffff;
     overflow: hidden;
+    
     a {
         text-decoration: none;
     }
@@ -29,6 +31,7 @@ const NavbarBrand = styled.div`
 `;
 
 function NavBar() {
+  const [modalActive, setModalActive] = useState(false);
   return (
     <NavBarWrapper>
       <Container>
@@ -49,12 +52,13 @@ function NavBar() {
           <Button>
             Write
           </Button>
-          <Button>
+          <Button openBtn="open" click={() => setModalActive(true)}>
             Sign In
           </Button>
           <Button>
             Get started
           </Button>
+          {modalActive && <Login active={modalActive} setActive={setModalActive} />}
         </NavbarBrand>
       </Container>
     </NavBarWrapper>
