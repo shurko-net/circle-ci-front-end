@@ -55,9 +55,11 @@ function NavBar() {
           <Button openBtn="open" click={() => setModalActive(true)}>
             Sign In
           </Button>
-          <Button>
-            Get started
-          </Button>
+          <Link to="/register">
+            <Button>
+              Get started
+            </Button>
+          </Link>
           {modalActive && <Login active={modalActive} setActive={setModalActive} />}
         </NavbarBrand>
       </Container>

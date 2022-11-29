@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import Text from '../components/Text';
 
 const MainMotto = styled.div`
@@ -21,27 +20,13 @@ const DoubleItems = styled.div`
     font-family: 'Gt super text book', Georgia, sans-serif;
 `;
 
-const FooterForButton = styled.div`
-    width: 100%;
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    a {
-      display: inline-block;
-      margin-top: 100px;
-      border-radius: 100px;
-    }
-`;
-
 const Item = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
     font-family: 'Gt super text book', Georgia, sans-serif;
     padding: 10px;
-    padding: 10px 50px;
+    padding: 25px 50px;
     border-bottom: 1px solid #131515;
 
     &.first {
@@ -51,25 +36,6 @@ const Item = styled.div`
     &.second {
         font-family: 'Gt super text book', Georgia, sans-serif;
         text-align: center;
-    }
-`;
-
-const ButtonJoin = styled.button`
-    font-size: 96px;
-    border-radius: 100px;
-    padding: 25px 50px;
-    background-color: #339989;
-    color: #FCFCFC;
-    border: none;
-    transition: box-shadow 0.4s;
-    cursor: pointer;
-    &:hover {
-        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    }
-
-    a {
-        text-decoration: none;
-        color: #FCFCFC;
     }
 `;
 
@@ -108,11 +74,6 @@ function Home() {
           </Text>
         </Item>
       </DoubleItems>
-      <FooterForButton>
-        <Link to="/register">
-          <ButtonJoin>Join us!</ButtonJoin>
-        </Link>
-      </FooterForButton>
     </>
   );
 }

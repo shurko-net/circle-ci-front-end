@@ -9,6 +9,8 @@
 
 .App {
   font-family: 'Soehne web buch', sans-serif;
+  width: 100vw;
+  height: 100vh;
 }
 
 .navbar-text {
