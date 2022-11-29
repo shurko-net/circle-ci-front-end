@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 interface ButtonProps {
   children: any;
+  openBtn?: string;
+  click?: () => void;
 }
 
 const ButtonNavBar = styled.button`
@@ -22,8 +24,8 @@ const ButtonNavBar = styled.button`
   }
 `;
 
-export default function Button({ children }: ButtonProps) {
+export default function Button({ openBtn, children, click }: ButtonProps) {
   return (
-    <ButtonNavBar type="submit">{children}</ButtonNavBar>
+    <ButtonNavBar className={openBtn} onClick={click} type="submit">{children}</ButtonNavBar>
   );
 }

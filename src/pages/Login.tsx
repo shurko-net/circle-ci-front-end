@@ -1,8 +1,16 @@
 import React from 'react';
 
-function Login() {
+interface LoginProps {
+  active: boolean;
+  setActive: (active: boolean) => void;
+}
+
+function Login({ active, setActive }: LoginProps) {
+  const CloseModal = () => setActive(false);
   return (
-    <div>Login</div>
+    <div className={active ? 'modal active' : 'modal'} onClick={CloseModal}>
+      <div className={active ? 'modal__content active' : 'modal__content'} onClick={(e) => e.stopPropagation()} />
+    </div>
   );
 }
 
