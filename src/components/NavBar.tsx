@@ -52,9 +52,11 @@ function NavBar() {
           <Button>
             Write
           </Button>
-          <Button openBtn="open" click={() => setModalActive(true)}>
-            Sign In
-          </Button>
+          <Link to="/login">
+            <Button>
+              Sign In
+            </Button>
+          </Link>
           <Link to="/register">
             <Button>
               Get started
