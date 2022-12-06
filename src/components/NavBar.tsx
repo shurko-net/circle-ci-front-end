@@ -43,9 +43,11 @@ function NavBar() {
           </Text>
         </Link>
         <NavbarBrand>
-          <Button>
-            Our story
-          </Button>
+          <Link to="/about">
+            <Button>
+              Our story
+            </Button>
+          </Link>
           <Button>
             Membership
           </Button>
