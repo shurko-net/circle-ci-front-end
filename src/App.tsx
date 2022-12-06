@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import './App.css';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import OurStory from './pages/OurStory';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/saved" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="about" element={<OurStory />} />
       </Routes>
 
     </div>

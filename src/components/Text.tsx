@@ -8,10 +8,12 @@ interface TextProps {
   children: any;
 }
 
-const TextStyle = styled.span<{ color: string; weight: number; fSize: string }>`
+const TextStyle = styled.span<{ color: string; weight: number; fSize: string; }>`
     color: ${(props) => (props.color ? props.color : '#fffafb')};
     font-size: ${(props) => `${props.fSize}px`};
     font-weight: ${(props) => props.weight};
+    line-height: 100%;
+    
 `;
 
 function Text({
