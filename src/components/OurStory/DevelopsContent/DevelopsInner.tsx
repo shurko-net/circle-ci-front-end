@@ -46,7 +46,6 @@ const Front = styled.div`
     flex-direction: column;
     justify-content: space-between;
     transform: rotateY(0);  
-    
 `;
 
 const Back = styled.div`
@@ -96,6 +95,7 @@ const Img = styled.img`
     width: 100%;
     height: 100%;
     display: block;
+    pointer-events: none;
 `;
 
 const HeaderFlipBack = styled.div`
@@ -165,14 +165,14 @@ function DevelopsInner({
             </HeaderFlip>
             <CardFooter>
               <ImgContainer>
-                <Img src={img} alt="Yaroslav" />
+                <Img src={img} alt="" />
               </ImgContainer>
             </CardFooter>
           </Front>
           <Back>
             <HeaderFlipBack>
               <BackImg>
-                <Img src={img} alt="Yaroslav" />
+                <Img src={img} alt="" />
               </BackImg>
               <Name>{name}</Name>
             </HeaderFlipBack>
@@ -190,7 +190,6 @@ function DevelopsInner({
                 <A href={linkLinkedIn}>
                   <LinkedInIcon fontSize="large" />
                 </A>
-
               </Icons>
             </Info>
           </Back>
