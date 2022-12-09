@@ -4,6 +4,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import axios from 'axios';
 import Wrapper from '../components/Register/Wrapper';
 import RegisterBox from '../components/Register/RegisterBox';
 import Input from '../components/Register/InputRegister';
@@ -35,6 +36,23 @@ const Form = styled.div`
 `;
 
 function Register() {
+  const onSubmit = () => {
+    axios.post('https://localhost:7297/api/User', {
+      name: 'Fred',
+      surname: 'Flintstone',
+      email: 'stas.shurko@gmail.com',
+      password: 'jarik2013',
+      tNumber: null,
+      biography: null,
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <Wrapper>
       <RegisterBox>
@@ -45,7 +63,7 @@ function Register() {
           <Input htmlFor="name" nameLabel="Name" type="text" placeholder="Your name" muiKitIcon={<PersonIcon fontSize="medium" />} />
           <Input htmlFor="password" nameLabel="Password" type="password" placeholder="Your password" muiKitIcon={<LockIcon fontSize="medium" />} />
           <Input htmlFor="confirmPassword" nameLabel="Confirm Password" type="password" placeholder="Confirm Password" muiKitIcon={<LockOutlinedIcon fontSize="medium" />} />
-          <Submit>Submit</Submit>
+          <Submit onClick={onSubmit}>Submit</Submit>
         </Form>
       </RegisterBox>
     </Wrapper>
