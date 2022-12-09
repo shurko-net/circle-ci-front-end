@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import EmailIcon from '@mui/icons-material/Email';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Wrapper from '../components/Register/Wrapper';
 import RegisterBox from '../components/Register/RegisterBox';
-import FormEmail from '../components/Register/FormEmail';
-import FormPassword from '../components/Register/FormPassword';
+import Input from '../components/Register/InputRegister';
 
 const Submit = styled.button`
   cursor:pointer;
@@ -38,10 +41,10 @@ function Register() {
         <H2>Registration</H2>
         <P>Enter your details</P>
         <Form>
-          <FormEmail htmlFor="email" nameLabel="Email" type="email" placeholder="Your email" />
-          <FormEmail htmlFor="name" nameLabel="Name" type="text" placeholder="Your name" />
-          <FormPassword htmlFor="password" nameLabel="Password" type="password" placeholder="Your password" />
-          <FormPassword htmlFor="confirmPassword" nameLabel="Confirm Password" type="password" placeholder="Confirm Password" />
+          <Input htmlFor="email" nameLabel="Email" type="email" placeholder="Your email" muiKitIcon={<EmailIcon fontSize="medium" />} />
+          <Input htmlFor="name" nameLabel="Name" type="text" placeholder="Your name" muiKitIcon={<PersonIcon fontSize="medium" />} />
+          <Input htmlFor="password" nameLabel="Password" type="password" placeholder="Your password" muiKitIcon={<LockIcon fontSize="medium" />} />
+          <Input htmlFor="confirmPassword" nameLabel="Confirm Password" type="password" placeholder="Confirm Password" muiKitIcon={<LockOutlinedIcon fontSize="medium" />} />
           <Submit>Submit</Submit>
         </Form>
       </RegisterBox>

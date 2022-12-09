@@ -45,7 +45,7 @@ function DevelopsContent() {
           linkLinkedIn=""
         />
         <DevelopsInner
-          name="Dima Dacko"
+          name="Dima Dasko"
           content="I am Dima"
           post="Backend"
           img="../assets/creators/stanislav_shurko.png"
