@@ -1,13 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import LockIcon from '@mui/icons-material/Lock';
 
 interface FromGroupProps {
   htmlFor: string;
   nameLabel: string;
   type: string;
   placeholder: string;
+  muiKitIcon: any;
 }
+
+const Icon = styled.div`
+  position: absolute;
+  width: 1em;
+  font-size: 20px;
+  transform: translateX(10px) translateY(17px);
+`;
 
 const FormGroup = styled.div`
     margin: 18px 0;
@@ -41,23 +48,15 @@ const Label = styled.label`
   color: #101010;
 `;
 
-const IconPass = styled.div`
-  position: fixed;
-  width: 1em;
-  font-size: 20px;
-  transform: translateX(10px) translateY(17px);
-`;
-
-function FromGroupEmail({
-  htmlFor, nameLabel, type, placeholder,
+function InputRegister({
+  htmlFor, nameLabel, type, placeholder, muiKitIcon,
 }:FromGroupProps) {
   return (
-
     <FormGroup>
       <Label htmlFor={htmlFor}>
         {nameLabel}
       </Label>
-      <IconPass><LockIcon fontSize="medium" /></IconPass>
+      <Icon>{muiKitIcon}</Icon>
       <Input
         type={type}
         placeholder={placeholder}
@@ -68,4 +67,4 @@ function FromGroupEmail({
   );
 }
 
-export default FromGroupEmail;
+export default InputRegister;
