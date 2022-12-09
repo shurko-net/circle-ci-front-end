@@ -1,26 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
 import '../../../App.css';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 interface DevelopsInnerProps {
   name: string;
   content: string;
   post: string;
   img: any;
+  linkGit:string;
+  linkInstagram:string;
+  linkLinkedIn:string;
 }
 
 const Inner = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    
 `;
 
 const FlipContainer = styled.div`
     height: 400px;
     &:hover .flip {
         transform: rotateY(180deg);
-        
     }
+    
 `;
 
 const CardFooter = styled.div`
@@ -39,6 +46,7 @@ const Front = styled.div`
     flex-direction: column;
     justify-content: space-between;
     transform: rotateY(0);  
+    
 `;
 
 const Back = styled.div`
@@ -105,6 +113,8 @@ const Info = styled.div`
     margin-top: 20px;
     font-size: 16px;
     line-height: 24px;
+    padding-left: 15px;
+    padding-right: 15px;
 `;
 
 const BackImg = styled.div`
@@ -113,8 +123,36 @@ const BackImg = styled.div`
     height: 70px;
 `;
 
+const Txt = styled.p`
+    line-height: 2;
+    font-size: .95rem;
+    color: grey;
+    text-align: left;
+`;
+
+const Line = styled.div`
+  border-bottom: 1px solid grey;
+`;
+
+const Icons = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+`;
+
+const A = styled.a`
+    padding-left: 10px;
+    padding-right: 10px;
+    color: grey;
+    &:hover {
+      color: #333333;
+    }
+    transition: color 0.2s;
+`;
+
 function DevelopsInner({
-  name, content, post, img,
+  name, content, post, img, linkGit, linkInstagram, linkLinkedIn,
 }:DevelopsInnerProps) {
   return (
     <Inner>
@@ -139,7 +177,21 @@ function DevelopsInner({
               <Name>{name}</Name>
             </HeaderFlipBack>
             <Info>
-              {content}
+              <Line />
+              <Txt>{content}</Txt>
+              <Line />
+              <Icons>
+                <A href={linkGit}>
+                  <GitHubIcon fontSize="large" />
+                </A>
+                <A href={linkInstagram}>
+                  <InstagramIcon fontSize="large" />
+                </A>
+                <A href={linkLinkedIn}>
+                  <LinkedInIcon fontSize="large" />
+                </A>
+
+              </Icons>
             </Info>
           </Back>
         </div>
