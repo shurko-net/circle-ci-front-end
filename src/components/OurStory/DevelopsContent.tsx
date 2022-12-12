@@ -19,6 +19,8 @@ const DevelopersInfo = styled.div`
     display: flex;
     justify-content: space-between;
     width: 80%;
+    height: 400px;
+    text-align-last: justify;
 `;
 
 function DevelopsContent() {
@@ -30,7 +32,7 @@ function DevelopsContent() {
           name="Yaroslav Myronov"
           content="Hi, i'm a React developer. I love Java Script, travel, sports and have fun with my friends.I use React, Js, Typescript, Redux, Css, Html.You can evaluate my work, subscribe to my social networks and write to me personally."
           post="Frontend"
-          img="https://media-exp1.licdn.com/dms/image/D4D03AQEkYkLtgQkmbw/profile-displayphoto-shrink_800_800/0/1670371033496?e=1675900800&v=beta&t=hrtfKbE7Igtob9Bsk_NQ-_AOU4e0qrHDWp_F1_TGLUU"
+          img="https://qph.cf2.quoracdn.net/main-qimg-95f2dedd6d8b68a90a9f318b6f13b142.webp"
           linkGit="https://github.com/Yaroslavmyronov?tab=repositories"
           linkInstagram="https://instagram.com/jarik.mironov223?igshid=YmMyMTA2M2Y="
           linkLinkedIn="https://www.linkedin.com/in/yaroslav-myronov-807345254/"

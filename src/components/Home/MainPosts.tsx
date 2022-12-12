@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Post from './Post';
+import CategoriesLink from './CategoriesLink';
+import Navbarlink from './Navbarlink';
 
 const MainPost = styled.div`
    position: relative;
@@ -41,6 +43,45 @@ const PostsContent = styled.div`
     display: block;
 `;
 
+const Categories = styled.div`
+    grid-column: 9 / span 4;
+`;
+
+const CategoriesContent = styled.div`
+  border-bottom: 1px solid rgba(230, 230, 230, 1);
+  top: 107px;
+  display: block;
+`;
+
+const CategoriesContainer = styled.div`
+    display: block;
+`;
+
+const CategoriesHeader = styled.div`
+    margin-bottom: 16px;
+    display: block;
+`;
+
+const CategoriesP = styled.p`
+    text-transform: uppercase;
+    letter-spacing: 0.083em;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: 700;
+`;
+
+const CategoriesLinks = styled.div`
+    display: block;
+    padding-bottom: 24px;
+`;
+
+const CategoriesNavBar = styled.div`
+  display: flex;
+  padding: 24px 0;
+  flex-wrap: wrap;
+  flex-direction: row;
+`;
+
 function MainPosts() {
   return (
     <MainPost>
@@ -51,9 +92,46 @@ function MainPosts() {
               <Block>
                 <PostsContent>
                   <Post />
+                  <Post />
+                  <Post />
+                  <Post />
+                  <Post />
+                  <Post />
+                  <Post />
                 </PostsContent>
               </Block>
             </Start>
+            <Categories>
+              <CategoriesContent>
+                <CategoriesContainer>
+                  <CategoriesHeader>
+                    <CategoriesP>Discover more of what matters to you</CategoriesP>
+                  </CategoriesHeader>
+                </CategoriesContainer>
+                <CategoriesLinks>
+                  <CategoriesLink name="Programing" />
+                  <CategoriesLink name="Data Science" />
+                  <CategoriesLink name="Technology" />
+                  <CategoriesLink name="Self Improvement" />
+                  <CategoriesLink name="Writing" />
+                  <CategoriesLink name="Relationships" />
+                  <CategoriesLink name="Machine Learning" />
+                  <CategoriesLink name="Productivy" />
+                  <CategoriesLink name="Politics" />
+                </CategoriesLinks>
+              </CategoriesContent>
+              <CategoriesNavBar>
+                <Navbarlink name="Help" />
+                <Navbarlink name="Status" />
+                <Navbarlink name="Writes" />
+                <Navbarlink name="Blog" />
+                <Navbarlink name="Careers" />
+                <Navbarlink name="Privacy" />
+                <Navbarlink name="Terms" />
+                <Navbarlink name="About" />
+                <Navbarlink name="Text to speech" />
+              </CategoriesNavBar>
+            </Categories>
           </GridContent>
         </ContentPost>
       </Midle>

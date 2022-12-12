@@ -22,8 +22,11 @@ const Description = styled.div`
     display: block;
 `;
 
-const Img = styled.div`
-    
+const Img = styled.img`
+    vertical-align: middle;
+    width: 200px;
+    aspect-ratio: auto 200 / 134;
+    height: 134px;
 `;
 
 const User = styled.div`
@@ -177,9 +180,21 @@ const Categories = styled.div`
     }
 `;
 
-// const BookmarksContainer = styled.div`
-//     display: flex;
-// `;
+const ImgLink = styled.a`
+    margin: 0;
+    padding: 0;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    font-family: inherit;
+    border: inherit;
+    font-size: inherit;
+    fill: inherit;
+    color: inherit;
+    text-decoration: none;
+   &:hover {
+    cursor: pointer;
+   }
+`;
 
 function Post() {
   return (
@@ -231,7 +246,9 @@ function Post() {
             </DataPost>
           </User>
         </Description>
-        <Img />
+        <ImgLink>
+          <Img src="https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8" />
+        </ImgLink>
       </Content>
     </Container>
   );

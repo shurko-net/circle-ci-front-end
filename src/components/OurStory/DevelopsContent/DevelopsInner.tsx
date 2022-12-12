@@ -15,53 +15,11 @@ interface DevelopsInnerProps {
   linkLinkedIn:string;
 }
 
-const Inner = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-`;
-
-const FlipContainer = styled.div`
-    height: 400px;
-    &:hover .flip {
-        transform: rotateY(180deg);
-    }
-    
-`;
-
 const CardFooter = styled.div`
   height: 316px;
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const Front = styled.div`
-    width: 325px;
-    height: 400px;
-    background: white;
-    border-radius: 15px;
-    padding: 0 15px;
-    flex-direction: column;
-    justify-content: space-between;
-    transform: rotateY(0);  
-    
-`;
-
-const Back = styled.div`
-    width: 325px;
-    height: 400px;
-    background: white;
-    border-radius: 15px;
-    padding: 0 15px;
-    flex-direction: column;
-    justify-content: space-between;
-    transform: rotateY(180deg);
-    position: absolute;
-    top: 0;
-    left: 0;
-    backface-visibility: hidden;
 `;
 
 const HeaderFlip = styled.div`
@@ -80,9 +38,9 @@ const Name = styled.h3`
 
 const LatName = styled.h4`
 
-/* display: inline-block; */
-    font-size: 14px;
-    color: grey;
+display: inline-block; 
+  font-size: 14px;
+  color: grey;
 `;
 
 const ImgContainer = styled.div`
@@ -100,19 +58,14 @@ const Img = styled.img`
 
 const HeaderFlipBack = styled.div`
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 5px;
     padding-top: 15px;
     padding-left: 10px;
-    justify-content: flex-start;
 `;
 
 const Info = styled.div`
-    /* text-align: justify; */
     margin-top: 20px;
-    font-size: 16px;
-    line-height: 24px;
     padding-left: 15px;
     padding-right: 15px;
 `;
@@ -124,6 +77,7 @@ const BackImg = styled.div`
 `;
 
 const Txt = styled.p`
+    text-align-last: left;
     line-height: 2;
     font-size: .95rem;
     color: grey;
@@ -132,6 +86,8 @@ const Txt = styled.p`
 
 const Line = styled.div`
   border-bottom: 1px solid grey;
+  margin-bottom: 5px;
+  margin-top: 5px;
 `;
 
 const Icons = styled.div`
@@ -151,52 +107,93 @@ const A = styled.a`
     transition: color 0.2s;
 `;
 
+const MainContainer = styled.div`
+  position: relative;
+  width: 23%;
+  height: 100%;
+`;
+
+const TheFront = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: white;
+  border-radius: 15px;
+  padding: 0 15px;
+  transition: 1s;
+`;
+
+const TheBack = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: white;
+  transform: rotateY(180deg);
+  border-radius: 15px;
+  padding: 0 15px;
+  transition: 1s;
+  backface-visibility: hidden;
+`;
+
+const TheCard = styled.div`
+  position: absolute;
+  width: 325px;
+  height:400px;
+  transform-style: preserve-3d;
+  transition: all 0.5s ease;
+  &:hover ${TheFront} {
+    transform: rotateY(180deg);
+  }
+  &:hover ${TheBack} {
+    transform: rotateY(360deg);
+  }
+  perspective: 1000px;
+`;
+
 function DevelopsInner({
   name, content, post, img, linkGit, linkInstagram, linkLinkedIn,
 }:DevelopsInnerProps) {
   return (
-    <Inner>
-      <FlipContainer>
-        <div className="flip">
-          <Front>
-            <HeaderFlip>
-              <Name>{name}</Name>
-              <LatName>{post}</LatName>
-            </HeaderFlip>
-            <CardFooter>
-              <ImgContainer>
-                <Img src={img} alt="Yaroslav" />
-              </ImgContainer>
-            </CardFooter>
-          </Front>
-          <Back>
-            <HeaderFlipBack>
-              <BackImg>
-                <Img src={img} alt="Yaroslav" />
-              </BackImg>
-              <Name>{name}</Name>
-            </HeaderFlipBack>
-            <Info>
-              <Line />
-              <Txt>{content}</Txt>
-              <Line />
-              <Icons>
-                <A href={linkGit}>
-                  <GitHubIcon fontSize="large" />
-                </A>
-                <A href={linkInstagram}>
-                  <InstagramIcon fontSize="large" />
-                </A>
-                <A href={linkLinkedIn}>
-                  <LinkedInIcon fontSize="large" />
-                </A>
-
-              </Icons>
-            </Info>
-          </Back>
-        </div>
-      </FlipContainer>
-    </Inner>
+    <MainContainer>
+      <TheCard>
+        <TheFront>
+          <HeaderFlip>
+            <Name>{name}</Name>
+            <LatName>{post}</LatName>
+          </HeaderFlip>
+          <CardFooter>
+            <ImgContainer>
+              <Img src={img} alt="Yaroslav" />
+            </ImgContainer>
+          </CardFooter>
+        </TheFront>
+        <TheBack>
+          <HeaderFlipBack>
+            <BackImg>
+              <Img src={img} alt="Yaroslav" />
+            </BackImg>
+            <Name>{name}</Name>
+          </HeaderFlipBack>
+          <Info>
+            <Line />
+            <Txt>{content}</Txt>
+            <Line />
+            <Icons>
+              <A href={linkGit}>
+                <GitHubIcon fontSize="large" />
+              </A>
+              <A href={linkInstagram}>
+                <InstagramIcon fontSize="large" />
+              </A>
+              <A href={linkLinkedIn}>
+                <LinkedInIcon fontSize="large" />
+              </A>
+            </Icons>
+          </Info>
+        </TheBack>
+      </TheCard>
+    </MainContainer>
 
   );
 }
