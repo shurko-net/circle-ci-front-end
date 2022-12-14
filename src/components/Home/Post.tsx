@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     height: 100%;
@@ -119,7 +120,7 @@ const PostContent = styled.h4`
 const DataPost = styled.div`
     display: flex;
     padding-top: 8px;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     width: 62%;
 `;
@@ -240,9 +241,9 @@ function Post() {
                   <Categories>Name Categories</Categories>
                 </A>
               </DataPostContainer>
-              <A href="google">
+              <Link to="/saved" className="decoration-off" style={{ height: '24px' }}>
                 <BookmarkAddedIcon />
-              </A>
+              </Link>
             </DataPost>
           </User>
         </Description>

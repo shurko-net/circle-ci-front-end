@@ -54,6 +54,7 @@ const Img = styled.img`
     width: 100%;
     height: 100%;
     display: block;
+    pointer-events: none;
 `;
 
 const HeaderFlipBack = styled.div`
@@ -194,7 +195,6 @@ function DevelopsInner({
         </TheBack>
       </TheCard>
     </MainContainer>
-
   );
 }
 

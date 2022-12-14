@@ -50,7 +50,7 @@ function DevelopsContent() {
           name="Dima Dasko"
           content="I am Dima"
           post="Backend"
-          img="../assets/creators/stanislav_shurko.png"
+          img="https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1500w,f_auto,q_auto:best/streams/2012/September/120928/4054796-pigfly.JPG"
           linkGit=""
           linkInstagram=""
           linkLinkedIn=""

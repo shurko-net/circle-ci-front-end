@@ -7,6 +7,7 @@ interface FromGroupProps {
   type: string;
   placeholder: string;
   muiKitIcon: any;
+  onChange?: (e: any) => void;
 }
 
 const Icon = styled.div`
@@ -49,7 +50,7 @@ const Label = styled.label`
 `;
 
 function InputRegister({
-  htmlFor, nameLabel, type, placeholder, muiKitIcon,
+  htmlFor, nameLabel, type, placeholder, muiKitIcon, onChange,
 }:FromGroupProps) {
   return (
     <FormGroup>
@@ -61,6 +62,7 @@ function InputRegister({
         type={type}
         placeholder={placeholder}
         required
+        onChange={onChange}
       />
     </FormGroup>
 
