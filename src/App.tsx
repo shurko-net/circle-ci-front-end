@@ -18,8 +18,13 @@ function App() {
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/saved" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        {!localStorage.getItem('login') && !localStorage.getItem('password')
+        && (
+        <>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+        </>
+        )}
         <Route path="about" element={<OurStory />} />
       </Routes>
 

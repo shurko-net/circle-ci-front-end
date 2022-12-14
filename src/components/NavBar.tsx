@@ -51,9 +51,14 @@ function NavBar() {
           <Button>
             Membership
           </Button>
-          <Button>
-            Write
-          </Button>
+          {localStorage.getItem('login') && localStorage.getItem('password') && (
+            <Button>
+              Write
+            </Button>
+          )}
+          {!localStorage.getItem('login') && !localStorage.getItem('password')
+        && (
+        <>
           <Link to="/login">
             <Button>
               Sign In
@@ -64,6 +69,8 @@ function NavBar() {
               Get started
             </Button>
           </Link>
+        </>
+        )}
           {modalActive && <Modal active={modalActive} setActive={setModalActive} />}
         </NavbarBrand>
       </Container>
