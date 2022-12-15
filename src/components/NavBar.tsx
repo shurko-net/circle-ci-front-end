@@ -85,7 +85,11 @@ const NavBlock = styled.div`
   flex: 1 0 auto;
 `;
 
-function NavBar() {
+interface NavBarProps {
+  isLogged: boolean
+}
+
+function NavBar({ isLogged }: NavBarProps) {
   const [modalActive, setModalActive] = useState(false);
   return (
     <NavBarWrapper>
@@ -114,12 +118,12 @@ function NavBar() {
                   Membership
                 </Button>
               </Link>
-              {localStorage.getItem('login') && localStorage.getItem('password') && (
+              {isLogged && (
               <Button>
                 Write
               </Button>
               )}
-              {!localStorage.getItem('login') && !localStorage.getItem('password')
+              {!isLogged
         && (
         <>
           <Link to="/login">

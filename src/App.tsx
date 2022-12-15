@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Routes, Route,
 } from 'react-router-dom';
@@ -10,18 +10,30 @@ import Login from './pages/Login';
 import OurStory from './pages/OurStory';
 
 function App() {
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    if (login !== '' && password !== '') {
+      setIsLogged(true);
+    } else {
+      setIsLogged(false);
+    }
+  }, [login, password]);
+
   return (
     <div className="App">
-      <NavBar />
+      <NavBar isLogged={isLogged} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/saved" element={<Home />} />
-        {!localStorage.getItem('login') && !localStorage.getItem('password')
+        {!isLogged
         && (
         <>
-          <Route path="/register" element={<Register />} />
+          <Route path="/register" element={<Register setLoginProp={setLogin} setPasswordProp={setPassword} />} />
           <Route path="/login" element={<Login />} />
         </>
         )}
