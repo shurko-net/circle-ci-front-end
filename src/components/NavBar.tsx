@@ -30,7 +30,11 @@ const NavbarBrand = styled.div`
   white-space:nowrap;
 `;
 
-function NavBar() {
+interface NavBarProps {
+  isLogged: boolean
+}
+
+function NavBar({ isLogged }: NavBarProps) {
   const [modalActive, setModalActive] = useState(false);
   return (
     <NavBarWrapper>
@@ -51,12 +55,12 @@ function NavBar() {
           <Button>
             Membership
           </Button>
-          {localStorage.getItem('login') && localStorage.getItem('password') && (
+          {isLogged && (
             <Button>
               Write
             </Button>
           )}
-          {!localStorage.getItem('login') && !localStorage.getItem('password')
+          {!isLogged
         && (
         <>
           <Link to="/login">

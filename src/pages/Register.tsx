@@ -38,7 +38,12 @@ const Form = styled.div`
   margin-top: 30px;
 `;
 
-function Register() {
+interface RegisterProps {
+  setLoginProp: (arg: string) => void;
+  setPasswordProp: (arg: string) => void;
+}
+
+function Register({ setLoginProp, setPasswordProp }: RegisterProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -88,8 +93,8 @@ function Register() {
           email,
           password,
         });
-        localStorage.setItem('login', email);
-        localStorage.setItem('password', password);
+        setLoginProp(email);
+        setPasswordProp(password);
         navigate('/');
       } else {
         alert('Password not equals to Confirm password');
