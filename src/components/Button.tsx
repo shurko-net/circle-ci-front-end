@@ -11,6 +11,7 @@ interface ButtonProps {
 const ButtonNavBar = styled.button<{ primary?: boolean }>`
   /* display: flex; */
   /* flex-flow: row nowrap;*/
+  display: block;
   margin-left:20px;  
   font-weight: normal;
   background: ${(props) => (props.primary === true ? '#7DE2D1' : '#ffffff')} ;

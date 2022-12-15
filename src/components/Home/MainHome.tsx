@@ -30,10 +30,24 @@ const Content = styled.div`
 `;
 
 const CenterContent = styled.div`
-    margin: 0 64px;
     min-width: 0;
     max-width: 1192px;
     width: 100%;
+    @media (min-width: 1080px) {
+      margin: 0 64px;
+    }
+    @media (min-width: 904px) and (max-width: 1079.98px) {
+      margin: 0 64px;
+    }
+    @media (min-width: 728px) and (max-width: 903.98px) {
+      margin: 0 48px;
+    }
+    @media (min-width: 552px) and (max-width: 727.98px) {
+      margin: 0 24px;
+    }
+    @media (max-width: 551.98px) {
+      margin: 0 24px;
+    }
 `;
 
 const Title = styled.div`
