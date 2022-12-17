@@ -98,6 +98,7 @@
   justify-content: flex-start;
   align-content: space-around;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .input {

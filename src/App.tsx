@@ -5,7 +5,7 @@ import {
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import './App.css';
-import RegisterCopy from './pages/RegisterCopy';
+import Register from './pages/Register';
 import Login from './pages/Login';
 import OurStory from './pages/OurStory';
 
@@ -30,7 +30,7 @@ function App() {
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/saved" element={<Home />} />
-        <Route path="/register" element={<RegisterCopy />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="about" element={<OurStory />} />
       </Routes>
