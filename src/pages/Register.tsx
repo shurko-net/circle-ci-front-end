@@ -68,7 +68,7 @@ function Register() {
                   <div className="label">Email</div>
                   <div className="icon"><PersonOutlineOutlinedIcon fontSize="medium" /></div>
                   <input
-                    className="input"
+                    className={errors.email ? 'invalid' : 'input'}
                     placeholder="Your email"
                     type="text"
                     name="email"
@@ -83,7 +83,7 @@ function Register() {
                   <div className="label">Your first name</div>
                   <div className="icon"><PersonIcon fontSize="medium" /></div>
                   <input
-                    className="input"
+                    className={errors.name ? 'invalid' : 'input'}
                     placeholder="Your first name"
                     type="text"
                     name="name"
@@ -99,7 +99,7 @@ function Register() {
                   <div className="label">Your second name</div>
                   <div className="icon"><PersonOutlineOutlinedIcon fontSize="medium" /></div>
                   <input
-                    className="input"
+                    className={errors.secondName ? 'invalid' : 'input'}
                     placeholder="Your second name"
                     type="text"
                     name="secondName"
@@ -115,7 +115,7 @@ function Register() {
                   <div className="label">Your password</div>
                   <div className="icon"><LockIcon fontSize="medium" /></div>
                   <input
-                    className="input"
+                    className={errors.password ? 'invalid' : 'input'}
                     placeholder="Your password"
                     type="password"
                     name="password"
@@ -131,7 +131,7 @@ function Register() {
                   <div className="label">Your password</div>
                   <div className="icon"><LockOutlinedIcon fontSize="medium" /></div>
                   <input
-                    className="input"
+                    className={errors.confirmPassword ? 'invalid' : 'input'}
                     placeholder="Confirm password"
                     type="password"
                     name="confirmPassword"

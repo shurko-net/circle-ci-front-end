@@ -160,7 +160,7 @@
   /* border-color: red; */
 }
 
-/* .invalid:focus {
+.invalid:focus {
   border-color: red;
   box-shadow: 0 0 12px red;
-} */
+}
