@@ -123,6 +123,7 @@ const TheFront = styled.div`
   border-radius: 15px;
   padding: 0 15px;
   transition: 1s;
+ 
 `;
 
 const TheBack = styled.div`

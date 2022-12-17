@@ -7,6 +7,21 @@ const MainContent = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
+    font-size: 5vw;
+    max-width: 25ch;
+    @media screen and (max-width: 991px) {
+      max-width: 16ch;
+      font-size: 80px;
+    }
+    @media screen and (max-width: 767px) {
+      width: 90%;
+    }
+    @media screen and (max-width: 479px) {
+      -webkit-box-align: start;
+      text-align: left;
+      max-width: 20ch;
+      font-size: 40px;
+    }
 `;
 
 const MiddleHeading = styled.h2`
@@ -22,19 +37,40 @@ const MiddleHeading = styled.h2`
 `;
 
 const ParagrafWrap = styled.div`
-    width: 68ch;
+    width: 603px;
     margin-top: 10px;
     margin-bottom: 50px;
+    @media screen and (max-width: 991px) {
+      width: 90%;
+      max-width: 60ch;
+    }
+    @media screen and (max-width: 767px) {
+      width: 80%;
+    }
+    @media screen and (max-width: 767px) {
+      width: 80%;
+    }
 `;
 
 const ParagrafDevelopsContent = styled.p`
-    margin-top: 50px;
+    margin-top: 30px;
     margin-bottom: 20px;
     padding-bottom: 10px;
     font-family: 'Soehne web buch', sans-serif;
     font-size: 18px;
     line-height: 127%;
     font-weight: 400;
+    @media screen and (max-width: 991px) {
+      margin-bottom: 0px;
+    }
+    @media screen and (max-width: 767px) {
+      letter-spacing: -0.06px;
+    }
+    @media screen and (max-width: 479px) {
+      margin-bottom: 0px;
+      font-size: 15px;
+      letter-spacing: -0.06px;
+    }
 `;
 
 function MainDevelopsContent() {

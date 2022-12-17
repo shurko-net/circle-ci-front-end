@@ -7,8 +7,16 @@ import Navbarlink from './Navbarlink';
 const MainPost = styled.div`
    position: relative;
    top: 70px;
-   padding-top: 56px;
    display: block;
+   @media (min-width: 1080px) {
+    padding-top: 56px;
+   }
+   @media (max-width: 1079.98px) {
+    padding-top: 56px;
+   }
+   @media (max-width: 903.98px) {
+    padding-top: 40px;
+   }
 `;
 
 const Midle = styled.div`
@@ -20,17 +28,53 @@ const ContentPost = styled.div`
    min-width:0;
    max-width: 1192px;
    width: 100%;
+   @media (min-width: 1080px) {
+    margin: 0 64px;
+   }
+   @media (min-width: 904px) and (max-width: 1079.98px) {
+    margin: 0 64px;
+   }
+   @media (min-width: 728px) and (max-width: 903.98px) {
+    margin: 0 48px;
+   }
+   @media (min-width: 552px) and (max-width: 727.98px) {
+    margin: 0 24px;
+   }
+   @media (max-width: 551.98px) {
+    margin: 0 24px;
+   }
 `;
 
 const GridContent = styled.div`
     display: grid;
     grid-template-rows: 1fr;
+    @media (min-width: 1080px) {
+      grid-template-columns: repeat(8,1fr) repeat(4, minmax(48px, 1fr));
+    }
+    @media (min-width: 904px) and (max-width: 1079.98px) {
+    grid-column-gap: 32px;
     grid-template-columns: repeat(8,1fr) repeat(4, minmax(48px, 1fr));
+    }
+    @media (max-width: 903.98px) {
+    grid-template-columns: 1fr;
+    }
+    @media (min-width: 552px) and (max-width: 727.98px) {
+    margin: 0 24px;
+    }
+    @media (max-width: 551.98px) {
+    margin: 0 24px;
+    }
 `;
 
 const Start = styled.div`
-    grid-row-start: 1;
-    grid-column: 1 / span 7;
+    @media (min-width: 1080px) {
+      grid-row-start: 1;
+      grid-column: 1 / span 7;
+    }
+    @media (min-width: 904px) and (max-width: 1079.98px) {
+      grid-row-start: 1;
+      grid-column: 1 / span 8;
+    }
 `;
 
 const Block = styled.div`

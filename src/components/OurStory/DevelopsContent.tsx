@@ -12,7 +12,6 @@ const Content = styled.div`
     background: #339989;
     flex-direction: column;
     align-items: center;
-
 `;
 
 const DevelopersInfo = styled.div`
@@ -21,6 +20,20 @@ const DevelopersInfo = styled.div`
     width: 80%;
     height: 400px;
     text-align-last: justify;
+    @media screen and (max-width: 767px) {
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+      flex-direction: row;
+    }
+    @media screen and (max-width: 767px) {
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: reverse;
+      -webkit-flex-direction: column-reverse;
+      -ms-flex-direction: column-reverse;
+      flex-direction: column-reverse;
+    }
 `;
 
 function DevelopsContent() {

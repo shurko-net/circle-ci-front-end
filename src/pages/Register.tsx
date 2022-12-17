@@ -1,124 +1,164 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import EmailIcon from '@mui/icons-material/Email';
+import React from 'react';
+import { Formik, Form } from 'formik';
+import * as yup from 'yup';
+import '../App.css';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import axios from 'axios';
-import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import Wrapper from '../components/Register/Wrapper';
-import RegisterBox from '../components/Register/RegisterBox';
-import Input from '../components/Register/InputRegister';
 
-const Submit = styled.button`
-  cursor:pointer;
-  width:100%;
-  height:46px;
-  border-radius: 3px;
-  font-size: 22px;
-  margin-top: 28px;
-  color: #fff;
-  background: #2b2c28;
-`;
+const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
-const H2 = styled.h2`
-  font-size: 2.2rem;
-`;
-
-const P = styled.p`
-  color: #404040;
-  margin-top: 4px;
-  font-size: 1.2rem;
-`;
-
-const Form = styled.div`
-  text-align: left;
-  margin-top: 30px;
-`;
-
-interface RegisterProps {
-  setLoginProp: (arg: string) => void;
-  setPasswordProp: (arg: string) => void;
-}
-
-function Register({ setLoginProp, setPasswordProp }: RegisterProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [secondName, setSecondName] = useState('');
-
+function Register() {
   const navigate = useNavigate();
-
-  const handleEmailChange = (e: any) => {
-    setEmail(e.target.value);
-  };
-
-  const handleFirstNameChange = (e: any) => {
-    setFirstName(e.target.value);
-  };
-
-  const handleSecondNameChange = (e: any) => {
-    setSecondName(e.target.value);
-  };
-
-  const handleConfirmPasswordChange = (e: any) => {
-    setConfirmPassword(e.target.value);
-  };
-
-  const handlePasswordChange = (e: any) => {
-    setPassword(e.target.value);
-  };
-
-  const schema = yup.object().shape({
-    firstName: yup.string().required(),
-    secondName: yup.string().required(),
-    email: yup.string().email().required(),
-    password: yup.string().min(5),
+  const validationSchema = yup.object().shape({
+    name: yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    secondName: yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    password: yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords do not match').required('Required'),
+    email: yup.string().email('Invalid email address').required('Required'),
   });
 
-  const onSubmit = () => {
-    schema.validate({
-      firstName,
-      secondName,
-      email,
-      password,
-    }).then((res: any) => {
-      if (password === confirmPassword) {
-        axios.post('https://localhost:7297/api/User', {
-          name: res.firstName,
-          surname: res.secondName,
-          email,
-          password,
-        });
-        setLoginProp(email);
-        setPasswordProp(password);
-        navigate('/');
-      } else {
-        alert('Password not equals to Confirm password');
-      }
-    }).catch((error: string) => {
-      alert(error);
+  const onSubmit = (values: any) => {
+    axios.post('https://localhost:7297/api/User', {
+      name: values.name,
+      surname: values.secondName,
+      email: values.email,
+      password: values.password,
     });
+    navigate('/');
   };
-
   return (
-    <Wrapper>
-      <RegisterBox>
-        <H2>Registration</H2>
-        <P>Enter your details</P>
+
+    <Formik
+      initialValues={{
+        name: '',
+        secondName: '',
+        password: '',
+        confirmPassword: '',
+        email: '',
+      }}
+      validateOnBlur
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
+      {({
+        values, errors, touched, handleChange, handleBlur, isValid, dirty,
+      }) => (
         <Form>
-          <Input htmlFor="email" nameLabel="Email" type="email" placeholder="Your email" muiKitIcon={<EmailIcon fontSize="medium" />} onChange={handleEmailChange} />
-          <Input htmlFor="firstName" nameLabel="First name" type="text" placeholder="Your first name" muiKitIcon={<PersonIcon fontSize="medium" />} onChange={handleFirstNameChange} />
-          <Input htmlFor="secondName" nameLabel="Last name" type="text" placeholder="Your last name" muiKitIcon={<PersonOutlineOutlinedIcon fontSize="medium" />} onChange={handleSecondNameChange} />
-          <Input htmlFor="password" nameLabel="Password" type="password" placeholder="Your password" muiKitIcon={<LockIcon fontSize="medium" />} onChange={handlePasswordChange} />
-          <Input htmlFor="confirmPassword" nameLabel="Confirm Password" type="password" placeholder="Confirm Password" muiKitIcon={<LockOutlinedIcon fontSize="medium" />} onChange={handleConfirmPasswordChange} />
-          <Submit onClick={onSubmit}>Submit</Submit>
+          <div className="wrapper">
+            <div className="register-box">
+              <h2 style={{ fontSize: '2.2rem' }}>
+                Registration
+              </h2>
+              <p style={paragraph}>Enter your details</p>
+              <div className="form">
+                <div className="form-group">
+                  <div className="label">Email</div>
+                  <div className="icon"><PersonOutlineOutlinedIcon fontSize="medium" /></div>
+                  <input
+                    className={errors.email ? 'invalid' : 'input'}
+                    placeholder="Your email"
+                    type="text"
+                    name="email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                  />
+                </div>
+                {touched.email && errors.email
+                && <div className="error-style"><p className="error">{errors.email}</p></div>}
+                <div className="form-group">
+                  <div className="label">Your first name</div>
+                  <div className="icon"><PersonIcon fontSize="medium" /></div>
+                  <input
+                    className={errors.name ? 'invalid' : 'input'}
+                    placeholder="Your first name"
+                    type="text"
+                    name="name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.name}
+                  />
+                </div>
+                {touched.name && errors.name
+                 && <div className="error-style"><p className="error">{errors.name}</p></div>}
+
+                <div className="form-group">
+                  <div className="label">Your second name</div>
+                  <div className="icon"><PersonOutlineOutlinedIcon fontSize="medium" /></div>
+                  <input
+                    className={errors.secondName ? 'invalid' : 'input'}
+                    placeholder="Your second name"
+                    type="text"
+                    name="secondName"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.secondName}
+                  />
+                </div>
+                {touched.secondName && errors.secondName
+                 && <div className="error-style"><p className="error">{errors.secondName}</p></div>}
+
+                <div className="form-group">
+                  <div className="label">Your password</div>
+                  <div className="icon"><LockIcon fontSize="medium" /></div>
+                  <input
+                    className={errors.password ? 'invalid' : 'input'}
+                    placeholder="Your password"
+                    type="password"
+                    name="password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                  />
+                </div>
+                {touched.password && errors.password
+                && <div className="error-style"><p className="error">{errors.password}</p></div>}
+
+                <div className="form-group">
+                  <div className="label">Your password</div>
+                  <div className="icon"><LockOutlinedIcon fontSize="medium" /></div>
+                  <input
+                    className={errors.confirmPassword ? 'invalid' : 'input'}
+                    placeholder="Confirm password"
+                    type="password"
+                    name="confirmPassword"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.confirmPassword}
+                  />
+                </div>
+                {touched.confirmPassword
+                && errors.confirmPassword
+                && <div className="error-style"><p className="error">{errors.confirmPassword}</p></div>}
+
+                <button
+                  // onClick={handleSubmit}
+                  disabled={!isValid && !dirty}
+                  type="submit"
+                  className="submit"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
         </Form>
-      </RegisterBox>
-    </Wrapper>
+      )}
+    </Formik>
+
   );
 }
 

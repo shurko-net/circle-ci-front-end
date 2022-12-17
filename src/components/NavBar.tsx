@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Text from './Text';
 import Button from './Button';
-import Modal from './Modal';
 
 const NavBarWrapper = styled.div`
     position: fixed;
@@ -85,12 +84,7 @@ const NavBlock = styled.div`
   flex: 1 0 auto;
 `;
 
-interface NavBarProps {
-  isLogged: boolean
-}
-
-function NavBar({ isLogged }: NavBarProps) {
-  const [modalActive, setModalActive] = useState(false);
+function NavBar() {
   return (
     <NavBarWrapper>
       <Body>
@@ -118,27 +112,22 @@ function NavBar({ isLogged }: NavBarProps) {
                   Membership
                 </Button>
               </Link>
-              {isLogged && (
+
               <Button>
                 Write
               </Button>
-              )}
-              {!isLogged
-        && (
-        <>
-          <Link to="/login">
-            <Button>
-              Sign In
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button>
-              Get started
-            </Button>
-          </Link>
-        </>
-        )}
-              {modalActive && <Modal active={modalActive} setActive={setModalActive} />}
+
+              <Link to="/login">
+                <Button>
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button>
+                  Get started
+                </Button>
+              </Link>
+
             </NavbarBrand>
           </Content>
         </Conteiner>
