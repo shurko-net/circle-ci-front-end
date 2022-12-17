@@ -1,42 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Routes, Route,
 } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import './App.css';
-import Register from './pages/Register';
+import RegisterCopy from './pages/RegisterCopy';
 import Login from './pages/Login';
 import OurStory from './pages/OurStory';
 
 function App() {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLogged, setIsLogged] = useState(false);
+  // const [login, setLogin] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [isLogged, setIsLogged] = useState(false);
 
-  useEffect(() => {
-    if (login !== '' && password !== '') {
-      setIsLogged(true);
-    } else {
-      setIsLogged(false);
-    }
-  }, [login, password]);
+  // useEffect(() => {
+  //   if (login !== '' && password !== '') {
+  //     setIsLogged(true);
+  //   } else {
+  //     setIsLogged(false);
+  //   }
+  // }, [login, password]);
 
   return (
     <div className="App">
-      <NavBar isLogged={isLogged} />
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/saved" element={<Home />} />
-        {!isLogged
-        && (
-        <>
-          <Route path="/register" element={<Register setLoginProp={setLogin} setPasswordProp={setPassword} />} />
-          <Route path="/login" element={<Login />} />
-        </>
-        )}
+        <Route path="/register" element={<RegisterCopy />} />
+        <Route path="/login" element={<Login />} />
         <Route path="about" element={<OurStory />} />
       </Routes>
 

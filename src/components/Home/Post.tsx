@@ -6,7 +6,21 @@ import { Link } from 'react-router-dom';
 const Container = styled.div`
     height: 100%;
     width: 100%;
-    margin-bottom: 48px;
+    @media (min-width: 1080px) {
+      margin-bottom: 48px;
+    }
+    @media (min-width: 904px) and (max-width: 1079.98px) {
+      margin-bottom: 48px;
+    }
+    @media (min-width: 728px) and (max-width: 903.98px) {
+      margin-bottom: 48px;
+    }
+    @media (min-width: 552px) and (max-width: 727.98px) {
+      margin-bottom: 48px;
+    }
+    @media (max-width: 551.98px) {
+      margin-bottom: 32px;
+    }
 `;
 
 const Content = styled.div`
@@ -25,9 +39,31 @@ const Description = styled.div`
 
 const Img = styled.img`
     vertical-align: middle;
-    width: 200px;
-    aspect-ratio: auto 200 / 134;
-    height: 134px;
+    @media (min-width: 1080px) {
+      width: 200px;
+      aspect-ratio: auto 200 / 134;
+      height: 134px;
+    }
+    @media (min-width: 904px) and (max-width: 1079.98px) {
+      width: 200px;
+      aspect-ratio: auto 200 / 134;
+      height: 134px;
+    }
+    @media (min-width: 550px) and (max-width: 904.98px) {
+      width: 200px;
+      aspect-ratio: auto 200 / 134;
+      height: 134px;
+    }
+    @media (min-width: 548.98px) and (max-width: 716px) {
+      width: 150px;
+      aspect-ratio: auto 150 / 100;
+      height: 100px;
+    }
+    @media (max-width: 551.98px) {
+      width: 100px;
+      aspect-ratio: auto 100 / 100;
+      height: 100px;
+    }
 `;
 
 const User = styled.div`
@@ -39,6 +75,7 @@ const UserContent = styled.div`
     display: flex;
     align-items: center;
     flex-direction: row;
+    padding-bottom: 8px;
 `;
 
 const UserImgBlock = styled.div`
@@ -91,15 +128,45 @@ const UserNameText = styled.h4`
     color: rgba(41, 41, 41, 1);
 `;
 
-const Title = styled.h4`
-    max-height: 56px;
-    line-height: 28px;
-    font-size: 22px;
+const Title = styled.h2`
     color: rgba(41, 41, 41, 1);
     overflow: hidden;
     font-weight: 700;
     text-overflow: ellipsis;
     display: -webkit-box;
+    @media (min-width: 1080px) {
+      letter-spacing: 0;
+      line-height: 28px;
+      max-height: 56px;
+      font-size: 22px;
+    }
+    @media (min-width: 904px) and (max-width: 1079.98px) {
+      letter-spacing: 0;
+      line-height: 28px;
+      max-height: 56px;
+      font-size: 22px;
+    }
+    @media (orientation: landscape) and (max-width: 903.98px) {
+      max-height: none;
+    }
+    @media (min-width: 728px) and (max-width: 903.98px) {
+      letter-spacing: 0;
+      line-height: 28px;
+      max-height: 56px;
+      font-size: 22px;
+    }
+    @media (min-width: 552px) and (max-width: 727.98px) {
+      letter-spacing: 0;
+      line-height: 20px;
+      max-height: 40px;
+      font-size: 16px;
+    }
+    @media (max-width: 551.98px) {
+      letter-spacing: 0;
+      line-height: 20px;
+      max-height: 40px;
+      font-size: 16px;
+    }
 `;
 
 const BlockContent = styled.div`
@@ -119,11 +186,25 @@ const PostContent = styled.h4`
 
 const DataPost = styled.div`
     display: flex;
-    padding-top: 8px;
     align-items: center;
     justify-content: space-between;
-    width: 62%;
-`;
+    /* width: 62%; */
+    @media (min-width: 1080px) {
+      padding-top: 8px;
+    }
+    @media (min-width: 904px) and (max-width: 1079.98px) {
+      padding-top: 8px;
+    }
+    @media (min-width: 728px) and (max-width: 903.98px) {
+      padding-top: 8px;
+    }
+    @media (min-width: 552px) and (max-width: 727.98px) {
+      padding-top: 4px;
+    }
+    @media (max-width: 551.98px) {
+      padding-top: 4px;
+    }
+ `;
 
 const DataPostContainer = styled.div`
     display: flex;
@@ -197,6 +278,11 @@ const ImgLink = styled.a`
    }
 `;
 
+const BlockIcon = styled.div`
+   margin-right: 8px;
+   display: flex;
+`;
+
 function Post() {
   return (
     <Container>
@@ -241,9 +327,11 @@ function Post() {
                   <Categories>Name Categories</Categories>
                 </A>
               </DataPostContainer>
-              <Link to="/saved" className="decoration-off" style={{ height: '24px' }}>
-                <BookmarkAddedIcon />
-              </Link>
+              <BlockIcon>
+                <Link to="/saved" className="decoration-off" style={{ height: '24px' }}>
+                  <BookmarkAddedIcon />
+                </Link>
+              </BlockIcon>
             </DataPost>
           </User>
         </Description>
