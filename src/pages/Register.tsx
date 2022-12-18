@@ -8,11 +8,15 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+import { userRegistration } from '../store/slices/userSlice';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
 function Register() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const validationSchema = yup.object().shape({
     name: yup.string()
       .min(2, 'Too Short!')
@@ -31,13 +35,22 @@ function Register() {
   });
 
   const onSubmit = (values: any) => {
-    axios.post('https://localhost:7297/api/User', {
-      name: values.name,
-      surname: values.secondName,
+    const user = {
+      firstname: values.name,
+      secondName: values.secondName,
       email: values.email,
       password: values.password,
+    };
+
+    axios.post('https://localhost:7297/api/User', {
+      name: user.firstname,
+      surname: user.secondName,
+      email: user.email,
+      password: user.password,
+    }).then(() => {
+      dispatch(userRegistration(user));
+      navigate('/');
     });
-    navigate('/');
   };
   return (
 

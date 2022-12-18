@@ -84,7 +84,7 @@ const NavBlock = styled.div`
   flex: 1 0 auto;
 `;
 
-function NavBar() {
+function NavBar({ isLogged }: { isLogged: boolean }) {
   return (
     <NavBarWrapper>
       <Body>
@@ -112,22 +112,26 @@ function NavBar() {
                   Membership
                 </Button>
               </Link>
-
-              <Button>
-                Write
-              </Button>
-
-              <Link to="/login">
+              {isLogged && (
                 <Button>
-                  Sign In
+                  Write
                 </Button>
-              </Link>
-              <Link to="/register">
-                <Button>
-                  Get started
-                </Button>
-              </Link>
-
+              )}
+              {!isLogged
+              && (
+              <>
+                <Link to="/login">
+                  <Button>
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button>
+                    Get started
+                  </Button>
+                </Link>
+              </>
+              )}
             </NavbarBrand>
           </Content>
         </Conteiner>
