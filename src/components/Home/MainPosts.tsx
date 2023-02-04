@@ -93,8 +93,8 @@ const Categories = styled.div`
 
 const CategoriesContent = styled.div`
   border-bottom: 1px solid rgba(230, 230, 230, 1);
-  top: 107px;
   display: block;
+  /* padding-bottom: 24px; */
 `;
 
 const CategoriesContainer = styled.div`
@@ -126,6 +126,12 @@ const CategoriesNavBar = styled.div`
   flex-direction: row;
 `;
 
+const CategoriesContentUp = styled.div`
+  top: 107px;
+  position: sticky;
+  display: block;
+`;
+
 function MainPosts() {
   return (
     <MainPost>
@@ -146,35 +152,37 @@ function MainPosts() {
               </Block>
             </Start>
             <Categories>
-              <CategoriesContent>
-                <CategoriesContainer>
-                  <CategoriesHeader>
-                    <CategoriesP>Discover more of what matters to you</CategoriesP>
-                  </CategoriesHeader>
-                </CategoriesContainer>
-                <CategoriesLinks>
-                  <CategoriesLink name="Programing" />
-                  <CategoriesLink name="Data Science" />
-                  <CategoriesLink name="Technology" />
-                  <CategoriesLink name="Self Improvement" />
-                  <CategoriesLink name="Writing" />
-                  <CategoriesLink name="Relationships" />
-                  <CategoriesLink name="Machine Learning" />
-                  <CategoriesLink name="Productivy" />
-                  <CategoriesLink name="Politics" />
-                </CategoriesLinks>
-              </CategoriesContent>
-              <CategoriesNavBar>
-                <Navbarlink name="Help" />
-                <Navbarlink name="Status" />
-                <Navbarlink name="Writes" />
-                <Navbarlink name="Blog" />
-                <Navbarlink name="Careers" />
-                <Navbarlink name="Privacy" />
-                <Navbarlink name="Terms" />
-                <Navbarlink name="About" />
-                <Navbarlink name="Text to speech" />
-              </CategoriesNavBar>
+              <CategoriesContentUp>
+                <CategoriesContent>
+                  <CategoriesContainer>
+                    <CategoriesHeader>
+                      <CategoriesP>Discover more of what matters to you</CategoriesP>
+                    </CategoriesHeader>
+                  </CategoriesContainer>
+                  <CategoriesLinks>
+                    <CategoriesLink name="Programing" />
+                    <CategoriesLink name="Data Science" />
+                    <CategoriesLink name="Technology" />
+                    <CategoriesLink name="Self Improvement" />
+                    <CategoriesLink name="Writing" />
+                    <CategoriesLink name="Relationships" />
+                    <CategoriesLink name="Machine Learning" />
+                    <CategoriesLink name="Productivy" />
+                    <CategoriesLink name="Politics" />
+                  </CategoriesLinks>
+                </CategoriesContent>
+                <CategoriesNavBar>
+                  <Navbarlink name="Help" />
+                  <Navbarlink name="Status" />
+                  <Navbarlink name="Writes" />
+                  <Navbarlink name="Blog" />
+                  <Navbarlink name="Careers" />
+                  <Navbarlink name="Privacy" />
+                  <Navbarlink name="Terms" />
+                  <Navbarlink name="About" />
+                  <Navbarlink name="Text to speech" />
+                </CategoriesNavBar>
+              </CategoriesContentUp>
             </Categories>
           </GridContent>
         </ContentPost>
