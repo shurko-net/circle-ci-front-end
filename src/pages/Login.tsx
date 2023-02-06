@@ -7,31 +7,9 @@ import * as yup from 'yup';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 
 import '../App.css';
-import axios from 'axios';
+// import axios from 'axios';
 
-// const H2 = styled.h2`
-//   font-size: 2.2rem;
-// `;
-
-// const P = styled.p`
-//   color: #404040;
-//   margin-top: 4px;
-//   font-size: 1.2rem;
-// `;
-
-// const Form = styled.div`
-//   text-align: left;
-//   margin-top: 30px;
-// `;
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
-// const Forgot = styled.div`
-//   cursor:pointer;
-//   color: #339989;
-//   font-size: 16px;
-//   &:hover {
-//     color: #7de2d1;
-//   }
-// `;
 
 function Login() {
   const validationSchema = yup.object().shape({
@@ -43,17 +21,12 @@ function Login() {
   });
 
   const onSubmit = (values: any) => {
-    axios
-      .get('https://localhost:7297/api/User')
-      .then((response) => {
-        response.data.forEach((i: any) => {
-          if (values.email === i.email
-            && values.password === i.password) {
-            console.log('True');
-          }
-        });
-        // debugger;
-      });
+    console.log(values);
+    // axios
+    //   .get('https://localhost:7297/api/User')
+    //   .then((response: any) => {
+    //     console.log(response, values);
+    //   });
   };
 
   return (

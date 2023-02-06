@@ -12,7 +12,7 @@ const userSlice = createSlice({
     isLogged: false,
   },
   reducers: {
-    userRegistration(state, action) {
+    userAuthorize(state, action) {
       state.firstName = action.payload.firstName;
       state.secondName = action.payload.secondName;
       state.email = action.payload.email;
@@ -24,6 +24,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { userRegistration } = userSlice.actions;
+export const { userAuthorize } = userSlice.actions;
 
 export default userSlice.reducer;
