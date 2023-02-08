@@ -9,6 +9,7 @@ import './App.css';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import OurStory from './pages/OurStory';
+import Account from './pages/Account';
 
 function App() {
   const isLogged = useSelector((state: any) => state.user.isLogged);
@@ -29,6 +30,7 @@ function App() {
         </>
         )}
         <Route path="about" element={<OurStory />} />
+        <Route path="/profile" element={<Account />} />
       </Routes>
 
     </div>

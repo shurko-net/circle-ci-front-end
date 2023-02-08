@@ -9,8 +9,8 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
-import { userAuthorize } from '../store/slices/userSlice';
+import { setUserData } from '../redux/auth-reducer';
+// import { userAuthorize } from '../redux/slices/userSlice';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
@@ -48,7 +48,8 @@ function Register() {
       email: user.email,
       password: user.password,
     }).then(() => {
-      dispatch(userAuthorize(user));
+      debugger;
+      dispatch(setUserData(user));
       navigate('/');
     });
   };
