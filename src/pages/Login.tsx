@@ -1,17 +1,20 @@
 import React from 'react';
-// import styled from 'styled-components';
-
 import LockIcon from '@mui/icons-material/Lock';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import '../App.css';
-// import axios from 'axios';
+import axios from 'axios';
+import { userAuth } from '../store/slices/userSlice';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
 function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const validationSchema = yup.object().shape({
     password: yup.string()
       .min(2, 'Too Short!')
@@ -21,12 +24,28 @@ function Login() {
   });
 
   const onSubmit = (values: any) => {
-    console.log(values);
-    // axios
-    //   .get('https://localhost:7297/api/User')
-    //   .then((response: any) => {
-    //     console.log(response, values);
-    //   });
+    const userData = {
+      email: values.email,
+      password: values.password,
+    };
+
+    axios.post(`https://localhost:7297/auth/Login?email=${userData.email}&password=${userData.password}`)
+      .then((response) => {
+        const userObj = {
+          firstname: response.data.name,
+          secondName: response.data.surname,
+          email: response.data.email,
+          password: response.data.password,
+          biography: response.data.biography,
+          phoneNumber: response.data.tNumber,
+          subscribed: response.data.subscribed,
+        };
+
+        dispatch(userAuth(userObj));
+        navigate('/');
+      }).catch((err) => {
+        console.log(err.response.data);
+      });
   };
 
   return (

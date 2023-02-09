@@ -9,21 +9,23 @@ const userSlice = createSlice({
     email: '',
     biography: '',
     phoneNumber: '',
+    subscribed: '',
     isLogged: false,
   },
   reducers: {
-    userAuthorize(state, action) {
+    userAuth(state, action) {
       state.firstName = action.payload.firstName;
       state.secondName = action.payload.secondName;
       state.email = action.payload.email;
       state.password = action.payload.password;
-      if (action.payload.password !== '' && action.payload !== '') {
-        state.isLogged = true;
-      }
+      state.isLogged = true;
+      state.biography = action.payload?.biography ?? '';
+      state.phoneNumber = action.payload?.phoneNumber ?? '';
+      state.subscribed = action.payload?.subscribed ?? '';
     },
   },
 });
 
-export const { userAuthorize } = userSlice.actions;
+export const { userAuth } = userSlice.actions;
 
 export default userSlice.reducer;
