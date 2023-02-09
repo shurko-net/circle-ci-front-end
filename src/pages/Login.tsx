@@ -1,39 +1,20 @@
 import React from 'react';
-// import styled from 'styled-components';
-
 import LockIcon from '@mui/icons-material/Lock';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import '../App.css';
 import axios from 'axios';
+import { userAuth } from '../store/slices/userSlice';
 
-// const H2 = styled.h2`
-//   font-size: 2.2rem;
-// `;
-
-// const P = styled.p`
-//   color: #404040;
-//   margin-top: 4px;
-//   font-size: 1.2rem;
-// `;
-
-// const Form = styled.div`
-//   text-align: left;
-//   margin-top: 30px;
-// `;
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
-// const Forgot = styled.div`
-//   cursor:pointer;
-//   color: #339989;
-//   font-size: 16px;
-//   &:hover {
-//     color: #7de2d1;
-//   }
-// `;
 
 function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const validationSchema = yup.object().shape({
     password: yup.string()
       .min(2, 'Too Short!')
@@ -43,16 +24,27 @@ function Login() {
   });
 
   const onSubmit = (values: any) => {
-    axios
-      .get('https://localhost:7297/api/User')
+    const userData = {
+      email: values.email,
+      password: values.password,
+    };
+
+    axios.post(`https://localhost:7297/auth/Login?email=${userData.email}&password=${userData.password}`)
       .then((response) => {
-        response.data.forEach((i: any) => {
-          if (values.email === i.email
-            && values.password === i.password) {
-            console.log('True');
-          }
-        });
-        // debugger;
+        const userObj = {
+          firstname: response.data.name,
+          secondName: response.data.surname,
+          email: response.data.email,
+          password: response.data.password,
+          biography: response.data.biography,
+          phoneNumber: response.data.tNumber,
+          subscribed: response.data.subscribed,
+        };
+
+        dispatch(userAuth(userObj));
+        navigate('/');
+      }).catch((err) => {
+        console.log(err.response.data);
       });
   };
 

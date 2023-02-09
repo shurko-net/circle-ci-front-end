@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { userRegistration } from '../store/slices/userSlice';
+import { userAuth } from '../store/slices/userSlice';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
@@ -48,7 +48,7 @@ function Register() {
       email: user.email,
       password: user.password,
     }).then(() => {
-      dispatch(userRegistration(user));
+      dispatch(userAuth(user));
       navigate('/');
     });
   };

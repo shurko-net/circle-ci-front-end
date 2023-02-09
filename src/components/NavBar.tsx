@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Text from './Text';
 import Button from './Button';
+import UserPanel from './UserOptionMenu/UserOptionMenu';
 
 const NavBarWrapper = styled.div`
     position: fixed;
@@ -41,7 +42,8 @@ const NavbarBrand = styled.div`
 }
 `;
 
-const Conteiner = styled.div`
+const Container = styled.div`
+  position: fixed;
   min-width: 0;
   max-width: 1192px;
   width: 100%;
@@ -63,14 +65,11 @@ const Conteiner = styled.div`
   @media (max-width: 551.98px){
     margin: 0 24px;
   }
-  
-
 `;
 
 const Content = styled.div`
       flex-direction: row;
-      /* height: 75px; */
-      padding: 18.5px 0;
+      padding: 15px 0;
       display: flex;
       justify-content: space-between;
 `;
@@ -80,26 +79,32 @@ const Block = styled.div`
 `;
 
 const NavBlock = styled.div`
-  /* display: block; */
   flex: 1 0 auto;
+`;
+
+const Flex = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 function NavBar({ isLogged }: { isLogged: boolean }) {
   return (
     <NavBarWrapper>
       <Body>
-        <Conteiner>
+        <Container>
           <Content>
-            <Link to="/">
-              <Block>
-                <Text color="#131515" weight={700} fSize="33">
-                  <div className="navbar-text">
-                    Circle CI
-                  </div>
-                </Text>
-              </Block>
-
-            </Link>
+            <Flex>
+              <Link to="/">
+                <Block>
+                  <Text color="#131515" weight={700} fSize="33">
+                    <div className="navbar-text">
+                      Circle CI
+                    </div>
+                  </Text>
+                </Block>
+              </Link>
+            </Flex>
             <NavBlock />
             <NavbarBrand>
               <Link to="/about">
@@ -113,9 +118,12 @@ function NavBar({ isLogged }: { isLogged: boolean }) {
                 </Button>
               </Link>
               {isLogged && (
-                <Button>
-                  Write
-                </Button>
+                <>
+                  <Button>
+                    Write
+                  </Button>
+                  <UserPanel />
+                </>
               )}
               {!isLogged
               && (
@@ -134,7 +142,7 @@ function NavBar({ isLogged }: { isLogged: boolean }) {
               )}
             </NavbarBrand>
           </Content>
-        </Conteiner>
+        </Container>
       </Body>
     </NavBarWrapper>
   );
