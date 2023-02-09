@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Text from './Text';
 import Button from './Button';
 import UserPanel from './UserOptionMenu/UserOptionMenu';
+import { useAuth } from '../utils/hook';
 
 const NavBarWrapper = styled.div`
     position: fixed;
@@ -92,7 +93,8 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-function NavBar({ isLogged }: { isLogged: boolean }) {
+function NavBar() {
+  const auth = useAuth();
   return (
     <NavBarWrapper>
       <Body>
@@ -121,12 +123,12 @@ function NavBar({ isLogged }: { isLogged: boolean }) {
                   Membership
                 </Button>
               </Link>
-              {isLogged && (
+              {auth && (
                 <Button>
                   Write
                 </Button>
               )}
-              {!isLogged
+              {!auth
               && (
               <>
                 <Link to="/login">
@@ -143,7 +145,7 @@ function NavBar({ isLogged }: { isLogged: boolean }) {
               )}
               {/* sos */}
             </NavbarBrand>
-            {isLogged && (
+            {auth && (
             <UserPanel />
             )}
           </Content>

@@ -1,17 +1,20 @@
 import React from 'react';
-// import styled from 'styled-components';
-
 import LockIcon from '@mui/icons-material/Lock';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-
 import '../App.css';
-// import axios from 'axios';
+import axios from 'axios';
+// import instance from '../utils/axios';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../utils/hook';
+import { login } from '../redux/slices/authSlice';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
 function Login() {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const validationSchema = yup.object().shape({
     password: yup.string()
       .min(2, 'Too Short!')
@@ -21,12 +24,16 @@ function Login() {
   });
 
   const onSubmit = (values: any) => {
-    console.log(values);
-    // axios
-    //   .get('https://localhost:7297/api/User')
-    //   .then((response: any) => {
-    //     console.log(response, values);
-    //   });
+    const userData = {
+      email: values.email,
+      password: values.password,
+    };
+
+    axios.post(`https://localhost:7297/auth/Login?email=${userData.email}&password=${userData.password}`)
+      .then((response) => {
+        dispatch(login(response.data));
+        navigate('/');
+      });
   };
 
   return (

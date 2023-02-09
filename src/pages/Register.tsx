@@ -9,14 +9,14 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setUserData } from '../redux/auth-reducer';
-// import { userAuthorize } from '../redux/slices/userSlice';
+import { login } from '../redux/slices/authSlice';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
 function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const validationSchema = yup.object().shape({
     name: yup.string()
       .min(2, 'Too Short!')
@@ -47,11 +47,11 @@ function Register() {
       surname: user.secondName,
       email: user.email,
       password: user.password,
-    }).then(() => {
-      debugger;
-      dispatch(setUserData(user));
-      navigate('/');
-    });
+    })
+      .then((response) => {
+        dispatch(login(response.data));
+        navigate('/');
+      });
   };
   return (
 

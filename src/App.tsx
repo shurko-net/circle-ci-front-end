@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Routes, Route,
 } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import './App.css';
@@ -10,19 +10,20 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import OurStory from './pages/OurStory';
 import Account from './pages/Account';
+import { useAuth } from './utils/hook';
 
 function App() {
-  const isLogged = useSelector((state: any) => state.user.isLogged);
-
+  const auth = useAuth();
+  // const isLogged = useSelector((state: any) => state.authorize.isLogged);
   return (
     <div className="App">
-      <NavBar isLogged={isLogged} />
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/saved" element={<Home />} />
-        {!isLogged
+        {!auth
         && (
         <>
           <Route path="/register" element={<Register />} />
