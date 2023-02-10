@@ -36,14 +36,14 @@ function Register() {
 
   const onSubmit = (values: any) => {
     const user = {
-      firstname: values.name,
+      firstName: values.name,
       secondName: values.secondName,
       email: values.email,
       password: values.password,
     };
 
     axios.post('https://localhost:7297/api/User', {
-      name: user.firstname,
+      name: user.firstName,
       surname: user.secondName,
       email: user.email,
       password: user.password,

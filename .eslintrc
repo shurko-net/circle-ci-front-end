@@ -30,6 +30,7 @@
         "react/require-default-props": "off",
         "jsx-a11y/no-static-element-interactions": "off",
         "no-debugger":"off",
-        "no-param-reassign": "off"
+        "no-param-reassign": "off",
+        "import/no-named-as-default": 0
     }
 }

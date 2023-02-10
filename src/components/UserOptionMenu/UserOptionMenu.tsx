@@ -8,23 +8,21 @@ import React, {
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
-import LockIcon from '@mui/icons-material/Lock';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
 
 import './UserOptionMenu.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { userSignOut } from '../../store/slices/userSlice';
 
-const useOnClkickOutside = (
-  ref:
-  RefObject<HTMLDivElement>,
-  handler:
-  MouseEventHandler<HTMLButtonElement>,
+const useOnClickOutside = (
+  ref: RefObject<HTMLDivElement>,
+  handler: MouseEventHandler<HTMLButtonElement>,
 ) => {
   useEffect(() => {
     const listener = (event: any) => {
-      if (!ref.current
-                || ref.current.contains(event.target)) {
+      if (!ref.current || ref.current.contains(event.target)) {
         return;
       }
       handler(event);
@@ -42,14 +40,24 @@ const useOnClkickOutside = (
 };
 
 function UserPanel() {
+  const dispatch = useDispatch();
+
+  const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
-  useOnClkickOutside(ref, () => setIsOpen(false));
+
+  useOnClickOutside(ref, () => setIsOpen(false));
+
+  const signOut = () => {
+    dispatch(userSignOut());
+  };
+
   return (
     <div ref={ref} className={`dropdown ${isOpen ? 'open' : ''}`}>
       <button type="submit" onClick={() => setIsOpen(!isOpen)}>
         <AccountCircleIcon />
-        <span>User Name</span>
+        <span>{userFullName}</span>
         {isOpen ? <CloseIcon /> : <KeyboardArrowDownIcon />}
       </button>
       <div className="menu">
@@ -63,9 +71,9 @@ function UserPanel() {
           <SettingsIcon />
           <span>Settings</span>
         </button>
-        <button type="submit">
-          <LockIcon />
-          <span>Account</span>
+        <button type="submit" onClick={signOut}>
+          <CloseIcon />
+          <span>Sign Out</span>
         </button>
       </div>
     </div>
