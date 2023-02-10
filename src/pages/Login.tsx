@@ -31,8 +31,9 @@ function Login() {
 
     axios.post(`https://localhost:7297/auth/Login?email=${userData.email}&password=${userData.password}`)
       .then((response) => {
+        console.log(response.data.subscribed);
         const userObj = {
-          firstname: response.data.name,
+          firstName: response.data.name,
           secondName: response.data.surname,
           email: response.data.email,
           password: response.data.password,

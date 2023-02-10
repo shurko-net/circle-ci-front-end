@@ -72,6 +72,7 @@ const Content = styled.div`
       padding: 15px 0;
       display: flex;
       justify-content: space-between;
+      height: 40px;
 `;
 
 const Block = styled.div`
