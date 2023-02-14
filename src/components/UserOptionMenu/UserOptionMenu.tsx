@@ -10,7 +10,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import './UserOptionMenu.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,6 +41,7 @@ const useOnClickOutside = (
 
 function UserPanel() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
 
@@ -51,6 +52,7 @@ function UserPanel() {
 
   const signOut = () => {
     dispatch(userSignOut());
+    navigate('/');
   };
 
   return (
@@ -61,7 +63,7 @@ function UserPanel() {
         {isOpen ? <CloseIcon /> : <KeyboardArrowDownIcon />}
       </button>
       <div className="menu">
-        <Link to="/profile">
+        <Link to="/profile/home">
           <button type="submit">
             <PersonIcon />
             <span>Profile</span>
