@@ -10,9 +10,11 @@ import './App.css';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import OurStory from './pages/OurStory';
-import Account from './pages/Account';
+// import Account from './pages/Account';
 import { userAuth } from './store/slices/userSlice';
 import { IUser } from './types';
+import AccountAbout from './components/AccountButtonPanel/AccountAbout';
+import AccountHome from './components/AccountButtonPanel/AccountHome';
 
 function App() {
   const dispatch = useDispatch();
@@ -43,19 +45,27 @@ function App() {
     <div className="App">
       <NavBar isLogged={isLogged} />
       <Routes>
+        {/* <Route path="*" element={<Home />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/saved" element={<Home />} />
         {!isLogged
-        && (
-        <>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-        </>
-        )}
+          ? (
+            <>
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+            </>
+          )
+          : (
+            <>
+              <Route path="/profile/home" element={<AccountHome />} />
+              <Route path="/profile/about" element={<AccountAbout />} />
+              {/* <Route path="/profile" element={<Account />} /> */}
+            </>
+
+          )}
         <Route path="about" element={<OurStory />} />
-        <Route path="/profile" element={<Account />} />
       </Routes>
 
     </div>
