@@ -21,8 +21,13 @@ function App() {
   const userEmail = localStorage.getItem('email');
   const userPassword = localStorage.getItem('password');
 
+  console.log(userEmail);
+
   if (userEmail && userPassword) {
-    axios.post(`https://localhost:7297/auth/Login?email=${userEmail}&password=${userPassword}`)
+    axios.post('https://localhost:7297/auth/Login', {
+      email: userEmail,
+      password: userPassword,
+    })
       .then((response) => {
         const userObj: IUser = {
           firstName: response.data.name,
