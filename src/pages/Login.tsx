@@ -36,7 +36,7 @@ function Login() {
     })
       .then((response) => {
         const userObj = {
-          idUser: response.data.idUser,
+          id: response.data.idUser,
           firstName: response.data.name,
           secondName: response.data.surname,
           email: response.data.email,
@@ -44,6 +44,7 @@ function Login() {
           biography: response.data.biography,
           phoneNumber: response.data.tNumber,
           subscribed: response.data.subscribed,
+          image: response.data.ImageUrl,
         };
 
         dispatch(userAuth(userObj));

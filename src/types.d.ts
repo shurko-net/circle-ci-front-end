@@ -1,4 +1,5 @@
 export interface IUser {
+  id: number;
   firstName: string;
   secondName: string;
   email: string;
@@ -6,4 +7,5 @@ export interface IUser {
   biography: string;
   phoneNumber: string;
   subscribed: number;
+  image: string;
 }
