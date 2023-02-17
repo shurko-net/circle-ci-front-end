@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
+// import { useSelector } from 'react-redux';
 
 interface AccountButtonProps {
-  name: string
+  name: string,
+  url:string
 }
 
 const Container = styled.span`
@@ -16,8 +19,11 @@ const ButtonMargin = styled.div`
     padding-bottom: 16px;
     margin-right: 32px;
     display: block;
-    border-bottom: 1px solid #2b2c28;
+    
     box-sizing: inherit;
+    &:focus   {
+      border-bottom: 1px solid #2b2c28;
+    }
 `;
 
 const ButtonLink = styled.a`
@@ -45,13 +51,24 @@ const ButtonText = styled.span`
   }
 `;
 
-function AccountButtonPanel({ name }:AccountButtonProps) {
+function AccountButtonPanel({ name, url }:AccountButtonProps) {
+  const activeStyle = {
+    textDecoration: 'none',
+    borderBottom: '1px solid #2b2c28',
+  };
+  const notActiveStyle = {
+    textDecoration: 'none',
+  };
+  const setActive = ({ isActive } : any) => (isActive ? activeStyle : notActiveStyle);
+
   return (
     <Container>
       <ButtonMargin>
         <ButtonLink>
           <ButtonP>
-            <ButtonText>{name}</ButtonText>
+            <NavLink to={url} style={setActive}>
+              <ButtonText>{name}</ButtonText>
+            </NavLink>
           </ButtonP>
         </ButtonLink>
       </ButtonMargin>

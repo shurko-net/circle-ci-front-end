@@ -1,20 +1,19 @@
 import React from 'react';
-import styled from 'styled-components';
-import Account from '../../pages/Account';
+// import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
-const Container = styled.button`
-    background: blue;
-    color: black;
-    width: 100px;
-    height: 100px;
-    
-`;
+import Account from '../../pages/Account';
+import HomeLine from './HomeLine';
 
 function AccountHome() {
+  const email = useSelector((state:any) => state.user.email);
+
   return (
     <Account>
-      home
-      <Container>Home</Container>
+      <HomeLine
+        email={email}
+        name="Email adress"
+      />
     </Account>
   );
 }
