@@ -26,7 +26,7 @@ const ButtonMargin = styled.div`
     }
 `;
 
-const ButtonLink = styled.a`
+const ButtonLink = styled.div`
     padding: 0px;
     cursor: pointer;
     border: none;
@@ -66,7 +66,7 @@ function AccountButtonPanel({ name, url }:AccountButtonProps) {
       <ButtonMargin>
         <ButtonLink>
           <ButtonP>
-            <NavLink to={url} style={setActive}>
+            <NavLink style={setActive} to={url}>
               <ButtonText>{name}</ButtonText>
             </NavLink>
           </ButtonP>

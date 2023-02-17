@@ -36,7 +36,7 @@ function Register() {
 
   const onSubmit = (values: any) => {
     const user = {
-      idUser: values.idUser,
+      id: values.idUser,
       firstName: values.name,
       secondName: values.secondName,
       email: values.email,

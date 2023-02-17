@@ -10,7 +10,6 @@ import './App.css';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import OurStory from './pages/OurStory';
-// import Account from './pages/Account';
 import { userAuth } from './store/slices/userSlice';
 import { IUser } from './types';
 import AccountAbout from './components/AccountButtonPanel/AccountAbout';
@@ -28,6 +27,7 @@ function App() {
     })
       .then((response) => {
         const userObj: IUser = {
+          id: response.data.idUser,
           firstName: response.data.name,
           secondName: response.data.surname,
           email: response.data.email,
@@ -35,6 +35,7 @@ function App() {
           biography: response.data.biography,
           phoneNumber: response.data.tNumber,
           subscribed: response.data.subscribed,
+          image: response.data.ImageUrl,
         };
 
         dispatch(userAuth(userObj));

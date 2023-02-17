@@ -55,17 +55,17 @@ function DevelopsContent() {
           content="Heeeeeellloooo, I am Stanislav. I'm Full-Stack developer in Munich. I like to play a guitar, playing chess, playing in my PS and, of course, CODDING!"
           post="Fullstack"
           img="https://uploads-ssl.webflow.com/60b9f6b57e8d7b3b3b1de1f2/632b263205d8cb1d2d80e710_Stanislav%20Shurko.png"
-          linkGit=""
-          linkInstagram=""
-          linkLinkedIn=""
+          linkGit="https://github.com/StanislavShurko"
+          linkInstagram="https://instagram.com/_stas_shurko_?igshid=YmMyMTA2M2Y="
+          linkLinkedIn="https://www.linkedin.com/in/stanislav-shurko-7a202b243/"
         />
         <DevelopsInner
           name="Dima Dasko"
           content="I am Dima"
           post="Backend"
           img="https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1500w,f_auto,q_auto:best/streams/2012/September/120928/4054796-pigfly.JPG"
-          linkGit=""
-          linkInstagram=""
+          linkGit="https://github.com/DmitryDatsko"
+          linkInstagram="https://instagram.com/d.dazko?igshid=YmMyMTA2M2Y="
           linkLinkedIn=""
         />
       </DevelopersInfo>

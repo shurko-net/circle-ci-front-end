@@ -1,9 +1,6 @@
-import axios from 'axios';
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-// import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-// import ButtonAccount from '../components/ButtonAccount';
 import AccountButton from '../components/AccountButtonPanel/AccountButton';
 
 const Container = styled.div`
@@ -202,36 +199,30 @@ const SideBarUserH2 = styled.h2`
   line-height: 20px;
 `;
 
-// const SideBarUploadImg = styled.input`
-//   display: hidden;
-// `;
+const ImageUploadParent = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0 10px 0;
+`;
 
 function Account({ children } : any) {
-  const [file, setFile] = useState<File>();
-  const [id, setId] = useState<number | Blob>(0);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  // const id = useSelector((state: any) => state.user.idUser);
+  const [userImage, setUserImage] = useState(useSelector((state: any) => state.user.image));
 
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
+  const userId = useSelector((state: any) => state.user.userId);
   const subdomain = useSelector((state: any) => state.user.subdomain);
 
-  const handleUploadClick = () => {
-    inputRef.current?.click();
+  const onImageChange = (e: any) => {
     const formData = new FormData();
-    formData.append('fileUrl', file!);
-    formData.append('id', id as Blob);
-
-    axios
-      .post('https://localhost:7297/image/UserImage', formData);
-    console.log(formData.getAll('id'));
-    console.log(formData.getAll('fileUrl'));
-  };
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) {
-      return;
+    formData.append('id', userId);
+    formData.append('fileUrl', e.target.files[0]);
+    if (e.target.files[0]) {
+      const fileReader = new FileReader();
+      fileReader.onload = function () {
+        setUserImage(fileReader.result);
+      };
+      fileReader.readAsDataURL(e.target.files[0]);
     }
-    setFile(e.target.files[0]);
-    setId(1);
   };
 
   return (
@@ -286,28 +277,26 @@ function Account({ children } : any) {
                   <SideBarUserBlock>
                     <SideBarAvaBlock>
 
-                      <SideBarAva />
+                      <SideBarAva src={userImage} />
                       <SideBarAvaDiv />
                     </SideBarAvaBlock>
                     <SideBarUserDiv>
                       <SideBarUserH2>
                         {userFullName}
                       </SideBarUserH2>
-                      <div>
-
-                        {/* 👇 Our custom button to select and upload a file */}
-                        <button onClick={handleUploadClick} type="submit">
+                      <ImageUploadParent>
+                        {/* <button onClick={handleUploadClick} type="submit">
                           {file ? `${file.name}` : 'Click to select'}
                         </button>
 
-                        {/* 👇 Notice the `display: hidden` on the input */}
                         <input
                           type="file"
                           ref={inputRef}
                           onChange={handleFileChange}
                           style={{ display: 'none' }}
-                        />
-                      </div>
+                        /> */}
+                        <input type="file" onChange={onImageChange} className="filetype" id="group_image" />
+                      </ImageUploadParent>
 
                     </SideBarUserDiv>
                   </SideBarUserBlock>
