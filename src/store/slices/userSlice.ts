@@ -10,7 +10,10 @@ const userSlice = createSlice({
     biography: '',
     phoneNumber: '',
     subscribed: '',
+    subdomain: '',
     isLogged: false,
+    ImageUrl: '',
+
   },
   reducers: {
     userAuth(state, action) {
@@ -21,6 +24,7 @@ const userSlice = createSlice({
       state.biography = action.payload?.biography ?? '';
       state.phoneNumber = action.payload?.phoneNumber ?? '';
       state.subscribed = action.payload?.subscribed ?? '';
+      state.subdomain = (action.payload.firstName + action.payload.secondName).toLowerCase();
       state.isLogged = true;
       localStorage.setItem('email', action.payload.email);
       localStorage.setItem('password', action.payload.password);

@@ -48,7 +48,7 @@ function DoubleItems() {
       </Item>
       <Item className="second">
         <Text color="#131515" weight={700} fSize="96">
-          Fill free yourself to join.
+          Feel free yourself to join.
         </Text>
       </Item>
     </Items>

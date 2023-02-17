@@ -21,8 +21,6 @@ function App() {
   const userEmail = localStorage.getItem('email');
   const userPassword = localStorage.getItem('password');
 
-  console.log(userEmail);
-
   if (userEmail && userPassword) {
     axios.post('https://localhost:7297/auth/Login', {
       email: userEmail,
@@ -45,6 +43,7 @@ function App() {
       });
   }
   const isLogged = useSelector((state: any) => state.user.isLogged);
+  const subdomain = useSelector((state: any) => state.user.subdomain);
 
   return (
     <div className="App">
@@ -64,8 +63,8 @@ function App() {
           )
           : (
             <>
-              <Route path="/profile/home" element={<AccountHome />} />
-              <Route path="/profile/about" element={<AccountAbout />} />
+              <Route path={`/${subdomain}/home`} element={<AccountHome />} />
+              <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
               {/* <Route path="/profile" element={<Account />} /> */}
             </>
 

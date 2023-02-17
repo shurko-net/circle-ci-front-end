@@ -1,6 +1,7 @@
-import React from 'react';
+import axios from 'axios';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 // import ButtonAccount from '../components/ButtonAccount';
 import AccountButton from '../components/AccountButtonPanel/AccountButton';
@@ -130,19 +131,109 @@ const MainUpFlexButtons = styled.div`
 const UpContainer = styled.div`
   flex: 1 0 auto;
   display: block;
+  margin: 0 24px;
 `;
 
+const SideBarContainer = styled.div`
+  height: 100%;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+`;
+
+const SideBarSticky = styled.div`
+  top: 57px;
+  position: sticky;
+  display: block;
+`;
+
+const SideBarFlex = styled.div`
+  display: flex;
+  min-height: calc(100vh - 0px);
+  flex-direction: column;
+`;
+
+const SideBarBlock = styled.div`
+  flex: 1 0 auto;
+  display: block;
+`;
+
+const SideBarUserBlock = styled.div`
+  margin-top: 40px;
+  border-bottom: none;
+  padding-bottom: 0px;
+  display: block;
+`;
+
+const SideBarAvaBlock = styled.div`
+  position: relative;
+  display: block;
+`;
+
+const SideBarAva = styled.img`
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display: block;
+`;
+
+const SideBarAvaDiv = styled.div`
+  width: 88px;
+  height: 88px;
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 5%);
+  top: 0;
+  display: block;
+`;
+
+const SideBarUserDiv = styled.div`
+  margin-top: 16px;
+  display: block;
+`;
+
+const SideBarUserH2 = styled.h2`
+  letter-spacing: 0;
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(41, 41, 41, 1);
+  line-height: 20px;
+`;
+
+// const SideBarUploadImg = styled.input`
+//   display: hidden;
+// `;
+
 function Account({ children } : any) {
-  const activeStyle = {
-    textDecoration: 'none',
-    borderBottom: '1px solid ',
-  };
-  const notActiveStyle = {
-    textDecoration: 'none',
-  };
-  const setActive = ({ isActive } : any) => (isActive ? activeStyle : notActiveStyle);
+  const [file, setFile] = useState<File>();
+  const [id, setId] = useState<number | Blob>(0);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  // const id = useSelector((state: any) => state.user.idUser);
 
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
+  const subdomain = useSelector((state: any) => state.user.subdomain);
+
+  const handleUploadClick = () => {
+    inputRef.current?.click();
+    const formData = new FormData();
+    formData.append('fileUrl', file!);
+    formData.append('id', id as Blob);
+
+    axios
+      .post('https://localhost:7297/image/UserImage', formData);
+    console.log(formData.getAll('id'));
+    console.log(formData.getAll('fileUrl'));
+  };
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+    setFile(e.target.files[0]);
+    setId(1);
+  };
+
   return (
     <Container>
       <FlexContainer>
@@ -167,15 +258,15 @@ function Account({ children } : any) {
                     </MainUpUser>
                     <MainUpButtons>
                       <MainUpFlexButtons>
-                        <NavLink
-                          to="/profile/home"
+                        {/* <NavLink
+                          to={`/${subdomain}/home`}
                           style={setActive}
-                        >
-                          <AccountButton name="Home" />
-                        </NavLink>
-                        <NavLink to="/profile/about" style={setActive}>
-                          <AccountButton name="About" />
-                        </NavLink>
+                        > */}
+                        <AccountButton name="Home" url={`/${subdomain}/home`} />
+                        {/* </NavLink> */}
+                        {/* <NavLink to={`/${subdomain}/about`} style={setActive}> */}
+                        <AccountButton name="About" url={`/${subdomain}/about`} />
+                        {/* </NavLink> */}
                       </MainUpFlexButtons>
                     </MainUpButtons>
                   </MainUpInfoMargin>
@@ -187,7 +278,44 @@ function Account({ children } : any) {
             </UpContainer>
           </MainContainer>
         </Main>
-        <SideBar>Side</SideBar>
+        <SideBar>
+          <SideBarContainer>
+            <SideBarSticky>
+              <SideBarFlex>
+                <SideBarBlock>
+                  <SideBarUserBlock>
+                    <SideBarAvaBlock>
+
+                      <SideBarAva />
+                      <SideBarAvaDiv />
+                    </SideBarAvaBlock>
+                    <SideBarUserDiv>
+                      <SideBarUserH2>
+                        {userFullName}
+                      </SideBarUserH2>
+                      <div>
+
+                        {/* 👇 Our custom button to select and upload a file */}
+                        <button onClick={handleUploadClick} type="submit">
+                          {file ? `${file.name}` : 'Click to select'}
+                        </button>
+
+                        {/* 👇 Notice the `display: hidden` on the input */}
+                        <input
+                          type="file"
+                          ref={inputRef}
+                          onChange={handleFileChange}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+
+                    </SideBarUserDiv>
+                  </SideBarUserBlock>
+                </SideBarBlock>
+              </SideBarFlex>
+            </SideBarSticky>
+          </SideBarContainer>
+        </SideBar>
       </FlexContainer>
     </Container>
   );

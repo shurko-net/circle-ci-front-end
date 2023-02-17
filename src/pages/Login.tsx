@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LockIcon from '@mui/icons-material/Lock';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
@@ -13,6 +13,7 @@ import { userAuth } from '../store/slices/userSlice';
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
 function Login() {
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const validationSchema = yup.object().shape({
@@ -35,6 +36,7 @@ function Login() {
     })
       .then((response) => {
         const userObj = {
+          idUser: response.data.idUser,
           firstName: response.data.name,
           secondName: response.data.surname,
           email: response.data.email,
@@ -45,9 +47,14 @@ function Login() {
         };
 
         dispatch(userAuth(userObj));
+
         navigate('/');
       }).catch((err) => {
-        console.log(err.response.data);
+        if (err.response.status === 404) {
+          setError(true);
+        } else {
+          setError(false);
+        }
       });
   };
 
@@ -101,8 +108,15 @@ function Login() {
                     value={values.password}
                   />
                 </div>
-                {touched.password && errors.password
-                && <div className="error-style"><p className="error">{errors.password}</p></div>}
+                {(touched.password && errors.password
+                && <div className="error-style"><p className="error">{errors.password}</p></div>)
+                || (error && (
+                <div className="error-style">
+                  <p className="error">
+                    Password or username do not match
+                  </p>
+                </div>
+                ))}
 
                 <button
                   // onClick={handleSubmit}

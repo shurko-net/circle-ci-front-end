@@ -40,6 +40,7 @@ const useOnClickOutside = (
 };
 
 function UserPanel() {
+  const subdomain = useSelector((state: any) => state.user.subdomain);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -63,7 +64,7 @@ function UserPanel() {
         {isOpen ? <CloseIcon /> : <KeyboardArrowDownIcon />}
       </button>
       <div className="menu">
-        <Link to="/profile/home">
+        <Link to={`/${subdomain}/home`}>
           <button type="submit">
             <PersonIcon />
             <span>Profile</span>
