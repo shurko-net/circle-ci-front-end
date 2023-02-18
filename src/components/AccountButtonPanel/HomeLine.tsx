@@ -1,13 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
+import AccountHomeModal from './AccountHomeModal';
 
 interface HomeLineProps {
-  email: string,
-  name:string
+  info: string,
+  name:string,
+  downInfo: string,
+  img: string,
+  color: string,
 }
 
 const Button = styled.button`
-    background: #fcfcfc;
+    cursor: pointer;
+    margin: 32px 0px;
+    background: white;
     text-align: left;
     justify-content: space-between;
     width: 100%;
@@ -45,7 +51,6 @@ const SpanFlex = styled.span`
   letter-spacing: inherit;
   font-family: inherit;
   fill: inherit;
-
 `;
 
 const SpanBlack = styled.span`
@@ -61,8 +66,8 @@ const SpanBlack = styled.span`
   fill: inherit;
 `;
 
-const SpanText = styled.span`
-  color: rgba(41, 41, 41, 1);
+const SpanText = styled.span<{ color: string; }>`
+  color: ${(props) => (props.color ? props.color : 'rgba(41, 41, 41, 1)')};
   line-height: 20px;
   font-size: 14px;
   text-align: left;
@@ -95,22 +100,110 @@ const SpanTextRight = styled.span`
   fill: inherit;
 `;
 
-function HomeLine({ email, name }:HomeLineProps) {
+const DownDiv = styled.div`
+  display: block;
+  margin-top: 4px;
+`;
+
+const SpanTextDown = styled.span`
+  font-size: 13px;
+  color: rgba(117, 117, 117, 1);
+  line-height: 20px;
+  text-align: left;
+`;
+
+const DivBlockImg = styled.div`
+  margin-left: 12px;
+  display: inline-block;
+  text-align: left;
+  font-size: 14px;
+  color: rgba(117, 117, 117, 1);
+  letter-spacing: inherit;
+  font-family: inherit;
+  fill: inherit;
+`;
+
+const DivWidthImg = styled.div`
+  width: 24px;
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  color: rgba(117, 117, 117, 1);
+  letter-spacing: inherit;
+  font-family: inherit;
+  fill: inherit;
+`;
+
+const DivPositionImg = styled.div`
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+`;
+
+const DivFlexUserInfo = styled.div`
+  display: inline-flex;
+  padding-left: 8px;
+  align-items: center;
+`;
+
+const UserImg = styled.img`
+  width: 24px;
+  height: 24px;
+  display: block;
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  border-radius: 50%;
+`;
+
+function HomeLine({
+  info, name, downInfo, img, color,
+}:HomeLineProps) {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
+    <>
+      <Button onClick={handleOpen}>
+        <SpanItems>
+          <SpanFlex>
+            <SpanBlack>
+              <SpanText color={color}>{name}</SpanText>
+              {downInfo === ''
+                ? null
+                : (
+                  <DownDiv>
+                    <SpanTextDown>
+                      {downInfo}
+                    </SpanTextDown>
+                  </DownDiv>
+                )}
 
-    <Button>
-      <SpanItems>
-        <SpanFlex>
-          <SpanBlack>
-            <SpanText>{name}</SpanText>
-          </SpanBlack>
-        </SpanFlex>
-        <SpanEmail>
-          <SpanTextRight>{email}</SpanTextRight>
-        </SpanEmail>
-      </SpanItems>
-    </Button>
-
+            </SpanBlack>
+          </SpanFlex>
+          <SpanEmail>
+            <DivFlexUserInfo>
+              <SpanTextRight>{info}</SpanTextRight>
+              {img === ''
+                ? null
+                : (
+                  <DivBlockImg>
+                    <DivWidthImg>
+                      <DivPositionImg>
+                        <UserImg />
+                      </DivPositionImg>
+                    </DivWidthImg>
+                  </DivBlockImg>
+                )}
+            </DivFlexUserInfo>
+          </SpanEmail>
+        </SpanItems>
+      </Button>
+      <AccountHomeModal open={open} handleClose={handleClose} />
+    </>
   );
 }
 

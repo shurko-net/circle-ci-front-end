@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import AccountButton from '../components/AccountButtonPanel/AccountButton';
@@ -62,7 +63,8 @@ const MainUpMargin = styled.div`
 `;
 
 const MainUpInfoMargin = styled.div`
-  margin: 52px 0px 48px;
+  margin-bottom: 0px;
+  margin-top: 52px;
   display: block;
 `;
 
@@ -205,18 +207,62 @@ const ImageUploadParent = styled.div`
   padding: 10px 0 10px 0;
 `;
 
+const ButtonImg = styled.button`
+  border-radius: 50%;
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display:block;
+  width: 88px; 
+  height: 88px; 
+  background-size: 100%;
+  border: none;
+  cursor: pointer;
+`;
+
 function Account({ children } : any) {
+  const [urlServer, setUrlServer] = useState<string>();
+  const [file, setFile] = useState<File>();
   const [userImage, setUserImage] = useState(useSelector((state: any) => state.user.image));
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  console.log(urlServer);
 
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
-  const userId = useSelector((state: any) => state.user.userId);
+  const userId = useSelector((state: any) => state.user.id);
   const subdomain = useSelector((state: any) => state.user.subdomain);
 
+  const handleUploadClick = () => {
+    inputRef.current?.click();
+  };
+
   const onImageChange = (e: any) => {
-    const formData = new FormData();
-    formData.append('id', userId);
-    formData.append('fileUrl', e.target.files[0]);
     if (e.target.files[0]) {
+      const formData = new FormData();
+
+      formData.append('id', userId);
+      formData.append('file', file!);
+
+      console.log(formData.getAll('id'));
+      console.log(formData.getAll('file'));
+
+      axios
+        .post('https://localhost:7297/api/Image', formData);
+      axios
+        .get(`https://localhost:7297/api/Image?id=${userId}`)
+        .then((response) => {
+          const binaryData = [];
+          const blob = response.data;
+          binaryData.push(blob);
+          const url = URL.createObjectURL(new Blob(
+            binaryData,
+            { type: 'application/pdf;chartset=UTF-8' },
+          ));
+          setUrlServer(url);
+          console.log(url);
+          // console.log(window.URL.revokeObjectURL(url));
+        });
+
+      setFile(e.target.files[0]);
+
       const fileReader = new FileReader();
       fileReader.onload = function () {
         setUserImage(fileReader.result);
@@ -277,27 +323,27 @@ function Account({ children } : any) {
                   <SideBarUserBlock>
                     <SideBarAvaBlock>
 
-                      <SideBarAva src={userImage} />
+                      <SideBarAva src="http://localhost:3000/de79c80d-b406-424b-8409-4ae9d28398e2" />
                       <SideBarAvaDiv />
                     </SideBarAvaBlock>
                     <SideBarUserDiv>
                       <SideBarUserH2>
                         {userFullName}
                       </SideBarUserH2>
-                      <ImageUploadParent>
-                        {/* <button onClick={handleUploadClick} type="submit">
-                          {file ? `${file.name}` : 'Click to select'}
-                        </button>
+                      <ImageUploadParent />
+                      <ButtonImg
+                        style={{ backgroundImage: `url(${userImage})` }}
+                        onClick={handleUploadClick}
+                      />
 
-                        <input
-                          type="file"
-                          ref={inputRef}
-                          onChange={handleFileChange}
-                          style={{ display: 'none' }}
-                        /> */}
-                        <input type="file" onChange={onImageChange} className="filetype" id="group_image" />
-                      </ImageUploadParent>
-
+                      <input
+                        type="file"
+                        onChange={onImageChange}
+                        className="filetype"
+                        id="group_image"
+                        ref={inputRef}
+                        style={{ display: 'none' }}
+                      />
                     </SideBarUserDiv>
                   </SideBarUserBlock>
                 </SideBarBlock>
