@@ -7,5 +7,4 @@ export interface IUser {
   biography: string;
   phoneNumber: string;
   subscribed: number;
-  image: string;
 }

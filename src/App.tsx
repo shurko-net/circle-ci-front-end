@@ -10,7 +10,7 @@ import './App.css';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import OurStory from './pages/OurStory';
-import { userAuth } from './store/slices/userSlice';
+import { userAuth, setUserImage } from './store/slices/userSlice';
 import { IUser } from './types';
 import AccountAbout from './components/AccountButtonPanel/AccountAbout';
 import AccountHome from './components/AccountButtonPanel/AccountHome';
@@ -35,10 +35,11 @@ function App() {
           biography: response.data.biography,
           phoneNumber: response.data.tNumber,
           subscribed: response.data.subscribed,
-          image: response.data.ImageUrl,
         };
-
         dispatch(userAuth(userObj));
+        axios.get(`https://localhost:7297/api/Image/${userObj.id}`).then((res: any) => {
+          dispatch(setUserImage(res.data));
+        });
       }).catch((err) => {
         console.log(err.response.data);
       });

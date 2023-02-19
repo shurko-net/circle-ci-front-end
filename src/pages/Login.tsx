@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 
 import '../App.css';
 import axios from 'axios';
-import { userAuth } from '../store/slices/userSlice';
+import { userAuth, setUserImage } from '../store/slices/userSlice';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
@@ -44,11 +44,12 @@ function Login() {
           biography: response.data.biography,
           phoneNumber: response.data.tNumber,
           subscribed: response.data.subscribed,
-          image: response.data.ImageUrl,
         };
 
         dispatch(userAuth(userObj));
-
+        axios.get(`https://localhost:7297/api/Image/${userObj.id}`).then((res: any) => {
+          dispatch(setUserImage(res.data));
+        });
         navigate('/');
       }).catch((err) => {
         if (err.response.status === 404) {

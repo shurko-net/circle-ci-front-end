@@ -161,32 +161,35 @@ const SideBarUserBlock = styled.div`
   margin-top: 40px;
   border-bottom: none;
   padding-bottom: 0px;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
 `;
 
-const SideBarAvaBlock = styled.div`
-  position: relative;
-  display: block;
-`;
+// const SideBarAvaBlock = styled.div`
+//   position: relative;
+//   display: block;
+// `;
 
-const SideBarAva = styled.img`
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  background-color: rgba(242, 242, 242, 1);
-  box-sizing: border-box;
-  display: block;
-`;
+// const SideBarAva = styled.img`
+//   width: 88px;
+//   height: 88px;
+//   border-radius: 50%;
+//   background-color: rgba(242, 242, 242, 1);
+//   box-sizing: border-box;
+//   display: block;
+// `;
 
-const SideBarAvaDiv = styled.div`
-  width: 88px;
-  height: 88px;
-  position: absolute;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 5%);
-  top: 0;
-  display: block;
-`;
+// const SideBarAvaDiv = styled.div`
+//   width: 88px;
+//   height: 88px;
+//   position: absolute;
+//   border-radius: 50%;
+//   box-shadow: inset 0 0 0 1px rgb(0 0 0 / 5%);
+//   top: 0;
+//   display: block;
+// `;
 
 const SideBarUserDiv = styled.div`
   margin-top: 16px;
@@ -201,11 +204,11 @@ const SideBarUserH2 = styled.h2`
   line-height: 20px;
 `;
 
-const ImageUploadParent = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0 10px 0;
-`;
+// const ImageUploadParent = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   padding: 10px 0 10px 0;
+// `;
 
 const ButtonImg = styled.button`
   border-radius: 50%;
@@ -220,15 +223,13 @@ const ButtonImg = styled.button`
 `;
 
 function Account({ children } : any) {
-  const [urlServer, setUrlServer] = useState<string>();
-  const [file, setFile] = useState<File>();
-  const [userImage, setUserImage] = useState(useSelector((state: any) => state.user.image));
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  console.log(urlServer);
-
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
   const userId = useSelector((state: any) => state.user.id);
   const subdomain = useSelector((state: any) => state.user.subdomain);
+
+  const [userImage, setUserImage] = useState<any>();
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleUploadClick = () => {
     inputRef.current?.click();
@@ -236,38 +237,21 @@ function Account({ children } : any) {
 
   const onImageChange = (e: any) => {
     if (e.target.files[0]) {
-      const formData = new FormData();
-
-      formData.append('id', userId);
-      formData.append('file', file!);
-
-      console.log(formData.getAll('id'));
-      console.log(formData.getAll('file'));
-
-      axios
-        .post('https://localhost:7297/api/Image', formData);
-      axios
-        .get(`https://localhost:7297/api/Image?id=${userId}`)
-        .then((response) => {
-          const binaryData = [];
-          const blob = response.data;
-          binaryData.push(blob);
-          const url = URL.createObjectURL(new Blob(
-            binaryData,
-            { type: 'application/pdf;chartset=UTF-8' },
-          ));
-          setUrlServer(url);
-          console.log(url);
-          // console.log(window.URL.revokeObjectURL(url));
-        });
-
-      setFile(e.target.files[0]);
-
       const fileReader = new FileReader();
-      fileReader.onload = function () {
+      fileReader.onload = () => {
         setUserImage(fileReader.result);
       };
       fileReader.readAsDataURL(e.target.files[0]);
+
+      const formData = new FormData();
+      formData.append('id', userId);
+      formData.append('file', e.target.files[0]);
+      axios
+        .post('https://localhost:7297/api/Image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
     }
   };
 
@@ -321,29 +305,23 @@ function Account({ children } : any) {
               <SideBarFlex>
                 <SideBarBlock>
                   <SideBarUserBlock>
-                    <SideBarAvaBlock>
+                    <ButtonImg
+                      style={{ backgroundImage: `url(${userImage})` }}
+                      onClick={handleUploadClick}
+                    />
 
-                      <SideBarAva src="http://localhost:3000/de79c80d-b406-424b-8409-4ae9d28398e2" />
-                      <SideBarAvaDiv />
-                    </SideBarAvaBlock>
+                    <input
+                      type="file"
+                      onChange={onImageChange}
+                      className="filetype"
+                      id="group_image"
+                      ref={inputRef}
+                      style={{ display: 'none' }}
+                    />
                     <SideBarUserDiv>
                       <SideBarUserH2>
                         {userFullName}
                       </SideBarUserH2>
-                      <ImageUploadParent />
-                      <ButtonImg
-                        style={{ backgroundImage: `url(${userImage})` }}
-                        onClick={handleUploadClick}
-                      />
-
-                      <input
-                        type="file"
-                        onChange={onImageChange}
-                        className="filetype"
-                        id="group_image"
-                        ref={inputRef}
-                        style={{ display: 'none' }}
-                      />
                     </SideBarUserDiv>
                   </SideBarUserBlock>
                 </SideBarBlock>
