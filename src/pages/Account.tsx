@@ -1,8 +1,9 @@
 import axios from 'axios';
-import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useRef, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import AccountButton from '../components/AccountButtonPanel/AccountButton';
+import { setUserImage } from '../store/slices/userSlice';
 
 const Container = styled.div`
   /* top: 70px; */
@@ -223,12 +224,15 @@ const ButtonImg = styled.button`
 `;
 
 function Account({ children } : any) {
+  const dispatch = useDispatch();
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
   const userId = useSelector((state: any) => state.user.id);
   const subdomain = useSelector((state: any) => state.user.subdomain);
-
-  const [userImage, setUserImage] = useState<any>();
-
+  const userI = useSelector((state:any) => state.user.image);
+  const [userImages, setUserImages] = useState<any | string | ArrayBuffer | null>(userI);
+  useEffect(() => {
+    setUserImages(userI);
+  }, [userI]);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleUploadClick = () => {
@@ -236,23 +240,32 @@ function Account({ children } : any) {
   };
 
   const onImageChange = (e: any) => {
-    if (e.target.files[0]) {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setUserImage(fileReader.result);
-      };
-      fileReader.readAsDataURL(e.target.files[0]);
-
-      const formData = new FormData();
-      formData.append('id', userId);
-      formData.append('file', e.target.files[0]);
-      axios
-        .post('https://localhost:7297/api/Image', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+    if (!e.target.files[0]) {
+      return;
     }
+    // const fileReader = new FileReader();
+    // fileReader.onload = () => {
+    //   dispatch(setUserImage(fileReader.result));
+    //   setUserImages(fileReader.result);
+    //   console.log(fileReader.result);
+    // };
+    // fileReader.readAsDataURL(e.target.files[0]);
+
+    // console.log((`data:image/jpeg;base64,${e.target.files[0]}`));
+    const formData = new FormData();
+    formData.append('id', userId);
+    formData.append('file', e.target.files[0]);
+    axios
+      .post('https://localhost:7297/api/Image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    axios.get(`https://localhost:7297/api/Image/${userId}`)
+      .then((res) => {
+        dispatch(setUserImage(res.data));
+        setUserImage(`data:image/jpeg;base64,${res.data}`);
+      });
   };
 
   return (
@@ -306,7 +319,7 @@ function Account({ children } : any) {
                 <SideBarBlock>
                   <SideBarUserBlock>
                     <ButtonImg
-                      style={{ backgroundImage: `url(${userImage})` }}
+                      style={{ backgroundImage: `url(${userImages})` }}
                       onClick={handleUploadClick}
                     />
 

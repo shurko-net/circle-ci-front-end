@@ -44,7 +44,7 @@ const userSlice = createSlice({
       state.isLogged = false;
     },
     setUserImage(state, action) {
-      state.image = action.payload;
+      state.image = `data:image/jpeg;base64,${action.payload}`;
     },
   },
 });
