@@ -229,9 +229,9 @@ function Account({ children } : any) {
   const userId = useSelector((state: any) => state.user.id);
   const subdomain = useSelector((state: any) => state.user.subdomain);
   const userI = useSelector((state:any) => state.user.image);
-  const [userImages, setUserImages] = useState<any | string | ArrayBuffer | null>(userI);
+  const [userImageLoad, setuserImageLoad] = useState<any>(userI);
   useEffect(() => {
-    setUserImages(userI);
+    setuserImageLoad(userI);
   }, [userI]);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -243,15 +243,12 @@ function Account({ children } : any) {
     if (!e.target.files[0]) {
       return;
     }
-    // const fileReader = new FileReader();
-    // fileReader.onload = () => {
-    //   dispatch(setUserImage(fileReader.result));
-    //   setUserImages(fileReader.result);
-    //   console.log(fileReader.result);
-    // };
-    // fileReader.readAsDataURL(e.target.files[0]);
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setuserImageLoad(fileReader.result);
+    };
+    fileReader.readAsDataURL(e.target.files[0]);
 
-    // console.log((`data:image/jpeg;base64,${e.target.files[0]}`));
     const formData = new FormData();
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
@@ -264,7 +261,6 @@ function Account({ children } : any) {
     axios.get(`https://localhost:7297/api/Image/${userId}`)
       .then((res) => {
         dispatch(setUserImage(res.data));
-        setUserImage(`data:image/jpeg;base64,${res.data}`);
       });
   };
 
@@ -319,7 +315,7 @@ function Account({ children } : any) {
                 <SideBarBlock>
                   <SideBarUserBlock>
                     <ButtonImg
-                      style={{ backgroundImage: `url(${userImages})` }}
+                      style={{ backgroundImage: `url(${userImageLoad})` }}
                       onClick={handleUploadClick}
                     />
 
