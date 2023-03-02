@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -14,7 +14,19 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import './UserOptionMenu.css';
 import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+
 import { userSignOut } from '../../store/slices/userSlice';
+
+const UserImg = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display: block;
+  background-size: 100%;
+`;
 
 const useOnClickOutside = (
   ref: RefObject<HTMLDivElement>,
@@ -39,7 +51,7 @@ const useOnClickOutside = (
   }, [ref, handler]);
 };
 
-function UserPanel() {
+function UserPanel({ userImageLoad }:{ userImageLoad: string }) {
   const subdomain = useSelector((state: any) => state.user.subdomain);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,10 +68,26 @@ function UserPanel() {
     navigate('/');
   };
 
+  // const userImage = useSelector((state: any) => state.user.image);
+  // const [userImageLoad, setUserImageLoad] = useState<any>(userImage);
+
+  // useEffect(() => {
+  //   setUserImageLoad(userImage);
+  // }, [userImage]);
+
+  // const fileReader = new FileReader();
+  // fileReader.onload = () => {
+  //   setUserImageLoad(fileReader.result);
+  // };
+  // fileReader.readAsDataURL(userImage);
+
   return (
     <div ref={ref} className={`dropdown ${isOpen ? 'open' : ''}`}>
       <button type="submit" onClick={() => setIsOpen(!isOpen)}>
-        <AccountCircleIcon />
+        <UserImg
+          style={{ backgroundImage: `url(${userImageLoad})` }}
+        />
+        {/* <AccountCircleIcon /> */}
         <span>{userFullName}</span>
         {isOpen ? <CloseIcon /> : <KeyboardArrowDownIcon />}
       </button>

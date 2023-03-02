@@ -32,6 +32,7 @@
         "no-debugger":"off",
         "no-param-reassign": "off",
         "import/no-named-as-default": 0,
-        "jsx-a11y/label-has-associated-control": "off"
+        "jsx-a11y/label-has-associated-control": "off",
+        "prefer-destructuring": "off"
     }
 }

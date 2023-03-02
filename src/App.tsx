@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Routes, Route,
 } from 'react-router-dom';
@@ -44,12 +44,49 @@ function App() {
         console.log(err.response.data);
       });
   }
-  const isLogged = useSelector((state: any) => state.user.isLogged);
-  const subdomain = useSelector((state: any) => state.user.subdomain);
+
+  const {
+    isLogged, subdomain, userId, userImage,
+  } = useSelector((state: any) => ({
+    isLogged: state.user.isLogged,
+    subdomain: state.user.subdomain,
+    userId: state.user.id,
+    userImage: state.user.image,
+  }));
+
+  const [userImageLoad, setUserImageLoad] = useState<any>(userImage);
+  useEffect(() => {
+    setUserImageLoad(userImage);
+  }, [userImage]);
+
+  const onImageChange = (e: any) => {
+    if (!e.target.files[0]) {
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setUserImageLoad(fileReader.result);
+    };
+    fileReader.readAsDataURL(e.target.files[0]);
+
+    const formData = new FormData();
+    formData.append('id', userId);
+    formData.append('file', e.target.files[0]);
+    axios
+      .post('https://localhost:7297/api/Image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    axios.get(`https://localhost:7297/api/Image/${userId}`)
+      .then((res) => {
+        dispatch(setUserImage(res.data));
+      });
+  };
 
   return (
     <div className="App">
-      <NavBar isLogged={isLogged} />
+      <NavBar isLogged={isLogged} userImageLoad={userImageLoad} />
       <Routes>
         {/* <Route path="*" element={<Home />} /> */}
         <Route path="/" element={<Home />} />
@@ -65,7 +102,7 @@ function App() {
           )
           : (
             <>
-              <Route path={`/${subdomain}/home`} element={<AccountHome />} />
+              <Route path={`/${subdomain}/home`} element={<AccountHome userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
               <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
               {/* <Route path="/profile" element={<Account />} /> */}
             </>

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import AccountHomeModal from './AccountHomeModal';
 
 interface HomeLineProps {
@@ -8,6 +9,25 @@ interface HomeLineProps {
   downInfo: string,
   img: string,
   color: string,
+  textHeader: string,
+  inputValue: string,
+  text: string,
+  inputCounter: string,
+  handle?: (e? : any) => void,
+  onSubmit?: () => void,
+  disabled?: boolean,
+  maxlength?: number,
+  userImageLoad: string
+  handleUploadClick?: (e? : any) => void,
+  onImageChange?: (e?: any) => void,
+  inputRef?: any,
+  nameText: string,
+  bioText: string,
+  descriptionBio: string
+  length?: number,
+  handleContentBio?: (e? : any) => void,
+  inputValueBio: string,
+
 }
 
 const Button = styled.button`
@@ -156,10 +176,19 @@ const UserImg = styled.img`
   background-color: rgba(242, 242, 242, 1);
   box-sizing: border-box;
   border-radius: 50%;
+  background-size: 100%;
 `;
 
 function HomeLine({
-  info, name, downInfo, img, color,
+  info, name, downInfo,
+  img, color, textHeader,
+  inputValue, text, inputCounter,
+  handle, onSubmit, disabled,
+  maxlength, handleUploadClick, userImageLoad,
+  onImageChange, inputRef, nameText,
+  bioText, descriptionBio, length,
+  handleContentBio, inputValueBio,
+
 }:HomeLineProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -186,14 +215,18 @@ function HomeLine({
           </SpanFlex>
           <SpanEmail>
             <DivFlexUserInfo>
-              <SpanTextRight>{info}</SpanTextRight>
+              <SpanTextRight>
+                {info}
+              </SpanTextRight>
               {img === ''
                 ? null
                 : (
                   <DivBlockImg>
                     <DivWidthImg>
                       <DivPositionImg>
-                        <UserImg />
+                        <UserImg
+                          style={{ backgroundImage: `url(${userImageLoad})` }}
+                        />
                       </DivPositionImg>
                     </DivWidthImg>
                   </DivBlockImg>
@@ -202,7 +235,29 @@ function HomeLine({
           </SpanEmail>
         </SpanItems>
       </Button>
-      <AccountHomeModal open={open} handleClose={handleClose} />
+      <AccountHomeModal
+        open={open}
+        handleClose={handleClose}
+        textHeader={textHeader}
+        inputValue={inputValue}
+        text={text}
+        inputCounter={inputCounter}
+        handle={handle}
+        onSubmit={onSubmit}
+        disabled={disabled}
+        maxlength={maxlength}
+        userImageLoad={userImageLoad}
+        handleUploadClick={handleUploadClick}
+        onImageChange={onImageChange}
+        inputRef={inputRef}
+        nameText={nameText}
+        bioText={bioText}
+        descriptionBio={descriptionBio}
+        length={length}
+        handleContentBio={handleContentBio}
+        inputValueBio={inputValueBio}
+
+      />
     </>
   );
 }

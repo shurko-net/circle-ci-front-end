@@ -89,7 +89,7 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-function NavBar({ isLogged }: { isLogged: boolean }) {
+function NavBar({ isLogged, userImageLoad }: { isLogged: boolean, userImageLoad: string }) {
   return (
     <NavBarWrapper>
       <Body>
@@ -123,7 +123,7 @@ function NavBar({ isLogged }: { isLogged: boolean }) {
                   <Button>
                     Write
                   </Button>
-                  <UserPanel />
+                  <UserPanel userImageLoad={userImageLoad} />
                 </>
               )}
               {!isLogged
