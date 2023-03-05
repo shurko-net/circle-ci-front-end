@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import axios from 'axios';
+import React, { useRef, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import AccountButton from '../components/AccountButtonPanel/AccountButton';
+import { setUserImage } from '../store/slices/userSlice';
 
 const Container = styled.div`
   /* top: 70px; */
@@ -62,7 +64,8 @@ const MainUpMargin = styled.div`
 `;
 
 const MainUpInfoMargin = styled.div`
-  margin: 52px 0px 48px;
+  margin-bottom: 0px;
+  margin-top: 52px;
   display: block;
 `;
 
@@ -159,32 +162,35 @@ const SideBarUserBlock = styled.div`
   margin-top: 40px;
   border-bottom: none;
   padding-bottom: 0px;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
 `;
 
-const SideBarAvaBlock = styled.div`
-  position: relative;
-  display: block;
-`;
+// const SideBarAvaBlock = styled.div`
+//   position: relative;
+//   display: block;
+// `;
 
-const SideBarAva = styled.img`
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  background-color: rgba(242, 242, 242, 1);
-  box-sizing: border-box;
-  display: block;
-`;
+// const SideBarAva = styled.img`
+//   width: 88px;
+//   height: 88px;
+//   border-radius: 50%;
+//   background-color: rgba(242, 242, 242, 1);
+//   box-sizing: border-box;
+//   display: block;
+// `;
 
-const SideBarAvaDiv = styled.div`
-  width: 88px;
-  height: 88px;
-  position: absolute;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 5%);
-  top: 0;
-  display: block;
-`;
+// const SideBarAvaDiv = styled.div`
+//   width: 88px;
+//   height: 88px;
+//   position: absolute;
+//   border-radius: 50%;
+//   box-shadow: inset 0 0 0 1px rgb(0 0 0 / 5%);
+//   top: 0;
+//   display: block;
+// `;
 
 const SideBarUserDiv = styled.div`
   margin-top: 16px;
@@ -199,30 +205,63 @@ const SideBarUserH2 = styled.h2`
   line-height: 20px;
 `;
 
-const ImageUploadParent = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0 10px 0;
+// const ImageUploadParent = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   padding: 10px 0 10px 0;
+// `;
+
+const ButtonImg = styled.button`
+  border-radius: 50%;
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display:block;
+  width: 88px; 
+  height: 88px; 
+  background-size: 100%;
+  border: none;
+  cursor: pointer;
 `;
 
 function Account({ children } : any) {
-  const [userImage, setUserImage] = useState(useSelector((state: any) => state.user.image));
-
+  const dispatch = useDispatch();
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
-  const userId = useSelector((state: any) => state.user.userId);
+  const userId = useSelector((state: any) => state.user.id);
   const subdomain = useSelector((state: any) => state.user.subdomain);
+  const userI = useSelector((state:any) => state.user.image);
+  const [userImageLoad, setuserImageLoad] = useState<any>(userI);
+  useEffect(() => {
+    setuserImageLoad(userI);
+  }, [userI]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleUploadClick = () => {
+    inputRef.current?.click();
+  };
 
   const onImageChange = (e: any) => {
+    if (!e.target.files[0]) {
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setuserImageLoad(fileReader.result);
+    };
+    fileReader.readAsDataURL(e.target.files[0]);
+
     const formData = new FormData();
     formData.append('id', userId);
-    formData.append('fileUrl', e.target.files[0]);
-    if (e.target.files[0]) {
-      const fileReader = new FileReader();
-      fileReader.onload = function () {
-        setUserImage(fileReader.result);
-      };
-      fileReader.readAsDataURL(e.target.files[0]);
-    }
+    formData.append('file', e.target.files[0]);
+    axios
+      .post('https://localhost:7297/api/Image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    axios.get(`https://localhost:7297/api/Image/${userId}`)
+      .then((res) => {
+        dispatch(setUserImage(res.data));
+      });
   };
 
   return (
@@ -275,29 +314,23 @@ function Account({ children } : any) {
               <SideBarFlex>
                 <SideBarBlock>
                   <SideBarUserBlock>
-                    <SideBarAvaBlock>
+                    <ButtonImg
+                      style={{ backgroundImage: `url(${userImageLoad})` }}
+                      onClick={handleUploadClick}
+                    />
 
-                      <SideBarAva src={userImage} />
-                      <SideBarAvaDiv />
-                    </SideBarAvaBlock>
+                    <input
+                      type="file"
+                      onChange={onImageChange}
+                      className="filetype"
+                      id="group_image"
+                      ref={inputRef}
+                      style={{ display: 'none' }}
+                    />
                     <SideBarUserDiv>
                       <SideBarUserH2>
                         {userFullName}
                       </SideBarUserH2>
-                      <ImageUploadParent>
-                        {/* <button onClick={handleUploadClick} type="submit">
-                          {file ? `${file.name}` : 'Click to select'}
-                        </button>
-
-                        <input
-                          type="file"
-                          ref={inputRef}
-                          onChange={handleFileChange}
-                          style={{ display: 'none' }}
-                        /> */}
-                        <input type="file" onChange={onImageChange} className="filetype" id="group_image" />
-                      </ImageUploadParent>
-
                     </SideBarUserDiv>
                   </SideBarUserBlock>
                 </SideBarBlock>

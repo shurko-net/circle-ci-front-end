@@ -13,7 +13,7 @@ const userSlice = createSlice({
     subscribed: '',
     subdomain: '',
     isLogged: false,
-    image: null,
+    image: '',
   },
   reducers: {
     userAuth(state, action) {
@@ -27,7 +27,6 @@ const userSlice = createSlice({
       state.subscribed = action.payload?.subscribed ?? '';
       state.subdomain = (action.payload.firstName + action.payload.secondName).toLowerCase();
       state.isLogged = true;
-      state.image = action.payload.userImage ?? '';
       localStorage.setItem('email', action.payload.email);
       localStorage.setItem('password', action.payload.password);
     },
@@ -41,12 +40,15 @@ const userSlice = createSlice({
       state.biography = '';
       state.phoneNumber = '';
       state.subscribed = '';
-      state.image = null;
+      state.image = '';
       state.isLogged = false;
+    },
+    setUserImage(state, action) {
+      state.image = `data:image/jpeg;base64,${action.payload}`;
     },
   },
 });
 
-export const { userAuth, userSignOut } = userSlice.actions;
+export const { userAuth, userSignOut, setUserImage } = userSlice.actions;
 
 export default userSlice.reducer;
