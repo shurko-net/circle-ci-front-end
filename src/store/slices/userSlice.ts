@@ -46,9 +46,25 @@ const userSlice = createSlice({
     setUserImage(state, action) {
       state.image = `data:image/jpeg;base64,${action.payload}`;
     },
+    setUserEmail(state, action) {
+      state.email = action.payload;
+    },
+    setUserSubdomain(state, action) {
+      state.subdomain = action.payload;
+    },
+    setUserName(state, action) {
+      const userNameArr = action.payload.split(' ');
+      state.firstName = userNameArr[0];
+      state.secondName = userNameArr[1];
+    },
+    setUserBio(state, action) {
+      state.biography = action.payload;
+    },
   },
 });
 
-export const { userAuth, userSignOut, setUserImage } = userSlice.actions;
+export const {
+  userAuth, userSignOut, setUserImage, setUserEmail, setUserSubdomain, setUserName, setUserBio,
+} = userSlice.actions;
 
 export default userSlice.reducer;

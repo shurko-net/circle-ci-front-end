@@ -1,9 +1,9 @@
-import axios from 'axios';
-import React, { useRef, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+// import axios from 'axios';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import AccountButton from '../components/AccountButtonPanel/AccountButton';
-import { setUserImage } from '../store/slices/userSlice';
+// import { setUserImage } from '../store/slices/userSlice';
 
 const Container = styled.div`
   /* top: 70px; */
@@ -211,58 +211,39 @@ const SideBarUserH2 = styled.h2`
 //   padding: 10px 0 10px 0;
 // `;
 
-const ButtonImg = styled.button`
+const ButtonImg = styled.img`
   border-radius: 50%;
   background-color: rgba(242, 242, 242, 1);
   box-sizing: border-box;
   display:block;
-  width: 88px; 
-  height: 88px; 
+  width: 88px;
+  height: 88px;
   background-size: 100%;
   border: none;
-  cursor: pointer;
+  /* cursor: pointer; */
 `;
 
-function Account({ children } : any) {
-  const dispatch = useDispatch();
+const BioDiv = styled.div`
+  margin-top: 12px;
+  display: block;
+`;
+
+const BioP = styled.p`
+  color: rgba(117, 117, 117, 1);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+`;
+
+const BioSpan = styled.span`
+  word-break: break-word;
+`;
+
+function Account({ children, userImageLoad } : { children:any, userImageLoad?: string }) {
+  // const dispatch = useDispatch();
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
-  const userId = useSelector((state: any) => state.user.id);
+  // const userId = useSelector((state: any) => state.user.id);
   const subdomain = useSelector((state: any) => state.user.subdomain);
-  const userI = useSelector((state:any) => state.user.image);
-  const [userImageLoad, setuserImageLoad] = useState<any>(userI);
-  useEffect(() => {
-    setuserImageLoad(userI);
-  }, [userI]);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleUploadClick = () => {
-    inputRef.current?.click();
-  };
-
-  const onImageChange = (e: any) => {
-    if (!e.target.files[0]) {
-      return;
-    }
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setuserImageLoad(fileReader.result);
-    };
-    fileReader.readAsDataURL(e.target.files[0]);
-
-    const formData = new FormData();
-    formData.append('id', userId);
-    formData.append('file', e.target.files[0]);
-    axios
-      .post('https://localhost:7297/api/Image', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    axios.get(`https://localhost:7297/api/Image/${userId}`)
-      .then((res) => {
-        dispatch(setUserImage(res.data));
-      });
-  };
 
   return (
     <Container>
@@ -316,22 +297,20 @@ function Account({ children } : any) {
                   <SideBarUserBlock>
                     <ButtonImg
                       style={{ backgroundImage: `url(${userImageLoad})` }}
-                      onClick={handleUploadClick}
                     />
 
-                    <input
-                      type="file"
-                      onChange={onImageChange}
-                      className="filetype"
-                      id="group_image"
-                      ref={inputRef}
-                      style={{ display: 'none' }}
-                    />
                     <SideBarUserDiv>
                       <SideBarUserH2>
                         {userFullName}
                       </SideBarUserH2>
                     </SideBarUserDiv>
+                    <BioDiv>
+                      <BioP>
+                        <BioSpan>
+                          hello
+                        </BioSpan>
+                      </BioP>
+                    </BioDiv>
                   </SideBarUserBlock>
                 </SideBarBlock>
               </SideBarFlex>
@@ -342,5 +321,4 @@ function Account({ children } : any) {
     </Container>
   );
 }
-
 export default Account;
