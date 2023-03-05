@@ -120,9 +120,11 @@ function NavBar({ isLogged, userImageLoad }: { isLogged: boolean, userImageLoad:
               </Link>
               {isLogged && (
                 <>
-                  <Button>
-                    Write
-                  </Button>
+                  <Link to="/new-story">
+                    <Button>
+                      Write
+                    </Button>
+                  </Link>
                   <UserPanel userImageLoad={userImageLoad} />
                 </>
               )}

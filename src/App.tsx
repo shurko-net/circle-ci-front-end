@@ -14,6 +14,7 @@ import { userAuth, setUserImage } from './store/slices/userSlice';
 import { IUser } from './types';
 import AccountAbout from './components/AccountButtonPanel/AccountAbout';
 import AccountHome from './components/AccountButtonPanel/AccountHome';
+import Posts from './pages/Posts';
 
 function App() {
   const dispatch = useDispatch();
@@ -91,7 +92,7 @@ function App() {
         {/* <Route path="*" element={<Home />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
-        <Route path="/posts" element={<Home />} />
+        <Route path="/new-story" element={<Posts />} />
         <Route path="/saved" element={<Home />} />
         {!isLogged
           ? (

@@ -1,8 +1,9 @@
 import React from 'react';
+import TitleLine from '../components/Posts/TitleLine';
 
 function Account() {
   return (
-    <div>Account</div>
+    <TitleLine />
   );
 }
 
