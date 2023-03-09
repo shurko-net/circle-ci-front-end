@@ -10,6 +10,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
+import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { Link, useNavigate } from 'react-router-dom';
 
 import './UserOptionMenu.css';
@@ -66,7 +67,10 @@ function UserPanel({ userImageLoad }:{ userImageLoad: string }) {
   const signOut = () => {
     dispatch(userSignOut());
     navigate('/');
+    setIsOpen(false);
   };
+
+  const onClose = () => setIsOpen(false);
 
   // const userImage = useSelector((state: any) => state.user.image);
   // const [userImageLoad, setUserImageLoad] = useState<any>(userImage);
@@ -93,19 +97,26 @@ function UserPanel({ userImageLoad }:{ userImageLoad: string }) {
       </button>
       <div className="menu">
         <Link to={`/${subdomain}/home`}>
-          <button type="submit">
+          <button type="submit" onClick={onClose}>
             <PersonIcon />
             <span>Profile</span>
           </button>
         </Link>
-        <button type="submit">
+        <button type="submit" onClick={onClose}>
           <SettingsIcon />
           <span>Settings</span>
         </button>
+        <Link to="/me/save">
+          <button type="submit" onClick={onClose}>
+            <BookmarksIcon />
+            <span>Save</span>
+          </button>
+        </Link>
         <button type="submit" onClick={signOut}>
           <CloseIcon />
           <span>Sign Out</span>
         </button>
+
       </div>
     </div>
   );

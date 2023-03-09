@@ -27,6 +27,7 @@ interface HomeLineProps {
   length?: number,
   handleContentBio?: (e? : any) => void,
   inputValueBio: string,
+  disabledSecond?: boolean,
 
 }
 
@@ -187,7 +188,7 @@ function HomeLine({
   maxlength, handleUploadClick, userImageLoad,
   onImageChange, inputRef, nameText,
   bioText, descriptionBio, length,
-  handleContentBio, inputValueBio,
+  handleContentBio, inputValueBio, disabledSecond,
 
 }:HomeLineProps) {
   const [open, setOpen] = React.useState(false);
@@ -256,6 +257,7 @@ function HomeLine({
         length={length}
         handleContentBio={handleContentBio}
         inputValueBio={inputValueBio}
+        disabledSecond={disabledSecond}
 
       />
     </>
