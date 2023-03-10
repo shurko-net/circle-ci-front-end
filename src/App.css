@@ -164,3 +164,12 @@
   border-color: red;
   box-shadow: 0 0 12px red;
 }
+
+.wrapper-class-name {
+  border: 2px solid black;
+}
+
+.editor-class-name {
+  padding: 6px;
+  min-height: 50vh;
+}

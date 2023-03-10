@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-// import AccountHomeModal from './AccountHomeModal';
-// import axios from 'axios';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import {
-  setUserEmail, setUserSubdomain, setUserName, setUserBio,
+  setUserEmail, setUserSubdomain, setUserName, setUserPhone,
 } from '../../store/slices/userSlice';
 
 import Account from '../../pages/Account';
@@ -24,19 +24,20 @@ const Line = styled.div`
 
 function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
-    userFullName, subdomain, userEmail, bioUser,
+    userFullName, userEmail, phoneNumber,
   } = useSelector((state: any) => ({
     userFullName: `${state.user.firstName} ${state.user.secondName}`,
     subdomain: `@${state.user.subdomain}`,
     userEmail: state.user.email,
     userId: state.user.id,
     userImage: state.user.image,
-    bioUser: state.user.biography,
+    phoneNumber: state.user.phoneNumber,
   }));
 
-  const textSubdomain = `circleCi/${subdomain}`;
+  const userData = useSelector((state: any) => state.user);
 
   const [textareaEmail, setTextareaEmail] = useState(userEmail);
   const [textareaSubdomain, setTextareaSubdomain] = useState(subdomain);
@@ -46,7 +47,7 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   const [disabledBio, setDisabledBio] = useState(true);
   const [disabledDelete, setDisabledDelete] = useState(true);
   const [textareaName, setTextareaName] = useState(userFullName);
-  const [textareaBio, setTextareaBio] = useState(bioUser);
+  const [textareaPhone, setTextareaPhone] = useState(phoneNumber);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -68,9 +69,6 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
     } else {
       setDisabledName(true);
     }
-  };
-  const handleContentSubdomain = (e: any) => {
-    setTextareaSubdomain(e.target.value);
   };
   const handleContentBio = (e: any) => {
     setTextareaBio(e.target.value);
@@ -103,8 +101,21 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   };
 
   const onSubmit = () => {
-    onSubmitName();
-    onSubmitBio();
+    axios.put('https://localhost:7297/api/User', {
+      idUser: userData.id,
+      tNumber: textareaPhone,
+      name: textareaName.split(' ')[0] ?? 'Super',
+      surname: textareaName.split(' ')[1] ?? 'Jarik2004',
+      email: userData.email,
+      password: userData.password,
+      biography: userData.biography,
+      subscribed: userData.subscribed,
+    }).then(() => {
+      dispatch(setUserName(textareaName));
+      dispatch(setUserPhone(textareaPhone));
+      dispatch(setUserSubdomain(((textareaName.split(' ')[0] ?? 'Super') + (textareaName.split(' ')[1] ?? 'Jarik2004'))));
+      navigate(`/${((textareaName.split(' ')[0] ?? 'Super') + (textareaName.split(' ')[1] ?? 'Jarik2004')).toLowerCase()}/home`);
+    });
   };
 
   return (
@@ -133,28 +144,6 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
         inputValueBio=""
 
       />
-      {/* </AccountHomeModal> */}
-      <HomeLine
-        info={subdomain}
-        name="Username and subdomain"
-        downInfo=""
-        img=""
-        color=""
-        textHeader="Username and subdomain"
-        inputValue={textareaSubdomain}
-        text={textSubdomain}
-        inputCounter={textareaSubdomain}
-        handle={handleContentSubdomain}
-        onSubmit={onSubmitSubdomain}
-        maxlength={31}
-        userImageLoad=""
-        nameText=""
-        bioText=""
-        descriptionBio=""
-        length={30}
-        inputValueBio=""
-
-      />
       <HomeLine
         info={`${userFullName}`}
         name="Profile information"
@@ -163,7 +152,7 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
         color=""
         textHeader="Profile information"
         inputValue={textareaName}
-        inputValueBio={textareaBio}
+        inputValueBio={textareaPhone}
         text="Appears on your Profile page, as your byline, and in your responses."
         inputCounter="51"
         userImageLoad={userImageLoad}
@@ -171,8 +160,8 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
         onImageChange={onImageChange}
         inputRef={inputRef}
         nameText="Name*"
-        bioText="Bio"
-        descriptionBio="Appears on your Profile and next to your stories."
+        bioText="Phone"
+        descriptionBio=""
         maxlength={160}
         length={160}
         handle={handleContentName}
@@ -180,7 +169,6 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
         handleContentBio={handleContentBio}
         disabled={disabledName}
         disabledSecond={disabledBio}
-
       />
       <Line />
       <HomeLine

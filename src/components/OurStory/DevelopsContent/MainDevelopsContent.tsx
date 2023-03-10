@@ -81,7 +81,7 @@ function MainDevelopsContent() {
       </MiddleHeading>
       <ParagrafWrap>
         <ParagrafDevelopsContent>
-          Anyone can write on Medium.
+          Anyone can write on CircleCI.
           Thought-leaders, journalists, experts,
           and individuals with unique perspectives share their thinking here.
           You’ll find pieces by independent writers from around the globe,

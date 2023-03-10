@@ -99,24 +99,8 @@ const ButtonImg = styled.img`
   border: none;
 `;
 
-const BioDiv = styled.div`
-  margin-top: 12px;
-  display: block;
-`;
-
-const BioP = styled.p`
-  color: rgba(117, 117, 117, 1);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-`;
-
-const BioSpan = styled.span`
-  word-break: break-word;
-`;
-
-function Account({ children, userImageLoad, user } : {
-  children:any, userImageLoad?: string, user?: boolean }) {
+function Account({ children, userImageLoad } : { children:any, userImageLoad?: string }) {
+  // const dispatch = useDispatch();
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
   const subdomain = useSelector((state: any) => state.user.subdomain);
 
@@ -167,7 +151,11 @@ function Account({ children, userImageLoad, user } : {
                         </>
                       )
                       : null}
-
+                    <SideBarUserDiv>
+                      <SideBarUserH2>
+                        {userFullName}
+                      </SideBarUserH2>
+                    </SideBarUserDiv>
                   </SideBarUserBlock>
                 </SideBarBlock>
               </SideBarFlex>
