@@ -23,6 +23,7 @@ interface AccountHomeModalProps {
   length?: number,
   handleContentBio?: (e? : any) => void,
   inputValueBio: string,
+  disabledSecond?: boolean,
 
 }
 
@@ -236,7 +237,7 @@ export default function AccountHomeModal({
   handle, onSubmit, disabled, maxlength, userImageLoad,
   handleUploadClick, onImageChange, inputRef, nameText,
   bioText, descriptionBio, length,
-  handleContentBio, inputValueBio,
+  handleContentBio, inputValueBio, disabledSecond,
 }:AccountHomeModalProps) {
   const onSave = () => {
     onSubmit?.();
@@ -358,7 +359,8 @@ export default function AccountHomeModal({
                   color="rgb(255, 255, 255)"
                   backgroundcolor="rgb(26, 137, 23)"
                   onClick={onSave}
-                  disabled={disabled}
+                  disabled={disabled || disabledSecond === true}
+
                 >
                   Save
                 </Button>

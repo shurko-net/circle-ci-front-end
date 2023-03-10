@@ -40,7 +40,12 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   const userData = useSelector((state: any) => state.user);
 
   const [textareaEmail, setTextareaEmail] = useState(userEmail);
-  const [disabled, setDisabled] = useState(true);
+  const [textareaSubdomain, setTextareaSubdomain] = useState(subdomain);
+  const [textareaDelete, setTextareaDelete] = useState('');
+  const [disabledEmail, setDisabledEmail] = useState(true);
+  const [disabledName, setDisabledName] = useState(true);
+  const [disabledBio, setDisabledBio] = useState(true);
+  const [disabledDelete, setDisabledDelete] = useState(true);
   const [textareaName, setTextareaName] = useState(userFullName);
   const [textareaPhone, setTextareaPhone] = useState(phoneNumber);
 
@@ -52,20 +57,47 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   const handleContentEmail = (e: any) => {
     setTextareaEmail(e.target.value);
     if (e.target.value !== userEmail) {
-      setDisabled(false);
+      setDisabledEmail(false);
     } else {
-      setDisabled(true);
+      setDisabledEmail(true);
     }
   };
   const handleContentName = (e: any) => {
     setTextareaName(e.target.value);
+    if (e.target.value !== userFullName) {
+      setDisabledName(false);
+    } else {
+      setDisabledName(true);
+    }
   };
   const handleContentBio = (e: any) => {
-    setTextareaPhone(e.target.value);
+    setTextareaBio(e.target.value);
+    if (e.target.value !== bioUser) {
+      setDisabledBio(false);
+    } else {
+      setDisabledBio(true);
+    }
+  };
+  const handleContentDelete = (e: any) => {
+    setTextareaDelete(e.target.value);
+    if (e.target.value !== '') {
+      setDisabledDelete(false);
+    } else {
+      setDisabledDelete(true);
+    }
   };
 
   const onSubmitEmail = () => {
     dispatch(setUserEmail(textareaEmail));
+  };
+  const onSubmitSubdomain = () => {
+    dispatch(setUserSubdomain(textareaSubdomain));
+  };
+  const onSubmitName = () => {
+    dispatch(setUserName(textareaName));
+  };
+  const onSubmitBio = () => {
+    dispatch(setUserBio(textareaBio));
   };
 
   const onSubmit = () => {
@@ -87,7 +119,11 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   };
 
   return (
-    <Account userImageLoad={userImageLoad}>
+    <Account
+      userImageLoad={userImageLoad}
+      user
+    >
+      {/* <AccountHomeModal> */}
       <HomeLine
         info={userEmail}
         name="Email adress"
@@ -100,7 +136,7 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
         inputCounter=""
         onSubmit={onSubmitEmail}
         handle={handleContentEmail}
-        disabled={disabled}
+        disabled={disabledEmail}
         userImageLoad=""
         nameText=""
         bioText=""
@@ -131,6 +167,8 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
         handle={handleContentName}
         onSubmit={onSubmit}
         handleContentBio={handleContentBio}
+        disabled={disabledName}
+        disabledSecond={disabledBio}
       />
       <Line />
       <HomeLine
@@ -140,14 +178,16 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
         img=""
         color="rgb(201, 74, 74)"
         textHeader="Delete account"
-        inputValue=""
-        text=""
+        inputValue={textareaDelete}
+        text="To confirm deletion, type “delete” below:"
         inputCounter=""
         userImageLoad=""
         nameText=""
         bioText=""
         descriptionBio=""
         inputValueBio=""
+        disabled={disabledDelete}
+        handle={handleContentDelete}
 
       />
     </Account>

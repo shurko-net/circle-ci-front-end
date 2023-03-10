@@ -14,6 +14,7 @@ import { userAuth, setUserImage } from './store/slices/userSlice';
 import { IUser } from './types';
 import AccountAbout from './components/AccountButtonPanel/AccountAbout';
 import AccountHome from './components/AccountButtonPanel/AccountHome';
+import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
 
 function App() {
@@ -91,7 +92,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
-        <Route path="/saved" element={<Home />} />
+        <Route path="/posts" element={<Home />} />
+        <Route path="/me/save" element={<Saved />} />
+        <Route path="/me/responses" element={<Saved />} />
         {!isLogged
           ? (
             <>

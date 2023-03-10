@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 // import { useSelector } from 'react-redux';
 
 interface AccountButtonProps {
-  name: string,
+  name?: string,
   url:string
 }
 
@@ -55,6 +55,7 @@ function AccountButtonPanel({ name, url }:AccountButtonProps) {
   const activeStyle = {
     textDecoration: 'none',
     borderBottom: '1px solid #2b2c28',
+    paddingBottom: '18px',
   };
   const notActiveStyle = {
     textDecoration: 'none',

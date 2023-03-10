@@ -113,7 +113,9 @@ function AccountAbout() {
   const textAreaText = useSelector((state: any) => state.about.aboutText);
 
   return (
-    <Account>
+    <Account
+      user={false}
+    >
       <Container>
         <UpContent>
           <UpContainerFlex>
