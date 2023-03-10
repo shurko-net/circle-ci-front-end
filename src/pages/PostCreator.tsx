@@ -23,6 +23,7 @@ const TitleTextArea = styled.textarea`
   outline: none;
   font-size: 24px;
   font-family: 'Soehne web buch', sans-serif;
+  resize: none;
 `;
 
 const Button = styled.button`
@@ -64,8 +65,9 @@ function PostCreator() {
         postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
         title,
         likes: 0,
-      }).then((res: any) => {
-        console.log(res);
+      }).then(() => {
+        setTitle('');
+        setEditorState(EditorState.createEmpty());
       }).catch((err: any) => {
         console.log(err);
       });

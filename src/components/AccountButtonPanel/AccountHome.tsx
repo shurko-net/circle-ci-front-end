@@ -40,7 +40,6 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   const userData = useSelector((state: any) => state.user);
 
   const [textareaEmail, setTextareaEmail] = useState(userEmail);
-  const [textareaSubdomain, setTextareaSubdomain] = useState(subdomain);
   const [textareaDelete, setTextareaDelete] = useState('');
   const [disabledEmail, setDisabledEmail] = useState(true);
   const [disabledName, setDisabledName] = useState(true);
@@ -71,8 +70,8 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
     }
   };
   const handleContentBio = (e: any) => {
-    setTextareaBio(e.target.value);
-    if (e.target.value !== bioUser) {
+    setTextareaPhone(e.target.value);
+    if (e.target.value !== textareaPhone) {
       setDisabledBio(false);
     } else {
       setDisabledBio(true);
@@ -89,15 +88,16 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
 
   const onSubmitEmail = () => {
     dispatch(setUserEmail(textareaEmail));
-  };
-  const onSubmitSubdomain = () => {
-    dispatch(setUserSubdomain(textareaSubdomain));
-  };
-  const onSubmitName = () => {
-    dispatch(setUserName(textareaName));
-  };
-  const onSubmitBio = () => {
-    dispatch(setUserBio(textareaBio));
+    axios.put('https://localhost:7297/api/User', {
+      idUser: userData.id,
+      name: textareaName.split(' ')[0] ?? 'Super',
+      surname: textareaName.split(' ')[1] ?? 'Jarik2004',
+      email: textareaEmail,
+      password: userData.password,
+      biography: userData.biography,
+      subscribed: userData.subscribed,
+      tNumber: textareaPhone,
+    });
   };
 
   const onSubmit = () => {
