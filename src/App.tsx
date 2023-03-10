@@ -14,6 +14,7 @@ import { userAuth, setUserImage } from './store/slices/userSlice';
 import { IUser } from './types';
 import AccountAbout from './components/AccountButtonPanel/AccountAbout';
 import AccountHome from './components/AccountButtonPanel/AccountHome';
+import PostCreator from './pages/PostCreator';
 
 function App() {
   const dispatch = useDispatch();
@@ -88,10 +89,8 @@ function App() {
     <div className="App">
       <NavBar isLogged={isLogged} userImageLoad={userImageLoad} />
       <Routes>
-        {/* <Route path="*" element={<Home />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
-        <Route path="/posts" element={<Home />} />
         <Route path="/saved" element={<Home />} />
         {!isLogged
           ? (
@@ -104,6 +103,7 @@ function App() {
             <>
               <Route path={`/${subdomain}/home`} element={<AccountHome userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
               <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
+              <Route path="/create-post" element={<PostCreator />} />
               {/* <Route path="/profile" element={<Account />} /> */}
             </>
 

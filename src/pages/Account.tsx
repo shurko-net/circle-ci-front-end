@@ -223,22 +223,6 @@ const ButtonImg = styled.img`
   /* cursor: pointer; */
 `;
 
-const BioDiv = styled.div`
-  margin-top: 12px;
-  display: block;
-`;
-
-const BioP = styled.p`
-  color: rgba(117, 117, 117, 1);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-`;
-
-const BioSpan = styled.span`
-  word-break: break-word;
-`;
-
 function Account({ children, userImageLoad } : { children:any, userImageLoad?: string }) {
   // const dispatch = useDispatch();
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
@@ -304,13 +288,6 @@ function Account({ children, userImageLoad } : { children:any, userImageLoad?: s
                         {userFullName}
                       </SideBarUserH2>
                     </SideBarUserDiv>
-                    <BioDiv>
-                      <BioP>
-                        <BioSpan>
-                          hello
-                        </BioSpan>
-                      </BioP>
-                    </BioDiv>
                   </SideBarUserBlock>
                 </SideBarBlock>
               </SideBarFlex>

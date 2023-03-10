@@ -37,7 +37,7 @@ function DoubleItems() {
         </Text>
         <Text color="#131515" weight={500} fSize="24">
           The best ideas can change who we are.
-          Medium is where those ideas take shape,
+          CircleCI is where those ideas take shape,
           take off, and spark powerful conversations.
           We’re an open platform where over 100 million
           readers come to find insightful and dynamic thinking
