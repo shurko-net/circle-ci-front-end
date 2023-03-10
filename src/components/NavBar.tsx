@@ -89,7 +89,8 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-function NavBar({ isLogged, userImageLoad }: { isLogged: boolean, userImageLoad: string }) {
+function NavBar({ isLogged, userImageLoad }:
+{ isLogged: boolean, userImageLoad: string }) {
   return (
     <NavBarWrapper>
       <Body>
@@ -120,7 +121,7 @@ function NavBar({ isLogged, userImageLoad }: { isLogged: boolean, userImageLoad:
               </Link>
               {isLogged && (
                 <>
-                  <Link to="/new-story">
+                  <Link to="/create-post">
                     <Button>
                       Write
                     </Button>

@@ -52,7 +52,7 @@ function DevelopsContent() {
         />
         <DevelopsInner
           name="Stas Shurko"
-          content="Heeeeeellloooo, I am Stanislav. I'm Full-Stack developer in Munich. I like to play a guitar, playing chess, playing in my PS and, of course, CODDING!"
+          content="Hello everyone, I am a web application developer from Ukraine. At the moment I work in the city of Munich as a Full-Stack Developer. I am fond of sports and play chess."
           post="Fullstack"
           img="https://uploads-ssl.webflow.com/60b9f6b57e8d7b3b3b1de1f2/632b263205d8cb1d2d80e710_Stanislav%20Shurko.png"
           linkGit="https://github.com/StanislavShurko"

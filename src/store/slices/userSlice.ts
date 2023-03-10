@@ -60,11 +60,15 @@ const userSlice = createSlice({
     setUserBio(state, action) {
       state.biography = action.payload;
     },
+    setUserPhone(state, action) {
+      state.phoneNumber = action.payload;
+    },
   },
 });
 
 export const {
   userAuth, userSignOut, setUserImage, setUserEmail, setUserSubdomain, setUserName, setUserBio,
+  setUserPhone,
 } = userSlice.actions;
 
 export default userSlice.reducer;
