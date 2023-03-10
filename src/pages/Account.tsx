@@ -8,9 +8,9 @@ const Container = styled.div`
   position: relative;
   max-width: 1336px;
   margin-top: 70px;
+  overflow: hidden;
   margin-left:auto;
   margin-right:auto;
-  display: block;
 `;
 
 const Main = styled.div`
@@ -25,13 +25,11 @@ const SideBar = styled.div`
   max-width: 368px;
   min-width: 368px;
   display: block;
-  min-height: 100vh;
   padding-right: 24px;
   border-radius: 12px;
 `;
 
 const MainContainer = styled.div`
-  min-height: 100vh;
   flex-direction: column;
   display: flex;
 `;
@@ -42,7 +40,6 @@ const UpContainer = styled.div`
 `;
 
 const SideBarContainer = styled.div`
-  height: 100%;
   position: relative;
   display: inline-block;
   width: 100%;
@@ -99,7 +96,8 @@ const ButtonImg = styled.img`
   border: none;
 `;
 
-function Account({ children, userImageLoad } : { children:any, userImageLoad?: string }) {
+function Account({ children, userImageLoad, user } :
+{ children:any, userImageLoad?: string, user: boolean }) {
   // const dispatch = useDispatch();
   const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
   const subdomain = useSelector((state: any) => state.user.subdomain);
@@ -141,21 +139,9 @@ function Account({ children, userImageLoad } : { children:any, userImageLoad?: s
                               {userFullName}
                             </SideBarUserH2>
                           </SideBarUserDiv>
-                          <BioDiv>
-                            <BioP>
-                              <BioSpan>
-                                hello
-                              </BioSpan>
-                            </BioP>
-                          </BioDiv>
                         </>
                       )
                       : null}
-                    <SideBarUserDiv>
-                      <SideBarUserH2>
-                        {userFullName}
-                      </SideBarUserH2>
-                    </SideBarUserDiv>
                   </SideBarUserBlock>
                 </SideBarBlock>
               </SideBarFlex>

@@ -1,156 +1,106 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import EditIcon from '@mui/icons-material/Edit';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { convertToRaw, EditorState } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import { stateFromHTML } from 'draft-js-import-html';
+import axios from 'axios';
 import Account from '../../pages/Account';
-import BasicModal from '../Modal';
+import { setUserBio } from '../../store/slices/userSlice';
 
-const Container = styled.div`
-    background: #2b2c28;
-    border-radius: 20px;
-    padding-bottom: 12px;
-    /* position: relative; */
-`;
-
-const UpContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1.2rem;
-    padding-bottom: 0;
-`;
-
-const UpContainerFlex = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-
-const UpContainerTextFlex = styled.div`
-    @media screen and (min-width: 768px) {
-    flex-direction: row;
-    }
-        display: flex;
-        justify-content: space-between;
-        flex-grow: 1;
-        align-items: flex-start;
-`;
-
-const UpContainerLText = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 0.9rem;
-`;
-
-const UpContainerH2Text = styled.h2`
-    color: white;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 20px;
-    letter-spacing: 0;
-`;
-
-const UpContainerIconFlex = styled.div`
-    display: flex;
-`;
-
-const UpContainerIconDiv = styled.div`
-    cursor: pointer;
-    &:hover {
-    background:#464a4d;
-    border-radius: 22px;
+const Button = styled.button`
+    display: block;
+  font-weight: normal;
+  background: #7DE2D1;
+  border: none;
+  padding: 7px 16px 9px;
+  border-radius: 18px;
+  cursor:pointer;
+  transition: all .07s ease-in-out;
+  margin-top:12px;
+  float: right;
+  &:hover {
+    box-shadow:0 4px 10px rgba(0, 0, 0, .1);
+    background:#7DE2D1;
+  }
+  a {
+    text-decoration: none;
+    color: none;
   }
 `;
 
-const UpContainerIconLink = styled.a`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.8rem;
-    width: 2.8rem;
-    min-width: auto;
+const EditorPlaceholder = styled.div`
+  margin-top: 20px
 `;
 
-const UpContainerIconCenter = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
+const ButtonsPlaceholder = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
-const DownContent = styled.div`
-    display: flex;
-    padding-left: 32px;
-    padding-right: 32px;
-    padding-bottom: 12px;
-    padding-top: 12px;
+const AboutField = styled.div`
+  margin-top: 20px;
 `;
-
-const DownContainerFlex = styled.div`
-    display: flex;
-    width: 100%;
-`;
-
-const DownFlex = styled.div`
-    display: flex;
-    width: 100%;
-    align-items: center;
-
-`;
-
-const DownDiv = styled.div`
-    line-height: 1.9rem;
-    max-height: 7.6rem;
-    width: 100%;
-`;
-
-const DownSpan = styled.span`
-    color: white;
-`;
-
-// const Button = styled.button`
-// `;
 
 function AccountAbout() {
-  const textAreaText = useSelector((state: any) => state.about.aboutText);
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state: any) => state.user);
+
+  const [editorState, setEditorState] = useState(
+    EditorState.createWithContent(stateFromHTML(currentUser.biography)),
+  );
+  const [isEditorVisble, setIsEditorVisible] = useState(false);
+
+  const [userBiog, setUserBiog] = useState(currentUser.biography);
+
+  const onVisibleClick = () => {
+    setIsEditorVisible(!isEditorVisble);
+  };
+
+  const onSaveClick = () => {
+    setIsEditorVisible(false);
+    axios.put('https://localhost:7297/api/User', {
+      idUser: currentUser.id,
+      tNumber: currentUser.phoneNumber,
+      name: currentUser.firstName,
+      surname: currentUser.secondName,
+      email: currentUser.email,
+      password: currentUser.password,
+      biography: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+      subscribed: currentUser.subscribed,
+    }).then(() => {
+      dispatch(setUserBio(draftToHtml(convertToRaw(editorState.getCurrentContent()))));
+      setUserBiog(draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    });
+  };
 
   return (
     <Account
       user={false}
     >
-      <Container>
-        <UpContent>
-          <UpContainerFlex>
-            <UpContainerTextFlex>
-              <UpContainerLText>
-                <UpContainerH2Text>
-                  Загальна iнформацiя
-                </UpContainerH2Text>
-              </UpContainerLText>
-              <UpContainerIconFlex>
-                <UpContainerIconDiv>
-                  <UpContainerIconLink>
-                    <UpContainerIconCenter>
-                      <BasicModal>
-                        <EditIcon style={{ color: 'white' }} />
-                      </BasicModal>
-                    </UpContainerIconCenter>
-                  </UpContainerIconLink>
-                </UpContainerIconDiv>
-              </UpContainerIconFlex>
-            </UpContainerTextFlex>
-          </UpContainerFlex>
-        </UpContent>
-        <DownContent>
-          <DownContainerFlex>
-            <DownFlex>
-              <DownDiv>
-                <DownSpan>
-                  {textAreaText}
-                </DownSpan>
-              </DownDiv>
-            </DownFlex>
-          </DownContainerFlex>
-        </DownContent>
-      </Container>
+      {isEditorVisble
+        ? (
+          <EditorPlaceholder>
+            <Editor
+              editorState={editorState}
+              wrapperClassName="wrapper-class-name"
+              editorClassName="editor-class-name"
+              onEditorStateChange={setEditorState}
+            />
+            <ButtonsPlaceholder>
+              <Button type="submit" onClick={onVisibleClick}>Hide Editor</Button>
+              <Button type="submit" onClick={onSaveClick}>Save</Button>
+            </ButtonsPlaceholder>
+          </EditorPlaceholder>
+        )
+        : (
+          <>
+            <Button type="submit" onClick={onVisibleClick}>Show Editor</Button>
+            <AboutField dangerouslySetInnerHTML={{ __html: userBiog }} />
+          </>
+        )}
     </Account>
 
   );
