@@ -10,6 +10,17 @@ import axios from 'axios';
 import Account from '../../pages/Account';
 import { setUserBio } from '../../store/slices/userSlice';
 
+type SaveResponse = {
+  idUser: number
+  tNumber: number
+  name: string
+  surname: string
+  email: string
+  password: number
+  biography: string
+  subscribed: boolean
+};
+
 const Button = styled.button`
     display: block;
   font-weight: normal;
@@ -61,7 +72,7 @@ function AccountAbout() {
 
   const onSaveClick = () => {
     setIsEditorVisible(false);
-    axios.put('https://localhost:7297/api/User', {
+    axios.put<SaveResponse>('https://localhost:7297/api/User', {
       idUser: currentUser.id,
       tNumber: currentUser.phoneNumber,
       name: currentUser.firstName,
