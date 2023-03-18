@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { convertToRaw, EditorState } from 'draft-js';
+import {
+  convertToRaw, EditorState,
+} from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -18,7 +20,7 @@ const BodyEditor = styled.div`
 `;
 
 const TitleTextArea = styled.textarea`
-  width: 100%;  
+  width: 100%;
   border: none;
   outline: none;
   font-size: 24px;
@@ -46,6 +48,29 @@ const Button = styled.button`
     color: none;
   }
 `;
+
+// const BoldButton = styled.div`
+//     /* border: 1px solid #F1F1F1; */
+//     padding: 5px;
+//     min-width: 25px;
+//     height: 20px;
+//     border-radius: 2px;
+//     margin: 0 4px;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     cursor: pointer;
+//     background: white;
+//     text-transform: capitalize;
+// `;
+
+// const Wrapper = styled.div`
+//     display: flex;
+//     align-items: center;
+//     margin-bottom: 6px;
+//     position: relative;
+//     flex-wrap: wrap;
+// `;
 
 function PostCreator() {
   const user = useSelector((state: any) => state.user);
@@ -84,6 +109,35 @@ function PostCreator() {
     }
   };
 
+  const editorLabels = {
+    'components.controls.blocktype.h1': 'Header1',
+    'components.controls.blocktype.h2': 'Header2',
+    'components.controls.blocktype.h3': 'Header3',
+    'components.controls.blocktype.normal': 'Normal',
+  };
+
+  const toolbar = {
+    blockType: {
+      options: ['Normal', 'H1', 'H2', 'H3'],
+    },
+    options: ['inline',
+      'blockType', 'fontSize',
+      'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'image'],
+    link: {
+      options: ['link'],
+    },
+    inline: {
+      options: ['bold', 'italic', 'underline'],
+      bold: { className: 'my-bold-style' },
+    },
+    list: {
+      options: ['unordered', 'ordered'],
+    },
+    textAlign: {
+      options: [],
+    },
+  };
+
   return (
     <Page>
       <BodyEditor>
@@ -95,10 +149,13 @@ function PostCreator() {
         />
         <Editor
           editorState={editorState}
-          wrapperClassName="wrapper-class-name"
-          editorClassName="editor-class-name"
+          wrapperClassName=""
           onEditorStateChange={setEditorState}
+          placeholder="Tell your story..."
+          toolbar={toolbar}
+          localization={{ locale: 'en', translations: editorLabels }}
         />
+
         <Button type="submit" onClick={onButtonClick}>Post</Button>
       </BodyEditor>
     </Page>
