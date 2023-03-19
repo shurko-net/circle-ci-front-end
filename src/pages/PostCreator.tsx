@@ -49,29 +49,6 @@ const Button = styled.button`
   }
 `;
 
-// const BoldButton = styled.div`
-//     /* border: 1px solid #F1F1F1; */
-//     padding: 5px;
-//     min-width: 25px;
-//     height: 20px;
-//     border-radius: 2px;
-//     margin: 0 4px;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     cursor: pointer;
-//     background: white;
-//     text-transform: capitalize;
-// `;
-
-// const Wrapper = styled.div`
-//     display: flex;
-//     align-items: center;
-//     margin-bottom: 6px;
-//     position: relative;
-//     flex-wrap: wrap;
-// `;
-
 function PostCreator() {
   const user = useSelector((state: any) => state.user);
 
