@@ -16,6 +16,7 @@ import AccountAbout from './components/AccountButtonPanel/AccountAbout';
 import AccountHome from './components/AccountButtonPanel/AccountHome';
 import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
+import Post from './pages/Post';
 
 function App() {
   const dispatch = useDispatch();
@@ -107,6 +108,7 @@ function App() {
               <Route path={`/${subdomain}/home`} element={<AccountHome userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
               <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
               <Route path="/create-post" element={<PostCreator />} />
+              <Route path="post/:postId" element={<Post />} />
               {/* <Route path="/profile" element={<Account />} /> */}
             </>
 

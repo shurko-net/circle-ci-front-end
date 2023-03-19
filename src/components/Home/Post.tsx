@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link, useParams } from 'react-router-dom';
 
 const Container = styled.div`
     height: 100%;
@@ -202,6 +203,8 @@ interface IUser {
 }
 
 function Post(postData: any) {
+  const { postId } = useParams();
+  console.log(postId);
   const [postAuthor, setPostAuthor] = useState<IUser>({
     biography: '',
     email: '',
@@ -240,9 +243,19 @@ function Post(postData: any) {
                 </UserNameBlock>
               </UserNameContainer>
             </UserContent>
-            <Title>{postData.postData.title}</Title>
+            <Link
+              to={`post/${postData.postData.idPost}`}
+              style={{ textDecoration: 'none' }}
+            >
+              <Title>{postData.postData.title}</Title>
+            </Link>
             <BlockContent>
-              <PostContent dangerouslySetInnerHTML={{ __html: postData.postData.postContent }} />
+              <Link
+                to={`post/${postData.postData.idPost}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <PostContent dangerouslySetInnerHTML={{ __html: postData.postData.postContent }} />
+              </Link>
             </BlockContent>
             <DataPost>
               <DataPostContainer>

@@ -23,7 +23,7 @@ const MainPost = styled.div`
 `;
 
 function MainPosts() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<any>([]);
 
   useEffect(() => {
     axios.get('https://localhost:7297/api/Post')
