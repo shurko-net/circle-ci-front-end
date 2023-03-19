@@ -15,7 +15,7 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     border-bottom: 1px solid #131515;
-    height: 480px;
+    height: 380px;
 `;
 
 const Content = styled.div`
@@ -115,18 +115,6 @@ const UnderTitle = styled.div`
     }
 `;
 
-const StartButton = styled.button`
-    width: 213px;
-    padding: 7px 20px 9px;
-    line-height: 24px;
-    text-decoration: none;
-    display: inline-block;
-    box-sizing: border-box;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 99em;
-`;
-
 function Main() {
   return (
     <Body>
@@ -139,7 +127,6 @@ function Main() {
             <UnderTitle>
               <H3>Discover stories, thinking, and expertise from writers on any topic.</H3>
             </UnderTitle>
-            <StartButton>Start reading</StartButton>
           </Content>
         </CenterContent>
       </Container>

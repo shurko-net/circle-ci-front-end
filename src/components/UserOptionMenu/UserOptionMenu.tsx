@@ -5,8 +5,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
@@ -102,10 +100,6 @@ function UserPanel({ userImageLoad }:{ userImageLoad: string }) {
             <span>Profile</span>
           </button>
         </Link>
-        <button type="submit" onClick={onClose}>
-          <SettingsIcon />
-          <span>Settings</span>
-        </button>
         <Link to="/me/save">
           <button type="submit" onClick={onClose}>
             <BookmarksIcon />
