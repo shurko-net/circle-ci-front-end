@@ -252,7 +252,10 @@ function Post(postData: any) {
             <BlockContent>
               <Link
                 to={`post/${postData.postData.idPost}`}
-                style={{ textDecoration: 'none' }}
+                style={{
+                  textDecoration: 'none',
+                  fontFamily: 'source-serif-pro, Georgia, Cambria, Times, serif',
+                }}
               >
                 <PostContent dangerouslySetInnerHTML={{ __html: postData.postData.postContent }} />
               </Link>
