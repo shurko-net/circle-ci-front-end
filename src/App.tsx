@@ -16,6 +16,7 @@ import AccountAbout from './components/AccountButtonPanel/AccountAbout';
 import AccountHome from './components/AccountButtonPanel/AccountHome';
 import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
+import Post from './pages/Post';
 
 function App() {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ function App() {
           subscribed: response.data.subscribed,
         };
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:7297/api/Image/${userObj.id}`).then((res: any) => {
+        axios.get(`https://localhost:7297/api/UserImage/${userObj.id}`).then((res: any) => {
           dispatch(setUserImage(res.data));
         });
       }).catch((err) => {
@@ -55,7 +56,6 @@ function App() {
     userId: state.user.id,
     userImage: state.user.image,
   }));
-
   const [userImageLoad, setUserImageLoad] = useState<any>(userImage);
   useEffect(() => {
     setUserImageLoad(userImage);
@@ -65,6 +65,7 @@ function App() {
     if (!e.target.files[0]) {
       return;
     }
+
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setUserImageLoad(fileReader.result);
@@ -75,12 +76,12 @@ function App() {
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     axios
-      .post('https://localhost:7297/api/Image', formData, {
+      .post('https://localhost:7297/api/UserImage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-    axios.get(`https://localhost:7297/api/Image/${userId}`)
+    axios.get(`https://localhost:7297/api/UserImage/${userId}`)
       .then((res) => {
         dispatch(setUserImage(res.data));
       });
@@ -107,6 +108,7 @@ function App() {
               <Route path={`/${subdomain}/home`} element={<AccountHome userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
               <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
               <Route path="/create-post" element={<PostCreator />} />
+              <Route path="post/:postId" element={<Post />} />
               {/* <Route path="/profile" element={<Account />} /> */}
             </>
 

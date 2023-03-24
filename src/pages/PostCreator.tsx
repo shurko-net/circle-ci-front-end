@@ -8,6 +8,7 @@ import {
 import draftToHtml from 'draftjs-to-html';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { useDropzone } from 'react-dropzone';
 
 const Page = styled.div`
     margin-top: 70px;
@@ -49,8 +50,70 @@ const Button = styled.button`
   }
 `;
 
+const PublishingCoverImage = styled.section`
+  @media screen and (min-width: 768px){
+    width: 840px;
+  }
+  position: relative;
+  transition: 334ms height ease;
+  margin: auto;
+  margin-bottom: 12px;
+`;
+
+const PublishingCoverInput = styled.input`
+    position: fixed;
+    right: 100%;
+    bottom: 100%;
+`;
+
+const PublishingCoverImagePlaceholder = styled.div`
+    @media screen and (min-width: 768px){
+      height: 405px;
+      width: 100%;
+    }
+`;
+
+const PublishingCoverImageLabel = styled.label`
+    align-items: center;
+    background: 0 0;
+    background-size: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    text-indent: 0;
+    position: relative;
+    cursor: pointer;
+`;
+
+const Img = styled.img`
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display: block;
+  background-size: 100%;
+  height: 100%;
+  width: 100%;
+`;
+
 function PostCreator() {
   const user = useSelector((state: any) => state.user);
+
+  const [postImageLoad, setPostImageLoad] = useState<any>();
+  const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
+  const [imageFile, setImageFile] = useState<any>();
+  const onDrop = (acceptedFiles:any) => {
+    setIsImageUploaded(false);
+    setImageFile(acceptedFiles[0]);
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPostImageLoad(fileReader.result);
+    };
+
+    fileReader.readAsDataURL(acceptedFiles[0]);
+  };
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const [title, setTitle] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -67,9 +130,17 @@ function PostCreator() {
         postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
         title,
         likes: 0,
-      }).then(() => {
+      }).then((res: any) => {
         setTitle('');
         setEditorState(EditorState.createEmpty());
+        const formData = new FormData();
+        formData.append('id', res.data.idPost);
+        formData.append('file', imageFile);
+        axios.post('https://localhost:7297/api/PostImage', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
       }).catch((err: any) => {
         console.log(err);
       });
@@ -115,6 +186,8 @@ function PostCreator() {
     },
   };
 
+  console.log(postImageLoad);
+
   return (
     <Page>
       <BodyEditor>
@@ -124,6 +197,17 @@ function PostCreator() {
           value={title}
           placeholder="Title"
         />
+        <PublishingCoverImage>
+          <div {...getRootProps()}>
+            <PublishingCoverInput {...getInputProps()} />
+            <PublishingCoverImagePlaceholder>
+              <PublishingCoverImageLabel>
+                {isImageUploaded && <div style={{ position: 'absolute', fontSize: '32px' }}>Click to upload the image</div>}
+                <Img style={{ backgroundImage: `url(${postImageLoad})` }} />
+              </PublishingCoverImageLabel>
+            </PublishingCoverImagePlaceholder>
+          </div>
+        </PublishingCoverImage>
         <Editor
           editorState={editorState}
           wrapperClassName=""
@@ -132,7 +216,6 @@ function PostCreator() {
           toolbar={toolbar}
           localization={{ locale: 'en', translations: editorLabels }}
         />
-
         <Button type="submit" onClick={onButtonClick}>Post</Button>
       </BodyEditor>
     </Page>

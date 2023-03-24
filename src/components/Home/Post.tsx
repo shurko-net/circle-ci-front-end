@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     height: 100%;
@@ -137,6 +138,7 @@ const Title = styled.h2`
 const BlockContent = styled.div`
     padding-top: 4px;
     display: block;
+    position: relative;
 `;
 
 const PostContent = styled.div`
@@ -190,6 +192,18 @@ const DateWrapper = styled.span`
     font-weight: 400;
 `;
 
+const Img = styled.img`
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  background-size: 100%;
+  height: 100px;
+  width: 200px;
+  left: 75%;
+  top: -1250%
+`;
+
 interface IUser {
   idUser: number,
   name?: string,
@@ -213,47 +227,66 @@ function Post(postData: any) {
     tNumber: '',
   });
   const [postAuthorImage, setPostAuthorImage] = useState('');
+  const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
     axios.get(`https://localhost:7297/api/User/${postData.postData.idUser}`)
       .then((res: any) => {
         setPostAuthor(res.data);
 
-        axios.get(`https://localhost:7297/api/Image/${postData.postData.idUser}`).then((res1: any) => {
+        axios.get(`https://localhost:7297/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
           setPostAuthorImage(res1.data);
+        }).then(() => {
+          axios.get(`https://localhost:7297/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
+            if (res2.data) {
+              setPostDataImage(`data:image/jpeg;base64,${res2.data}`);
+            } else {
+              setPostDataImage(null);
+            }
+          });
         });
       });
   }, []);
 
   return (
     <Container>
-      <Content>
-        <Description>
-          <User>
-            <UserContent>
-              <UserImgBlock>
-                <UserImg style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
-              </UserImgBlock>
-              <UserNameContainer>
-                <UserNameBlock>
-                  <UserNameText>{`${postAuthor.name ?? 'Yarik'} ${postAuthor.surname}`}</UserNameText>
-                </UserNameBlock>
-              </UserNameContainer>
-            </UserContent>
-            <Title>{postData.postData.title}</Title>
-            <BlockContent>
-              <PostContent dangerouslySetInnerHTML={{ __html: postData.postData.postContent }} />
-            </BlockContent>
-            <DataPost>
-              <DataPostContainer>
-                <DateWrapper>
-                  {new Date(postData.postData.date).toDateString()}
-                </DateWrapper>
-              </DataPostContainer>
-            </DataPost>
-          </User>
-        </Description>
-      </Content>
+      <Link
+        to={`post/${postData.postData.idPost}`}
+        style={{ textDecoration: 'none' }}
+      >
+        <Content>
+          <Description>
+            <User>
+              <UserContent>
+                <UserImgBlock>
+                  <UserImg style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
+                </UserImgBlock>
+                <UserNameContainer>
+                  <UserNameBlock>
+                    <UserNameText>{`${postAuthor.name ?? 'Yarik'} ${postAuthor.surname}`}</UserNameText>
+                  </UserNameBlock>
+                </UserNameContainer>
+              </UserContent>
+              <Title>{postData.postData.title}</Title>
+              <BlockContent>
+                {postDataImage && <Img style={{ backgroundImage: `url(${postDataImage})` }} />}
+              </BlockContent>
+              <BlockContent>
+                <PostContent
+                  dangerouslySetInnerHTML={{ __html: postData.postData.postContent }}
+                />
+              </BlockContent>
+              <DataPost>
+                <DataPostContainer>
+                  <DateWrapper>
+                    {new Date(postData.postData.date).toDateString()}
+                  </DateWrapper>
+                </DataPostContainer>
+              </DataPost>
+            </User>
+          </Description>
+        </Content>
+      </Link>
     </Container>
   );
 }

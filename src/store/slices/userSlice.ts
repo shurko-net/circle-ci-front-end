@@ -10,10 +10,11 @@ const userSlice = createSlice({
     email: '',
     biography: '',
     phoneNumber: '',
-    subscribed: '',
+    subscribed: 0,
     subdomain: '',
     isLogged: false,
     image: '',
+    followers: 0,
   },
   reducers: {
     userAuth(state, action) {
@@ -27,6 +28,7 @@ const userSlice = createSlice({
       state.subscribed = action.payload?.subscribed ?? '';
       state.subdomain = (action.payload.firstName + action.payload.secondName).toLowerCase();
       state.isLogged = true;
+      state.followers = action.payload?.followers ?? '';
       localStorage.setItem('email', action.payload.email);
       localStorage.setItem('password', action.payload.password);
     },
@@ -39,9 +41,10 @@ const userSlice = createSlice({
       state.password = '';
       state.biography = '';
       state.phoneNumber = '';
-      state.subscribed = '';
+      state.subscribed = 0;
       state.image = '';
       state.isLogged = false;
+      state.followers = 0;
     },
     setUserImage(state, action) {
       state.image = `data:image/jpeg;base64,${action.payload}`;
@@ -63,12 +66,15 @@ const userSlice = createSlice({
     setUserPhone(state, action) {
       state.phoneNumber = action.payload;
     },
+    setFolowers(state, action) {
+      state.followers = action.payload;
+    },
   },
 });
 
 export const {
   userAuth, userSignOut, setUserImage, setUserEmail, setUserSubdomain, setUserName, setUserBio,
-  setUserPhone,
+  setUserPhone, setFolowers,
 } = userSlice.actions;
 
 export default userSlice.reducer;

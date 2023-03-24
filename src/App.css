@@ -250,7 +250,16 @@ div.rdw-editor-wrapper {
   /* display: none; */
 }
 
+.like-active {
+  stroke: black;
+  fill: black;
+  color: black;
+}
 
+.like-not-active {
+  stroke: none;
+  fill: none;
+}
 
 
 

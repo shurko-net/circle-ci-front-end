@@ -90,8 +90,10 @@ const Flex = styled.div`
 `;
 
 function NavBar({ isLogged, userImageLoad }:
+
 { isLogged: boolean, userImageLoad: string }) {
   return (
+
     <NavBarWrapper>
       <Body>
         <Container>
