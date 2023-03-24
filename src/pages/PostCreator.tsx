@@ -6,10 +6,9 @@ import {
   convertToRaw, EditorState,
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
-import { setPostImage } from '../store/slices/postSlice';
 
 const Page = styled.div`
     margin-top: 70px;
@@ -53,11 +52,12 @@ const Button = styled.button`
 
 const PublishingCoverImage = styled.section`
   @media screen and (min-width: 768px){
-    width: 720px;
+    width: 840px;
   }
   position: relative;
   transition: 334ms height ease;
   margin: auto;
+  margin-bottom: 12px;
 `;
 
 const PublishingCoverInput = styled.input`
@@ -69,7 +69,7 @@ const PublishingCoverInput = styled.input`
 const PublishingCoverImagePlaceholder = styled.div`
     @media screen and (min-width: 768px){
       height: 405px;
-      width: 720px;
+      width: 100%;
     }
 `;
 
@@ -83,63 +83,35 @@ const PublishingCoverImageLabel = styled.label`
     height: 100%;
     width: 100%;
     margin: 0;
-    position: absolute;
     text-indent: 0;
+    position: relative;
     cursor: pointer;
 `;
 
-const TextLabelHeader = styled.p`
-  font-size: 2.4rem;
-  line-height: 1.3;
-`;
-
-const TextLabel = styled(TextLabelHeader)`
-  margin-top: 8px;
-  font-size: 1.4rem;
-  line-height: 1.4;
-`;
-
 const Img = styled.img`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
   background-color: rgba(242, 242, 242, 1);
   box-sizing: border-box;
   display: block;
   background-size: 100%;
+  height: 100%;
+  width: 100%;
 `;
 
 function PostCreator() {
-  const dispatch = useDispatch();
-  const { idPost, postImage } = useSelector((state: any) => ({
-    idPost: state.post.idPost,
-    postImage: state.post.image,
-  }));
   const user = useSelector((state: any) => state.user);
 
-  const [postImageLoad, setPostImageLoad] = useState<any>(postImage);
+  const [postImageLoad, setPostImageLoad] = useState<any>();
+  const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
+  const [imageFile, setImageFile] = useState<any>();
   const onDrop = (acceptedFiles:any) => {
+    setIsImageUploaded(false);
+    setImageFile(acceptedFiles[0]);
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setPostImageLoad(fileReader.result);
-
-      // console.log(fileReader.result);
     };
 
     fileReader.readAsDataURL(acceptedFiles[0]);
-
-    const formData = new FormData();
-    formData.append('id', idPost);
-    formData.append('file', acceptedFiles[0]);
-
-    axios
-      .post('https://localhost:7297/api/PostImage', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }).then((image) => {
-        dispatch(setPostImage(image.data));
-      });
   };
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -158,9 +130,17 @@ function PostCreator() {
         postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
         title,
         likes: 0,
-      }).then(() => {
+      }).then((res: any) => {
         setTitle('');
         setEditorState(EditorState.createEmpty());
+        const formData = new FormData();
+        formData.append('id', res.data.idPost);
+        formData.append('file', imageFile);
+        axios.post('https://localhost:7297/api/PostImage', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
       }).catch((err: any) => {
         console.log(err);
       });
@@ -176,17 +156,6 @@ function PostCreator() {
       e.preventDefault();
     }
   };
-
-  // useEffect(() => {
-  //   axios.get(`https://localhost:7297/api/PostImage/${idPost}`).then((image) => {
-  //     console.log(image);
-  //     dispatch(setPostImage(image.data));
-  //     debugger;
-  //   });
-  // }, []);
-  // useEffect(() => {
-  //   setPostImageLoad(postImageLoad);
-  // }, [postImageLoad]);
 
   const editorLabels = {
     'components.controls.blocktype.h1': 'Header1',
@@ -217,6 +186,8 @@ function PostCreator() {
     },
   };
 
+  console.log(postImageLoad);
+
   return (
     <Page>
       <BodyEditor>
@@ -231,15 +202,7 @@ function PostCreator() {
             <PublishingCoverInput {...getInputProps()} />
             <PublishingCoverImagePlaceholder>
               <PublishingCoverImageLabel>
-                <TextLabelHeader>
-                  Головне зображення не завантажено
-                </TextLabelHeader>
-                <TextLabel>
-                  Спробуйте додати головне зображення до вашої статті, щоб залучити більше читачів.
-                </TextLabel>
-                <TextLabel>
-                  Рекомендуємо завантажувати зображення розміром 1280 x 720 пікселів.
-                </TextLabel>
+                {isImageUploaded && <div style={{ position: 'absolute', fontSize: '32px' }}>Click to upload the image</div>}
                 <Img style={{ backgroundImage: `url(${postImageLoad})` }} />
               </PublishingCoverImageLabel>
             </PublishingCoverImagePlaceholder>
@@ -253,7 +216,6 @@ function PostCreator() {
           toolbar={toolbar}
           localization={{ locale: 'en', translations: editorLabels }}
         />
-
         <Button type="submit" onClick={onButtonClick}>Post</Button>
       </BodyEditor>
     </Page>

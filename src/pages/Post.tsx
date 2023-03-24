@@ -280,6 +280,17 @@ const SideBarBiographySpan = styled(Word)`
 `;
 
 const FollowButton = styled(Button)`
+
+`;
+
+const Img = styled.img`
+  margin-top: 12px;
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display: block;
+  background-size: 100%;
+  height: 300px;
+  width: 680px;
 `;
 
 function Post() {
@@ -299,6 +310,7 @@ function Post() {
   }));
   const dispatch = useDispatch();
   const [postAuthorImage, setPostAuthorImage] = useState('');
+  const [postMainImage, setPostMainImage] = useState<any>();
   const [user, setUser] = useState<any>({});
   const { postId } = useParams();
   const [save, setSave] = useState(false);
@@ -346,6 +358,13 @@ function Post() {
         axios.get(`https://localhost:7297/api/Follow/${idUser}/${id}`).then((resFollow: any) => {
           setUser(resFollow.data.user);
           setFollowed(resFollow.data.followed);
+        });
+        axios.get(`https://localhost:7297/api/PostImage/${postId}`).then((res2: any) => {
+          if (res2.data) {
+            setPostMainImage(`data:image/jpeg;base64,${res2.data}`);
+          } else {
+            setPostMainImage(null);
+          }
         });
       });
   }, [postId, idUser, id]);
@@ -452,6 +471,11 @@ function Post() {
                             {title}
                           </Title>
                         </Block>
+                        {postMainImage && (
+                        <Block>
+                          <Img style={{ backgroundImage: `url(${postMainImage})` }} />
+                        </Block>
+                        )}
                         <Block
                           style={{ marginTop: '2em' }}
                           dangerouslySetInnerHTML={{ __html: postContent }}

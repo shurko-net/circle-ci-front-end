@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Routes, Route,
-  useLocation,
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -21,7 +20,6 @@ import Post from './pages/Post';
 
 function App() {
   const dispatch = useDispatch();
-  const location = useLocation();
   const userEmail = localStorage.getItem('email');
   const userPassword = localStorage.getItem('password');
 
@@ -58,16 +56,10 @@ function App() {
     userId: state.user.id,
     userImage: state.user.image,
   }));
-  const idPost = useSelector((state: any) => state.post.idPost);
   const [userImageLoad, setUserImageLoad] = useState<any>(userImage);
   useEffect(() => {
     setUserImageLoad(userImage);
   }, [userImage]);
-  useEffect(() => {
-    if (location.pathname !== '/create-post') {
-      axios.delete(`https://localhost:7297/api/Post${idPost}`);
-    }
-  }, [location]);
 
   const onImageChange = (e: any) => {
     if (!e.target.files[0]) {
