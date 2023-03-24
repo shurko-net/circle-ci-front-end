@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 import Text from './Text';
 import Button from './Button';
 import UserPanel from './UserOptionMenu/UserOptionMenu';
+import { setPostDate, setPostId } from '../store/slices/postSlice';
 
 const NavBarWrapper = styled.div`
     position: fixed;
@@ -90,8 +93,23 @@ const Flex = styled.div`
 `;
 
 function NavBar({ isLogged, userImageLoad }:
+
 { isLogged: boolean, userImageLoad: string }) {
+  const dispatch = useDispatch();
+  const idUser = useSelector((state: any) => state.user.id);
+
+  const onWrite = () => {
+    axios.post('https://localhost:7297/api/Post', {
+      idUser,
+      idCategory: 1,
+    }).then((post) => {
+      dispatch(setPostDate(post.data.date));
+      dispatch(setPostId(post.data.idPost));
+    });
+  };
+
   return (
+
     <NavBarWrapper>
       <Body>
         <Container>
@@ -122,7 +140,7 @@ function NavBar({ isLogged, userImageLoad }:
               {isLogged && (
                 <>
                   <Link to="/create-post">
-                    <Button>
+                    <Button click={onWrite}>
                       Write
                     </Button>
                   </Link>

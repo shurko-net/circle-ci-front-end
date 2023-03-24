@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Routes, Route,
+  useLocation,
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -20,6 +21,7 @@ import Post from './pages/Post';
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
   const userEmail = localStorage.getItem('email');
   const userPassword = localStorage.getItem('password');
 
@@ -40,7 +42,7 @@ function App() {
           subscribed: response.data.subscribed,
         };
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:7297/api/Image/${userObj.id}`).then((res: any) => {
+        axios.get(`https://localhost:7297/api/UserImage/${userObj.id}`).then((res: any) => {
           dispatch(setUserImage(res.data));
         });
       }).catch((err) => {
@@ -56,16 +58,22 @@ function App() {
     userId: state.user.id,
     userImage: state.user.image,
   }));
-
+  const idPost = useSelector((state: any) => state.post.idPost);
   const [userImageLoad, setUserImageLoad] = useState<any>(userImage);
   useEffect(() => {
     setUserImageLoad(userImage);
   }, [userImage]);
+  useEffect(() => {
+    if (location.pathname !== '/create-post') {
+      axios.delete(`https://localhost:7297/api/Post${idPost}`);
+    }
+  }, [location]);
 
   const onImageChange = (e: any) => {
     if (!e.target.files[0]) {
       return;
     }
+
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setUserImageLoad(fileReader.result);
@@ -76,12 +84,12 @@ function App() {
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     axios
-      .post('https://localhost:7297/api/Image', formData, {
+      .post('https://localhost:7297/api/UserImage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-    axios.get(`https://localhost:7297/api/Image/${userId}`)
+    axios.get(`https://localhost:7297/api/UserImage/${userId}`)
       .then((res) => {
         dispatch(setUserImage(res.data));
       });

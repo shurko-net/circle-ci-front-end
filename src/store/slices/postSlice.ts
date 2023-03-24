@@ -11,6 +11,7 @@ const postSlice = createSlice({
     title: '',
     likes: 0,
     isLiked: false,
+    image: '',
   },
   reducers: {
     setPost(state, action) {
@@ -28,12 +29,21 @@ const postSlice = createSlice({
     setLiked(state, action) {
       state.isLiked = action.payload;
     },
+    setPostImage(state, action) {
+      state.image = `data:image/jpeg;base64,${action.payload}`;
+    },
+    setPostId(state, action) {
+      state.idPost = action.payload;
+    },
+    setPostDate(state, action) {
+      state.date = action.payload;
+    },
 
   },
 });
 
 export const {
-  setPost, setLikes, setLiked,
+  setPost, setLikes, setLiked, setPostImage, setPostId, setPostDate,
 } = postSlice.actions;
 
 export default postSlice.reducer;

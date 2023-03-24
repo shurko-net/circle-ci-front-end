@@ -222,7 +222,7 @@ function Post(postData: any) {
       .then((res: any) => {
         setPostAuthor(res.data);
 
-        axios.get(`https://localhost:7297/api/Image/${postData.postData.idUser}`).then((res1: any) => {
+        axios.get(`https://localhost:7297/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
           setPostAuthorImage(res1.data);
         });
       });

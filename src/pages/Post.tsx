@@ -333,7 +333,7 @@ function Post() {
       .then((res:any) => {
         dispatch(setPost(res.data));
 
-        axios.get(`https://localhost:7297/api/Image/${idUser}`).then((img: any) => {
+        axios.get(`https://localhost:7297/api/UserImage/${idUser}`).then((img: any) => {
           setPostAuthorImage(img.data);
         });
         axios.get(`https://localhost:7297/api/User/${idUser}`).then((userRes: any) => {

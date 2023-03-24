@@ -47,7 +47,7 @@ function Login() {
         };
 
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:7297/api/Image/${userObj.id}`).then((res: any) => {
+        axios.get(`https://localhost:7297/api/UserImage/${userObj.id}`).then((res: any) => {
           dispatch(setUserImage(res.data));
           // debugger;
         });

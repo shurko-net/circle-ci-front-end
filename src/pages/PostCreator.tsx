@@ -6,8 +6,10 @@ import {
   convertToRaw, EditorState,
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import { useDropzone } from 'react-dropzone';
+import { setPostImage } from '../store/slices/postSlice';
 
 const Page = styled.div`
     margin-top: 70px;
@@ -49,8 +51,97 @@ const Button = styled.button`
   }
 `;
 
+const PublishingCoverImage = styled.section`
+  @media screen and (min-width: 768px){
+    width: 720px;
+  }
+  position: relative;
+  transition: 334ms height ease;
+  margin: auto;
+`;
+
+const PublishingCoverInput = styled.input`
+    position: fixed;
+    right: 100%;
+    bottom: 100%;
+`;
+
+const PublishingCoverImagePlaceholder = styled.div`
+    @media screen and (min-width: 768px){
+      height: 405px;
+      width: 720px;
+    }
+`;
+
+const PublishingCoverImageLabel = styled.label`
+    align-items: center;
+    background: 0 0;
+    background-size: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    position: absolute;
+    text-indent: 0;
+    cursor: pointer;
+`;
+
+const TextLabelHeader = styled.p`
+  font-size: 2.4rem;
+  line-height: 1.3;
+`;
+
+const TextLabel = styled(TextLabelHeader)`
+  margin-top: 8px;
+  font-size: 1.4rem;
+  line-height: 1.4;
+`;
+
+const Img = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(242, 242, 242, 1);
+  box-sizing: border-box;
+  display: block;
+  background-size: 100%;
+`;
+
 function PostCreator() {
+  const dispatch = useDispatch();
+  const { idPost, postImage } = useSelector((state: any) => ({
+    idPost: state.post.idPost,
+    postImage: state.post.image,
+  }));
   const user = useSelector((state: any) => state.user);
+
+  const [postImageLoad, setPostImageLoad] = useState<any>(postImage);
+  const onDrop = (acceptedFiles:any) => {
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPostImageLoad(fileReader.result);
+
+      // console.log(fileReader.result);
+    };
+
+    fileReader.readAsDataURL(acceptedFiles[0]);
+
+    const formData = new FormData();
+    formData.append('id', idPost);
+    formData.append('file', acceptedFiles[0]);
+
+    axios
+      .post('https://localhost:7297/api/PostImage', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then((image) => {
+        dispatch(setPostImage(image.data));
+      });
+  };
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const [title, setTitle] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -85,6 +176,17 @@ function PostCreator() {
       e.preventDefault();
     }
   };
+
+  // useEffect(() => {
+  //   axios.get(`https://localhost:7297/api/PostImage/${idPost}`).then((image) => {
+  //     console.log(image);
+  //     dispatch(setPostImage(image.data));
+  //     debugger;
+  //   });
+  // }, []);
+  // useEffect(() => {
+  //   setPostImageLoad(postImageLoad);
+  // }, [postImageLoad]);
 
   const editorLabels = {
     'components.controls.blocktype.h1': 'Header1',
@@ -124,6 +226,25 @@ function PostCreator() {
           value={title}
           placeholder="Title"
         />
+        <PublishingCoverImage>
+          <div {...getRootProps()}>
+            <PublishingCoverInput {...getInputProps()} />
+            <PublishingCoverImagePlaceholder>
+              <PublishingCoverImageLabel>
+                <TextLabelHeader>
+                  Головне зображення не завантажено
+                </TextLabelHeader>
+                <TextLabel>
+                  Спробуйте додати головне зображення до вашої статті, щоб залучити більше читачів.
+                </TextLabel>
+                <TextLabel>
+                  Рекомендуємо завантажувати зображення розміром 1280 x 720 пікселів.
+                </TextLabel>
+                <Img style={{ backgroundImage: `url(${postImageLoad})` }} />
+              </PublishingCoverImageLabel>
+            </PublishingCoverImagePlaceholder>
+          </div>
+        </PublishingCoverImage>
         <Editor
           editorState={editorState}
           wrapperClassName=""

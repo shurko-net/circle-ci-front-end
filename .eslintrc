@@ -38,5 +38,7 @@
         "no-unsafe-optional-chaining": "off",
         "react/destructuring-assignment": "off",
         "react/no-array-index-key": "off",
+        "react/jsx-props-no-spreading": "off",
+        "no-unused-vars": "off"
     }
 }
