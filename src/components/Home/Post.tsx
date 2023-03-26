@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+
 import { Link } from 'react-router-dom';
+import {
+  getPostImage, getUser, getUserImage,
+} from '../../api/api';
 
 const Container = styled.div`
     height: 100%;
@@ -230,21 +233,24 @@ function Post(postData: any) {
   const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
-    axios.get(`https://localhost:7297/api/User/${postData.postData.idUser}`)
-      .then((res: any) => {
-        setPostAuthor(res.data);
+    getUser(postData.postData.idUser)
+      .then((data: any) => {
+        setPostAuthor(data);
 
-        axios.get(`https://localhost:7297/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
-          setPostAuthorImage(res1.data);
-        }).then(() => {
-          axios.get(`https://localhost:7297/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
-            if (res2.data) {
-              setPostDataImage(`data:image/jpeg;base64,${res2.data}`);
-            } else {
-              setPostDataImage(null);
-            }
+        getUserImage(postData.postData.idUser)
+          .then((image: any) => {
+            setPostAuthorImage(image);
+          })
+          .then(() => {
+            getPostImage(postData.postData.idPost)
+              .then((postImage: any) => {
+                if (postImage) {
+                  setPostDataImage(`data:image/jpeg;base64,${postImage}`);
+                } else {
+                  setPostDataImage(null);
+                }
+              });
           });
-        });
       });
   }, []);
 

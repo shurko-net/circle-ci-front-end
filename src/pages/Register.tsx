@@ -6,11 +6,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { userAuth } from '../store/slices/userSlice';
+import { createUser } from '../api/api';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
@@ -42,16 +42,16 @@ function Register() {
       email: values.email,
       password: values.password,
     };
-
-    axios.post('https://localhost:7297/api/User', {
+    createUser({
       name: user.firstName,
       surname: user.secondName,
       email: user.email,
       password: user.password,
-    }).then(() => {
-      dispatch(userAuth(user));
-      navigate('/');
-    });
+    })
+      .then(() => {
+        dispatch(userAuth(user));
+        navigate('/');
+      });
   };
   return (
 
