@@ -4,7 +4,8 @@ import {
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import NavBar from './components/NavBar';
+// import NavBar from './components/NavBar';
+import styled from 'styled-components';
 import Home from './pages/Home';
 import './App.css';
 import Register from './pages/Register';
@@ -17,6 +18,21 @@ import AccountHome from './components/AccountButtonPanel/AccountHome';
 import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
 import Post from './pages/Post';
+import NewHeader from './components/NewHeaderDesign/NewHeader';
+
+// const Wrapper = styled.div`
+//   width: 100%;
+//   min-height: 100%;
+//   overflow: hidden;
+//   display: flex;
+//   flex-direction: column;
+// `;
+
+const Container = styled.div`
+  margin: 0 auto;
+  max-width: 1330px;
+  padding: 0px 15px;
+`;
 
 function App() {
   const dispatch = useDispatch();
@@ -88,8 +104,10 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <NavBar isLogged={isLogged} userImageLoad={userImageLoad} />
+
+    <Container>
+      <NewHeader />
+      {/* <NavBar isLogged={isLogged} userImageLoad={userImageLoad} /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
@@ -115,8 +133,8 @@ function App() {
           )}
         <Route path="about" element={<OurStory />} />
       </Routes>
+    </Container>
 
-    </div>
   );
 }
 

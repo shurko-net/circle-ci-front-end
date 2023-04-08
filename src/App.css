@@ -7,12 +7,30 @@
   white-space: nowrap;
 }
 
-.App {
+#root {
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* .Wrapper {
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+} */
+
+/* .Container {
   font-family: 'Soehne web buch', sans-serif;
   width: 100vw;
   height: 100vh;
-  overflow-x: hidden
-}
+  overflow-x: hidden;
+  margin: 0 auto;
+  max-width: 1330px;
+} */
 
 .navbar-text {
   white-space: nowrap;
