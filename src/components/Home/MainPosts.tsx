@@ -22,15 +22,25 @@ const MainPost = styled.div`
    }
 `;
 
-function MainPosts() {
+function MainPosts({ filterText } : { filterText: string }) {
   const [posts, setPosts] = useState<any>([]);
 
   useEffect(() => {
-    axios.get('https://localhost:7297/api/Post')
+    axios.get('https://localhost:7260/api/Post')
       .then((res: any) => {
-        setPosts(res.data.sort((a: any, b: any) => b.idPost - a.idPost));
+        const postsTemp: any = res.data.sort((a: any, b: any) => b.idPost - a.idPost);
+        console.log(filterText);
+        if (filterText !== '') {
+          setPosts(
+            postsTemp.filter(
+              (post: any) => post.title.toLowerCase().includes(filterText.toLowerCase()),
+            ),
+          );
+        } else {
+          setPosts(postsTemp);
+        }
       });
-  }, []);
+  }, [filterText]);
 
   return (
     <MainPost>

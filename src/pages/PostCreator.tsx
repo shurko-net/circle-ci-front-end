@@ -119,11 +119,11 @@ function PostCreator() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const onButtonClick = () => {
-    axios.put('https://localhost:7297/api/Category', {
+    axios.put('https://localhost:7260/api/Category', {
       idCategory: 1,
       name: 'Puppet',
     }).then(() => {
-      axios.post('https://localhost:7297/api/Post', {
+      axios.post('https://localhost:7260/api/Post', {
         idUser: user.id,
         idCategory: 1,
         date: new Date(),
@@ -136,7 +136,7 @@ function PostCreator() {
         const formData = new FormData();
         formData.append('id', res.data.idPost);
         formData.append('file', imageFile);
-        axios.post('https://localhost:7297/api/PostImage', formData, {
+        axios.post('https://localhost:7260/api/PostImage', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -195,14 +195,14 @@ function PostCreator() {
           onChange={handleTitleChange}
           onKeyDown={handleTitleKeyDown}
           value={title}
-          placeholder="Title"
+          placeholder="Заголовок"
         />
         <PublishingCoverImage>
           <div {...getRootProps()}>
             <PublishingCoverInput {...getInputProps()} />
             <PublishingCoverImagePlaceholder>
               <PublishingCoverImageLabel>
-                {isImageUploaded && <div style={{ position: 'absolute', fontSize: '32px' }}>Click to upload the image</div>}
+                {isImageUploaded && <div style={{ position: 'absolute', fontSize: '32px' }}>Нажміть щоб додати зображення</div>}
                 <Img style={{ backgroundImage: `url(${postImageLoad})` }} />
               </PublishingCoverImageLabel>
             </PublishingCoverImagePlaceholder>
@@ -212,11 +212,11 @@ function PostCreator() {
           editorState={editorState}
           wrapperClassName=""
           onEditorStateChange={setEditorState}
-          placeholder="Tell your story..."
+          placeholder="Ваш текст..."
           toolbar={toolbar}
           localization={{ locale: 'en', translations: editorLabels }}
         />
-        <Button type="submit" onClick={onButtonClick}>Post</Button>
+        <Button type="submit" onClick={onButtonClick}>Відправити</Button>
       </BodyEditor>
     </Page>
   );

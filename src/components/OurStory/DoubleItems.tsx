@@ -33,22 +33,22 @@ function DoubleItems() {
     <Items>
       <Item className="first">
         <Text color="#131515" weight={700} fSize="96">
-          About
+          Про нас
         </Text>
         <Text color="#131515" weight={500} fSize="24">
-          The best ideas can change who we are.
-          CircleCI is where those ideas take shape,
-          take off, and spark powerful conversations.
-          We’re an open platform where over 100 million
-          readers come to find insightful and dynamic thinking
-          . Here, expert and undiscovered voices alike dive into
-          the heart of any topic and bring new ideas to the surface. Our purpose
-          is to spread these ideas and deepen understanding of the world.
+          Найкращі ідеї можуть змінити нас.
+          CircleCI – це місце, де ці ідеї набувають форми,
+          злетіти та розпочати сильні розмови.
+          Ми є відкритою платформою, де понад 100 мільйонів
+          читачі знаходять проникливе та динамічне мислення
+          . Тут занурюються як експертні, так і незнайомі голоси
+          суть будь-якої теми та виводити нові ідеї на поверхню. Наша мета
+          поширювати ці ідеї та поглиблювати розуміння світу.
         </Text>
       </Item>
       <Item className="second">
         <Text color="#131515" weight={700} fSize="96">
-          Feel free yourself to join.
+          Не соромтеся приєднатися.
         </Text>
       </Item>
     </Items>

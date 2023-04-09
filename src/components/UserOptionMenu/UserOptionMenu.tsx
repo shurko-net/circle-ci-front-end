@@ -97,18 +97,18 @@ function UserPanel({ userImageLoad }:{ userImageLoad: string }) {
         <Link to={`/${subdomain}/home`}>
           <button type="submit" onClick={onClose}>
             <PersonIcon />
-            <span>Profile</span>
+            <span>Профіль</span>
           </button>
         </Link>
         <Link to="/me/save">
           <button type="submit" onClick={onClose}>
             <BookmarksIcon />
-            <span>Save</span>
+            <span>Мої пости</span>
           </button>
         </Link>
         <button type="submit" onClick={signOut}>
           <CloseIcon />
-          <span>Sign Out</span>
+          <span>Вийти</span>
         </button>
 
       </div>

@@ -32,11 +32,11 @@ function Main() {
       <MainMotto>
         <Text color="#131515" weight={500} fSize="84">
           <div className="nowrap">
-            Every idea must to be&nbsp;
+            Кожна ідея повинна бути&nbsp;
           </div>
         </Text>
         <Text color="#131515" weight={700} fSize="96">
-          Circled.
+          Почута.
         </Text>
       </MainMotto>
     </Block>

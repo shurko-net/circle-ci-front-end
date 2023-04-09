@@ -24,7 +24,7 @@ function App() {
   const userPassword = localStorage.getItem('password');
 
   if (userEmail && userPassword) {
-    axios.post('https://localhost:7297/auth/Login', {
+    axios.post('https://localhost:7260/auth/Login', {
       email: userEmail,
       password: userPassword,
     })
@@ -40,7 +40,7 @@ function App() {
           subscribed: response.data.subscribed,
         };
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:7297/api/UserImage/${userObj.id}`).then((res: any) => {
+        axios.get(`https://localhost:7260/api/UserImage/${userObj.id}`).then((res: any) => {
           dispatch(setUserImage(res.data));
         });
       }).catch((err) => {
@@ -61,6 +61,8 @@ function App() {
     setUserImageLoad(userImage);
   }, [userImage]);
 
+  const [mainPostsFilterText, setMainPostsFilterText] = useState('');
+
   const onImageChange = (e: any) => {
     if (!e.target.files[0]) {
       return;
@@ -76,12 +78,12 @@ function App() {
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     axios
-      .post('https://localhost:7297/api/UserImage', formData, {
+      .post('https://localhost:7260/api/UserImage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-    axios.get(`https://localhost:7297/api/UserImage/${userId}`)
+    axios.get(`https://localhost:7260/api/UserImage/${userId}`)
       .then((res) => {
         dispatch(setUserImage(res.data));
       });
@@ -89,9 +91,13 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar isLogged={isLogged} userImageLoad={userImageLoad} />
+      <NavBar
+        isLogged={isLogged}
+        userImageLoad={userImageLoad}
+        setFilterText={setMainPostsFilterText}
+      />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home filterText={mainPostsFilterText} />} />
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/me/save" element={<Saved />} />

@@ -88,7 +88,7 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
 
   const onSubmitEmail = () => {
     dispatch(setUserEmail(textareaEmail));
-    axios.put('https://localhost:7297/api/User', {
+    axios.put('https://localhost:7260/api/User', {
       idUser: userData.id,
       name: textareaName.split(' ')[0] ?? 'Super',
       surname: textareaName.split(' ')[1] ?? 'Jarik2004',
@@ -101,7 +101,7 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   };
 
   const onSubmit = () => {
-    axios.put('https://localhost:7297/api/User', {
+    axios.put('https://localhost:7260/api/User', {
       idUser: userData.id,
       tNumber: textareaPhone,
       name: textareaName.split(' ')[0] ?? 'Super',
@@ -126,13 +126,13 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
       {/* <AccountHomeModal> */}
       <HomeLine
         info={userEmail}
-        name="Email adress"
+        name="Електронна адресса"
         downInfo=""
         img=""
         color=""
-        textHeader="Email address"
+        textHeader="Електронна адресса"
         inputValue={textareaEmail}
-        text="You can sign into Circle CI with this email address."
+        text="Ви можете ввійти в Circle CI за допомогою цієї електронної адреси."
         inputCounter=""
         onSubmit={onSubmitEmail}
         handle={handleContentEmail}
@@ -146,14 +146,14 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
       />
       <HomeLine
         info={`${userFullName}`}
-        name="Profile information"
-        downInfo="Edit yout photo, name, bio, etc."
+        name="Інформація профілю"
+        downInfo="Відредагуйте свою фотографію, ім'я, біографію тощо."
         img="Yaroslav.png"
         color=""
         textHeader="Profile information"
         inputValue={textareaName}
         inputValueBio={textareaPhone}
-        text="Appears on your Profile page, as your byline, and in your responses."
+        text="Відображається на сторінці вашого профілю, як авторство та у ваших відповідях."
         inputCounter="51"
         userImageLoad={userImageLoad}
         handleUploadClick={handleUploadClick}
@@ -173,13 +173,13 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
       <Line />
       <HomeLine
         info=""
-        name="Delete account"
-        downInfo="Permanently delete your account and all of your content."
+        name="Видалити аккаунт"
+        downInfo="Назавжди видалити свій обліковий запис і весь вміст."
         img=""
         color="rgb(201, 74, 74)"
         textHeader="Delete account"
         inputValue={textareaDelete}
-        text="To confirm deletion, type “delete” below:"
+        text="Щоб підтвердити видалення, введіть «видалити» нижче:"
         inputCounter=""
         userImageLoad=""
         nameText=""

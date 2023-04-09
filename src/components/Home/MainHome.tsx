@@ -99,22 +99,6 @@ const H2 = styled.h2`
     }
 `;
 
-const H3 = styled.h2`
-    font-size: 24px;
-    line-height: 24px;
-    font-weight: 400;
-`;
-
-const UnderTitle = styled.div`
-    width: 80%;
-    margin-bottom: 50px;
-    display: block;
-    box-sizing: inherit;
-    @media (max-width: 551.98px) {
-      width: 100%;
-    }
-`;
-
 function Main() {
   return (
     <Body>
@@ -122,11 +106,8 @@ function Main() {
         <CenterContent>
           <Content>
             <Title>
-              <H2>Stay curious.</H2>
+              <H2>Залишайтеся цікавими.</H2>
             </Title>
-            <UnderTitle>
-              <H3>Discover stories, thinking, and expertise from writers on any topic.</H3>
-            </UnderTitle>
           </Content>
         </CenterContent>
       </Container>

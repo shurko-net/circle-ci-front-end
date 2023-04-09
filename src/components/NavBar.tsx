@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Text from './Text';
 import Button from './Button';
 import UserPanel from './UserOptionMenu/UserOptionMenu';
@@ -89,9 +89,25 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-function NavBar({ isLogged, userImageLoad }:
+const FilterInput = styled.input`
+  width: 300px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
 
-{ isLogged: boolean, userImageLoad: string }) {
+function NavBar({ isLogged, userImageLoad, setFilterText }:
+
+{ isLogged: boolean, userImageLoad: string, setFilterText: any }) {
+  const location = useLocation();
+
+  const isStartPage = location.pathname === '/';
+
+  useEffect(() => {
+    setFilterText('');
+  }, [isStartPage]);
+
   return (
 
     <NavBarWrapper>
@@ -111,41 +127,37 @@ function NavBar({ isLogged, userImageLoad }:
             </Flex>
             <NavBlock />
             <NavbarBrand>
+              {isStartPage ? <FilterInput type="text" placeholder="Пошук за назвою..." onChange={(e: any) => setFilterText(e.target.value)} /> : ''}
               <Link to="/about">
                 <Button>
-                  Our story
-                </Button>
-              </Link>
-              <Link to="/member">
-                <Button>
-                  Membership
+                  Про вебсайт
                 </Button>
               </Link>
               {isLogged && (
                 <>
                   <Link to="/create-post">
                     <Button>
-                      Write
+                      Творити
                     </Button>
                   </Link>
                   <UserPanel userImageLoad={userImageLoad} />
                 </>
               )}
               {!isLogged
-              && (
-              <>
-                <Link to="/login">
-                  <Button>
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button>
-                    Get started
-                  </Button>
-                </Link>
-              </>
-              )}
+                && (
+                  <>
+                    <Link to="/login">
+                      <Button>
+                        Увійти
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button>
+                        Реєстрація
+                      </Button>
+                    </Link>
+                  </>
+                )}
             </NavbarBrand>
           </Content>
         </Container>
