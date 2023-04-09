@@ -5,9 +5,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import HttpsIcon from '@mui/icons-material/Https';
 import { useSelector } from 'react-redux';
-// import LoginIcon from '@mui/icons-material/Login';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+interface RootState {
+  user: {
+    isLogged: boolean
+  }
+}
 
 const styleLink = {
   textDecoration: 'none',
@@ -15,13 +20,25 @@ const styleLink = {
   fontWeight: 900,
   fontSize: '18px',
   lineHeight: `${18 / 22 * 100}%`,
-  fontFamily: 'Inter',
+  fontFamily: 'InterBlack',
+};
+
+const styleLinkLogo = {
+  textDecoration: 'none',
+  color: '#000',
+  fontWeight: 900,
+  fontSize: '18px',
+  lineHeight: `${18 / 22 * 100}%`,
+  fontFamily: 'InterBlack',
 };
 
 const setActive = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '');
 
 const StyledNotificationsNoneIcon = styled(NotificationsNoneIcon)`
-  color: grey;
+  opacity: 0.6;
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 const StyledMenuLink = styled(NavLink)`
@@ -42,6 +59,9 @@ const StyledMenuLink = styled(NavLink)`
     background-color: #60BDC2;
   }
   &.active {
+    color:#60BDC2;
+  }
+  &:hover {
     color:#60BDC2;
   }
 `;
@@ -95,31 +115,25 @@ const HeaderMain = styled.div`
         display: none;
       }
     }
-    & button.login {
-      /* margin-left: 35px; */
-      background: none;
-      border: none;
-    }  
-    & button.register {
-      margin-left: 20px;
-      border-color: rgba(41, 41, 41, 1);
-      background: none;
-    }  
 `;
+
 const HeaderSearch = styled.div`
-    @media (min-width: 991.98px) { //767px
-        flex: 1 1 auto;
+    @media (min-width: 767.98px) {
+      flex: 1 1 0;
     } 
-    @media (max-width: 991.98px) {
-         display: none;
-  }
 `;
+
 const HeaderNotice = styled.div`
   display: flex;
   flex: 0 1 88px;
-  @media (max-width: 991.98px) {
+  @media (max-width: 767.98px) {
       flex: 0;
   }
+  @media (max-width: 767.98px) { 
+    &.active {
+    display: none;
+    }
+  } 
 `;
 
 const NotificationIconWrapper = styled.div`
@@ -157,9 +171,8 @@ const NotificationCount = styled.span`
 `;
 
 const HeaderMenuMenu = styled.div`
-    /* flex: 0 1 ${794 / 1300 * 100}%; */
     flex: 1 1 auto;
-    @media (max-width: 767.98px) {
+    @media (max-width: 991.98px) {
       display: none;
   }
 `;
@@ -170,8 +183,7 @@ const MenuList = styled.div`
         flex-wrap: wrap;
         justify-content: space-evenly;
         margin-left: 71px;
-    } 
-    
+    }
 `;
 const MenuItem = styled.div`
     display: flex;
@@ -192,7 +204,7 @@ const SearchContainer = styled.form`
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 20px;
-  @media (max-width: 991.98px) {
+  @media (max-width: 767.98px) {
     position: absolute;
     width: 100%;
     left: 0;
@@ -219,7 +231,6 @@ const SearchButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0;
-  /* margin: 0 10px; */
   flex: 0 0 35px;
   display: flex;
 `;
@@ -227,20 +238,21 @@ const SearchButton = styled.button`
 const SearchGroup = styled.div`
   position: relative;
   text-align: center;
-  @media (min-width: 991.98px) {
+  @media (min-width: 767.98px) {
       display: none;
   } 
 `;
 
 const SearchMobile = styled.div`
 &.search {
-  margin-left: 25px;
+  --margin-left-small: 25px;
+  --margin-left-medium: 35px;
+    margin-left: var(--margin-left-small);
   position: relative;
   z-index: 1;
   display: inline-flex;
   border-radius: 50%;
   transition: 0.4s;
-  /* margin: 0 0 0 25px; */
 
 }
 &.search:is(:hover, .open) {
@@ -248,8 +260,6 @@ const SearchMobile = styled.div`
 }
 &.search.open input {
   max-width: 150px;
-  /* padding-left: 15px; */
-  /* display: block; */
 }
 &.search input {
   max-width: 0;
@@ -259,11 +269,6 @@ const SearchMobile = styled.div`
   border-radius: 17px;
   font-size: 18px;
   background: transparent;
-  /* display: none; */
-}
-
-&.search input::placeholder {
-  
 }
 `;
 
@@ -292,7 +297,6 @@ const SearchItemsMobile = styled.div`
     visibility: hidden;
     opacity: 0;
     background: rgb(0 0 0 / 15%);
-    -webkit-transition: 0.3s;
     transition: 0.3s;
     
   }
@@ -316,22 +320,26 @@ const StyledMenuIcon = styled(MenuIcon)`
 `;
 
 const MenuIconButton = styled.button`
-  --margin-left-small: 15px;
-  --margin-left-medium: 25px;
-  margin-left: var(--margin-left-small);
+  --margin-left-small: 25px;
+  --margin-left-medium: 35px;
+    margin-left: var(--margin-left-small);
   @media (min-width: 767.98px) {
     margin-left: var(--margin-left-medium);
   }
   background-color: transparent;
   border: none;
-  cursor: pointer;
   display: flex;
-  /* padding: 0 0 0 25px; */
   transition: 0.3s;
+  &.close {
+    opacity: 0;
+  }
+  &.active {
+    opacity: 1;
+  }
 `;
 
 const Menu = styled.div`
-  @media (min-width: 767.98px) {
+  @media (min-width: 991.98px) {
     display: none;
   }
 `;
@@ -369,11 +377,8 @@ const ModalMenuBlock = styled.div`
 const SideBarMenuBtnContainer = styled.div`
   position: relative;
   width: 100%;
-  /* display: flex; */
   margin: 35px 0 35px 0 ;
   justify-content: center;
-  /* align-items: center; */
-  
 `;
 
 const ModalContainer = styled.div`
@@ -389,7 +394,6 @@ const MoadalFlexBtnContainer = styled.div`
  `;
 
 const ModalBtnInlineBlock = styled.div`
-
   &.active {
     ::after {
     content: '';
@@ -399,7 +403,6 @@ const ModalBtnInlineBlock = styled.div`
     width: 64px;
     display: block;
     position: absolute;
-    
   }
 }
   & button {
@@ -416,59 +419,39 @@ const ModalBtnInlineBlock = styled.div`
   }
 `;
 
-// const DivBlock = styled.div`
-//   display: block;
-//   flex: 1 0 auto;
-// `;
-
-const HeaderMenuRegistration = styled.div`
-  position: absolute;
-  /* top: 0; */
-  right: 0;
- @media (min-width: 991.98px) {
-        /* flex: 1 1 auto; */
-    }
-`;
-
-const HeaderMenuRegistrationContainer = styled.div`
-   /* margin-left: auto; */
-   display: flex;
-`;
-
-const HeaderMenuRegistrationBtn = styled.div`
-
+const DivBlock = styled.div`
+@media (max-width: 767.98px) {
+  display: block;
+  flex: 1 0 auto;
+}
 `;
 
 const posts = [{ name: 'Yaroslav' }, { name: 'stas' }, { name: 'Dima' }, { name: 'Any' }, { name: 'Katy' }];
 
 function NewHeader() {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [searchIsOpen, setSearchIsOpen] = useState('');
   const [search, setSearch] = useState('');
   const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
+  const [showSecondComponent, setShowSecondComponent] = useState<boolean>(false);
+  const [activeComponent, setActiveComponent] = useState<number>(1);
 
-  // const [classNames, setClassNames] = useState('');
+  const secondComponentRef = useRef<HTMLDivElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const isLogged = useSelector((state: any) => ({
+  const isLogged = useSelector((state: RootState) => ({
     isLogged: state.user.isLogged,
   }));
 
-  const [activeComponent, setActiveComponent] = useState(1);
-
-  const handleActiveClick = (componentNumber:any) => {
+  const handleActiveClick = (componentNumber: number) => {
     setActiveComponent(componentNumber);
   };
-
-  const [showSecondComponent, setShowSecondComponent] = useState(false);
-
-  const secondComponentRef = useRef<HTMLDivElement>(null);
 
   const handleTransitionEnd = () => {
     if (secondComponentRef.current) {
       secondComponentRef.current.style.display = 'block';
     }
     setShowSecondComponent(!showSecondComponent);
-    console.log(showSecondComponent);
   };
 
   const handleFirstComponentClick = () => {
@@ -476,8 +459,6 @@ function NewHeader() {
       secondComponentRef.current.style.display = 'none';
     }
   };
-
-  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const handleClick = () => {
     if (!searchIsOpen) {
@@ -494,7 +475,7 @@ function NewHeader() {
     setMenuIsOpen(false);
   };
 
-  const handleChange = (e:any) => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
@@ -510,15 +491,17 @@ function NewHeader() {
         <HeaderContainerContainer>
           <HeaderBody>
             <HeaderMain>
-              <Link to="/" style={styleLink}>Circle CI</Link>
-              {/* <DivBlock /> */}
-              <div className="start">
-                <span>
-                  <Link to="/register" style={styleLink}>
-                    <button type="submit">Get stated</button>
-                  </Link>
-                </span>
-              </div>
+              <Link to="/" style={styleLinkLogo}>Circle CI</Link>
+              <DivBlock />
+              {!isLogged && (
+                <div className="start">
+                  <span>
+                    <Link to="/register" style={styleLink}>
+                      <button type="submit">Get stated</button>
+                    </Link>
+                  </span>
+                </div>
+              )}
               <HeaderMenuMenu>
                 <MenuList>
                   <MenuItem>
@@ -541,31 +524,11 @@ function NewHeader() {
                   </MenuItem>
                 </MenuList>
               </HeaderMenuMenu>
-              {/* <DivBlock /> */}
-              <HeaderMenuRegistration>
-                <HeaderMenuRegistrationContainer>
-                  <HeaderMenuRegistrationBtn>
-                    <button className="login" type="submit">
-                      <Link to="/login" style={styleLink}>
-                        Sing In
-                      </Link>
-                    </button>
-                  </HeaderMenuRegistrationBtn>
-                  <HeaderMenuRegistrationBtn>
-                    <button className="register" type="submit">
-                      <Link to="/register" style={styleLink}>
-                        Get stated
-                      </Link>
-                    </button>
-                  </HeaderMenuRegistrationBtn>
-
-                </HeaderMenuRegistrationContainer>
-              </HeaderMenuRegistration>
             </HeaderMain>
-            {!isLogged && (showSecondComponent
+            {showSecondComponent
               ? null
               : (
-                <HeaderNotice ref={secondComponentRef}>
+                <HeaderNotice ref={secondComponentRef} className={`${isLogged ? '' : 'active'}`}>
                   <NotificationIconWrapper>
                     <NoticeContainer>
                       <StyledNotificationsNoneIcon />
@@ -573,8 +536,8 @@ function NewHeader() {
                     </NoticeContainer>
                   </NotificationIconWrapper>
                 </HeaderNotice>
-              ))}
-            {!isLogged && (
+              )}
+            {isLogged && (
             <SearchGroup ref={searchContainerRef}>
               <SearchMobile className={`search ${searchIsOpen}`}>
                 <input
@@ -601,18 +564,18 @@ function NewHeader() {
                 className={`items ${searchIsOpen}`}
               >
                 {Boolean(filtrePosts.length)
-              && filtrePosts?.map(
-                (item, index) => index < 3
-                && (
-                <button type="submit" key={item.name}>
-                  {item.name}
-                </button>
-                ),
-              )}
+                      && filtrePosts?.map(
+                        (item, index) => index < 3
+              && (
+              <button type="submit" key={item.name}>
+                {item.name}
+              </button>
+              ),
+                      )}
               </SearchItemsMobile>
             </SearchGroup>
             )}
-            {!isLogged && (
+
             <HeaderSearch>
               <SearchContainer>
                 <SearchInput type="text" placeholder="Search" />
@@ -621,46 +584,43 @@ function NewHeader() {
                 </SearchButton>
               </SearchContainer>
             </HeaderSearch>
-            )}
-
-            {!isLogged
-             && (
-             <Menu>
-               {menuIsOpen
-                 ? (
-                   <ModalWrapper>
-                     <ModalContainer>
-                       <SideBarMenuBtnContainer>
-                         <MoadalFlexBtnContainer>
-                           <ModalBtnInlineBlock className={`${activeComponent === 1 ? 'active' : ''}`}>
-                             <button
-                               className={`${activeComponent === 1 ? 'active' : ''}`}
-                               type="submit"
-                               onClick={() => handleActiveClick(1)}
-                             >
-                               <MenuIcon />
-                             </button>
-                           </ModalBtnInlineBlock>
-                           <ModalBtnInlineBlock className={`${activeComponent === 2 ? 'active' : ''}`}>
-                             <button
-                               className={`${activeComponent === 2 ? 'active' : ''}`}
-                               type="submit"
-                               onClick={() => handleActiveClick(2)}
-                             >
-                               <HttpsIcon />
-                             </button>
-                           </ModalBtnInlineBlock>
-                           <ModalBtnInlineBlock>
-                             <button type="submit" onClick={handleCloseMenu}>
-                               <CloseIcon />
-                             </button>
-                           </ModalBtnInlineBlock>
-                           {/* <MenuExitBtn onClick={handleCloseMenu}>
-                       <StyledCloseICon />
-                     </MenuExitBtn> */}
-                         </MoadalFlexBtnContainer>
-                       </SideBarMenuBtnContainer>
-                       {activeComponent === 1
+            {isLogged && (
+            <Menu>
+              <MenuIconButton className={`${menuIsOpen ? 'close' : 'active'}`} onClick={handleOpenMenu}>
+                <StyledMenuIcon />
+              </MenuIconButton>
+              {menuIsOpen
+                && (
+                  <ModalWrapper>
+                    <ModalContainer>
+                      <SideBarMenuBtnContainer>
+                        <MoadalFlexBtnContainer>
+                          <ModalBtnInlineBlock className={`${activeComponent === 1 ? 'active' : ''}`}>
+                            <button
+                              className={`${activeComponent === 1 ? 'active' : ''}`}
+                              type="submit"
+                              onClick={() => handleActiveClick(1)}
+                            >
+                              <MenuIcon />
+                            </button>
+                          </ModalBtnInlineBlock>
+                          <ModalBtnInlineBlock className={`${activeComponent === 2 ? 'active' : ''}`}>
+                            <button
+                              className={`${activeComponent === 2 ? 'active' : ''}`}
+                              type="submit"
+                              onClick={() => handleActiveClick(2)}
+                            >
+                              <AccountCircleIcon />
+                            </button>
+                          </ModalBtnInlineBlock>
+                          <ModalBtnInlineBlock>
+                            <button type="submit" onClick={handleCloseMenu}>
+                              <CloseIcon />
+                            </button>
+                          </ModalBtnInlineBlock>
+                        </MoadalFlexBtnContainer>
+                      </SideBarMenuBtnContainer>
+                      {activeComponent === 1
                       && (
                       <ModalMenuContainer>
                         <ModalMenuBlock>Home</ModalMenuBlock>
@@ -671,20 +631,23 @@ function NewHeader() {
                         <ModalMenuBlock>Courses</ModalMenuBlock>
                       </ModalMenuContainer>
                       )}
-                       {activeComponent === 2
-                      && <div>Hello World</div>}
+                      {activeComponent === 2
+                      && (
+                      <ModalMenuContainer>
+                        <ModalMenuBlock>Profile</ModalMenuBlock>
+                        <ModalMenuBlock>Posts</ModalMenuBlock>
+                        <ModalMenuBlock>Subscriptions</ModalMenuBlock>
+                        <ModalMenuBlock>Groups</ModalMenuBlock>
+                        <ModalMenuBlock>Favorites</ModalMenuBlock>
+                        <ModalMenuBlock>Settings</ModalMenuBlock>
+                      </ModalMenuContainer>
+                      )}
 
-                     </ModalContainer>
-                   </ModalWrapper>
-                 )
-                 : (
-                   <MenuIconButton onClick={handleOpenMenu}>
-                     <StyledMenuIcon />
-                   </MenuIconButton>
-                 )}
-             </Menu>
-             )}
-
+                    </ModalContainer>
+                  </ModalWrapper>
+                )}
+            </Menu>
+            )}
           </HeaderBody>
         </HeaderContainerContainer>
       </HeaderWrapper>

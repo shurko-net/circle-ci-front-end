@@ -19,6 +19,7 @@ import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
 import Post from './pages/Post';
 import NewHeader from './components/NewHeaderDesign/NewHeader';
+import GlobalStyle from './globalStyles';
 
 // const Wrapper = styled.div`
 //   width: 100%;
@@ -40,7 +41,7 @@ function App() {
   const userPassword = localStorage.getItem('password');
 
   if (userEmail && userPassword) {
-    axios.post('https://localhost:7297/auth/Login', {
+    axios.post('https://localhost:44353/auth/Login', {
       email: userEmail,
       password: userPassword,
     })
@@ -56,7 +57,7 @@ function App() {
           subscribed: response.data.subscribed,
         };
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:7297/api/UserImage/${userObj.id}`).then((res: any) => {
+        axios.get(`https://localhost:44353/api/UserImage/${userObj.id}`).then((res: any) => {
           dispatch(setUserImage(res.data));
         });
       }).catch((err) => {
@@ -92,12 +93,12 @@ function App() {
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     axios
-      .post('https://localhost:7297/api/UserImage', formData, {
+      .post('https://localhost:44353/api/UserImage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-    axios.get(`https://localhost:7297/api/UserImage/${userId}`)
+    axios.get(`https://localhost:44353/api/UserImage/${userId}`)
       .then((res) => {
         dispatch(setUserImage(res.data));
       });
@@ -106,6 +107,7 @@ function App() {
   return (
 
     <Container>
+      <GlobalStyle />
       <NewHeader />
       {/* <NavBar isLogged={isLogged} userImageLoad={userImageLoad} /> */}
       <Routes>
