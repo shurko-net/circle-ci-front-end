@@ -20,6 +20,7 @@ import PostCreator from './pages/PostCreator';
 import Post from './pages/Post';
 import NewHeader from './components/NewHeaderDesign/NewHeader';
 import GlobalStyle from './globalStyles';
+import NewFooter from './components/NewFooterDesign/NewFooter';
 
 // const Wrapper = styled.div`
 //   width: 100%;
@@ -135,6 +136,7 @@ function App() {
           )}
         <Route path="about" element={<OurStory />} />
       </Routes>
+      <NewFooter />
     </Container>
 
   );
