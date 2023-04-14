@@ -20,26 +20,46 @@ const BodyEditor = styled.div`
     padding: 20px;
 `;
 
-const TitleTextArea = styled.textarea`
-  width: 100%;
+const TitleAreaWrapper = styled.div`
+  background: #FFFFFF;
+  border: 1px solid #CFCFCF;
+  box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 12px;
+  margin-bottom: 30px;
+`;
+
+const TitleTextArea = styled.input`
   border: none;
   outline: none;
   font-size: 24px;
   font-family: 'Soehne web buch', sans-serif;
   resize: none;
+  background: #F4F4F4;
+  border: 1px solid #C4C4C4;
+  border-radius: 10px;
+  width: calc(100% - 12px);
+  height: 100%;
+  padding: 12px 6px;
 `;
 
 const Button = styled.button`
-    display: block;
+  display: block;
   font-weight: normal;
   background: #7DE2D1;
   border: none;
   padding: 7px 16px 9px;
-  border-radius: 18px;
+  width: 100%;
+  height: 100%;
+  background: #60BDC2;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 36px;
+
+  color: #FFFFFF;
+  border-radius: 20px;
   cursor:pointer;
   transition: all .07s ease-in-out;
-  margin-top:12px;
-  float: right;
   &:hover {
     box-shadow:0 4px 10px rgba(0, 0, 0, .1);
     background:#7DE2D1;
@@ -57,7 +77,7 @@ const PublishingCoverImage = styled.section`
   position: relative;
   transition: 334ms height ease;
   margin: auto;
-  margin-bottom: 12px;
+  margin-bottom: 30px;
 `;
 
 const PublishingCoverInput = styled.input`
@@ -67,6 +87,8 @@ const PublishingCoverInput = styled.input`
 `;
 
 const PublishingCoverImagePlaceholder = styled.div`
+background: #D2D2D2;
+border-radius: 20px;
     @media screen and (min-width: 768px){
       height: 405px;
       width: 100%;
@@ -86,6 +108,8 @@ const PublishingCoverImageLabel = styled.label`
     text-indent: 0;
     position: relative;
     cursor: pointer;
+    background: #D2D2D2;
+    border-radius: 20px;
 `;
 
 const Img = styled.img`
@@ -95,6 +119,24 @@ const Img = styled.img`
   background-size: 100%;
   height: 100%;
   width: 100%;
+  background: #D2D2D2;
+  border-radius: 20px;
+`;
+
+const RightSection = styled.div`
+  position: absolute;
+  top: 565px;
+  left: 76%;
+`;
+
+const SubmitHandler = styled.div`
+  background: #FFFFFF;
+  border: 1px solid #CFCFCF;
+  box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  width: 300px;
+  height: 100px;
+  padding: 12px;
 `;
 
 function PostCreator() {
@@ -103,7 +145,7 @@ function PostCreator() {
   const [postImageLoad, setPostImageLoad] = useState<any>();
   const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
   const [imageFile, setImageFile] = useState<any>();
-  const onDrop = (acceptedFiles:any) => {
+  const onDrop = (acceptedFiles: any) => {
     setIsImageUploaded(false);
     setImageFile(acceptedFiles[0]);
     const fileReader = new FileReader();
@@ -188,34 +230,44 @@ function PostCreator() {
 
   return (
     <Page>
-      <BodyEditor>
-        <TitleTextArea
-          onChange={handleTitleChange}
-          onKeyDown={handleTitleKeyDown}
-          value={title}
-          placeholder="Title"
-        />
-        <PublishingCoverImage>
-          <div {...getRootProps()}>
-            <PublishingCoverInput {...getInputProps()} />
-            <PublishingCoverImagePlaceholder>
-              <PublishingCoverImageLabel>
-                {isImageUploaded && <div style={{ position: 'absolute', fontSize: '32px' }}>Click to upload the image</div>}
-                <Img style={{ backgroundImage: `url(${postImageLoad})` }} />
-              </PublishingCoverImageLabel>
-            </PublishingCoverImagePlaceholder>
-          </div>
-        </PublishingCoverImage>
-        <Editor
-          editorState={editorState}
-          wrapperClassName=""
-          onEditorStateChange={setEditorState}
-          placeholder="Tell your story..."
-          toolbar={toolbar}
-          localization={{ locale: 'en', translations: editorLabels }}
-        />
-        <Button type="submit" onClick={onButtonClick}>Post</Button>
-      </BodyEditor>
+      <div style={{ position: 'relative' }}>
+        <div>
+          <BodyEditor>
+            <TitleAreaWrapper>
+              <TitleTextArea
+                onChange={handleTitleChange}
+                onKeyDown={handleTitleKeyDown}
+                value={title}
+                placeholder="Title"
+              />
+            </TitleAreaWrapper>
+            <PublishingCoverImage>
+              <div {...getRootProps()}>
+                <PublishingCoverInput {...getInputProps()} />
+                <PublishingCoverImagePlaceholder>
+                  <PublishingCoverImageLabel>
+                    {isImageUploaded && <div style={{ position: 'absolute', fontSize: '32px' }}>Click to upload the image</div>}
+                    <Img style={{ backgroundImage: `url(${postImageLoad})` }} />
+                  </PublishingCoverImageLabel>
+                </PublishingCoverImagePlaceholder>
+              </div>
+            </PublishingCoverImage>
+            <Editor
+              editorState={editorState}
+              wrapperClassName="wrapper-class-name"
+              onEditorStateChange={setEditorState}
+              placeholder="Tell your story..."
+              toolbar={toolbar}
+              localization={{ locale: 'en', translations: editorLabels }}
+            />
+          </BodyEditor>
+        </div>
+        <RightSection>
+          <SubmitHandler>
+            <Button type="submit" onClick={onButtonClick}>Post</Button>
+          </SubmitHandler>
+        </RightSection>
+      </div>
     </Page>
   );
 }

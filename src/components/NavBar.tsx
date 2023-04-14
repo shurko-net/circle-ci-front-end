@@ -115,11 +115,11 @@ function NavBar({ isLogged, userImageLoad }:
                   Our story
                 </Button>
               </Link>
-              <Link to="/member">
+              {/* <Link to="/member">
                 <Button>
                   Membership
                 </Button>
-              </Link>
+              </Link> */}
               {isLogged && (
                 <>
                   <Link to="/create-post">

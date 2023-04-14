@@ -5,6 +5,7 @@ const Footer = styled.footer`
   bottom: 0;
   width: 100%;
   left: 0;
+  margin-top: 12px;
   /* margin-top: auto; */
 `;
 
