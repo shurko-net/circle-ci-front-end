@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
+import axios from 'axios';
 import Post from './Post';
-import { getPost } from '../../api/api';
 
 const MainPost = styled.div`
    position: relative;

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
+import axios from 'axios';
 import { Link } from 'react-router-dom';
-import {
-  getPostImage, getUser, getUserImage,
-} from '../../api/api';
 
 const Container = styled.div`
     height: 100%;
@@ -247,6 +244,7 @@ function Post(postData: any) {
               setPostDataImage(null);
             }
           });
+        });
       });
   }, []);
 
