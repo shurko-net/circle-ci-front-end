@@ -6,15 +6,14 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useDispatch, useSelector } from 'react-redux';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import Container from '../components/Container';
 import Flex from '../components/Flex';
 import {
   setPost, setLikes, setLiked,
 } from '../store/slices/postSlice';
 import Button from '../components/Button';
-import {
-  getPostById, getPostImage, getPostLike, getUserFollow, getUserImage,
-} from '../api/api';
+import UserImg from '../components/UserImg';
 // import { setFolowers } from '../store/slices/userSlice';
 // interface PostProps {
 //   fillIcon?: string;
@@ -296,6 +295,82 @@ const Img = styled.img`
   width: 680px;
 `;
 
+const CommentBlock = styled.div`
+  margin-left: 24px;
+  display: flex;
+`;
+
+const CommentButton = styled.button`
+  padding: 4px 0px;
+  opacity: 1;
+  cursor: pointer;
+  fill: rgba(117, 117, 117, 1);
+  border: 0;
+  align-items: center;
+  display: flex;
+  background: transparent;
+  overflow: visible;
+`;
+
+const CommentP = styled.p`
+    color: rgba(117, 117, 117, 1);
+    line-height: 20px;
+    font-size: 14px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+`;
+
+const ComentSpan = styled.span`
+  margin-left: 4px;
+  margin-top: 0px;
+`;
+
+const TextPanelBlock = styled.div`
+  padding: 0.4rem 1.6rem 0.8rem;
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  border: none;
+  border-top: 1px solid transparent;
+  margin: 0;
+`;
+
+const TextPanelImgBox = styled.div`
+  flex-shrink: 0;
+  margin-right: 0.4rem;
+  overflow: hidden;
+  border: 0;
+  margin-top: 4px;
+  margin-left: 0;
+`;
+
+const TextPanelComentBox = styled.div`
+  border: solid transparent;
+  border-width: 3px 0;
+  max-width: calc(100% - 44px);
+  flex-grow: 1;
+`;
+
+const CommentsCommentBoxForm = styled.form`
+  display: block;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0;
+`;
+
+const CommentsCommentTexteditor = styled.div`
+  border: 1px solid grey;
+  border-radius: 20px;
+`;
+
+// const CommentsCommentBoxTexteditor = styled.div`
+//   font-size: 1.4rem;
+//   flex: 1 1 auto;
+//   min-width: 0;
+//   padding: 9.5px;
+//   color: white;
+// `;
+
 function Post() {
   const {
     idUser, date, postContent, title, likes, isLiked,
@@ -318,9 +393,10 @@ function Post() {
   const { postId } = useParams();
   const [save, setSave] = useState(false);
   const [followed, setFollowed] = useState();
+  const [activeModal, setActiveModal] = useState(false);
 
   const handleLike = () => {
-    axios.put('https://localhost:7297/api/Like', {
+    axios.put('https://localhost:44353/api/Like', {
       idPost: Number(postId),
       idUser: id,
     }).then((resp) => {
@@ -328,8 +404,14 @@ function Post() {
       dispatch(setLiked(resp.data.liked));
     });
   };
+
+  const handleComment = () => {
+    setActiveModal(!activeModal);
+    console.log(postAuthorImage);
+  };
+
   const handleFollow = () => {
-    axios.put('https://localhost:7297/api/Follow', {
+    axios.put('https://localhost:44353/api/Follow', {
       idUser,
       idFollower: id,
     }).then((resp) => {
@@ -344,40 +426,31 @@ function Post() {
   };
 
   useEffect(() => {
-    getPostById(postId)
-      .then((data:any) => {
-        dispatch(setPost(data));
+    axios.get(`https://localhost:44353/api/Post/${postId}`)
+      .then((res:any) => {
+        dispatch(setPost(res.data));
 
-        getUserImage(idUser)
-          .then((image: any) => {
-            setPostAuthorImage(image);
-          });
-        // getUser(idUser)
-        axios.get(`https://localhost:7297/api/User/${idUser}`)
-          .then((userData: any) => {
-            // debugger;
-            setUser(userData);
-          });
-        getPostLike(postId, id)
-          .then((postData: any) => {
-            dispatch(setLikes(postData.likes));
-            dispatch(setLiked(postData.liked));
-          });
-        getUserFollow(idUser, id)
-          .then((resFollow: any) => {
-            // debugger;
-            console.log(user);
-            setUser(resFollow.user);
-            setFollowed(resFollow.followed);
-          });
-        getPostImage(postId)
-          .then((postImage: any) => {
-            if (postImage) {
-              setPostMainImage(`data:image/jpeg;base64,${postImage}`);
-            } else {
-              setPostMainImage(null);
-            }
-          });
+        axios.get(`https://localhost:44353/api/UserImage/${idUser}`).then((img: any) => {
+          setPostAuthorImage(img.data);
+        });
+        axios.get(`https://localhost:44353/api/User/${idUser}`).then((userRes: any) => {
+          setUser(userRes.data);
+        });
+        axios.get(`https://localhost:44353/api/Like/${postId}/${id}`).then((resLike: any) => {
+          dispatch(setLikes(resLike.data.likes));
+          dispatch(setLiked(resLike.data.liked));
+        });
+        axios.get(`https://localhost:44353/api/Follow/${idUser}/${id}`).then((resFollow: any) => {
+          setUser(resFollow.data.user);
+          setFollowed(resFollow.data.followed);
+        });
+        axios.get(`https://localhost:44353/api/PostImage/${postId}`).then((res2: any) => {
+          if (res2.data) {
+            setPostMainImage(`data:image/jpeg;base64,${res2.data}`);
+          } else {
+            setPostMainImage(null);
+          }
+        });
       });
   }, [postId, idUser, id]);
 
@@ -526,6 +599,18 @@ function Post() {
                           </Flex>
                         </SpanBlock>
                       </LikeBlock>
+                      <CommentBlock>
+                        <Block>
+                          <InlineBlock>
+                            <CommentButton onClick={handleComment}>
+                              <ChatBubbleOutlineIcon style={{ marginTop: '0px' }} />
+                              <CommentP>
+                                <ComentSpan>2</ComentSpan>
+                              </CommentP>
+                            </CommentButton>
+                          </InlineBlock>
+                        </Block>
+                      </CommentBlock>
                     </LeftSide>
                     <RightSide align="center">
                       <SaveBlock>
@@ -541,6 +626,37 @@ function Post() {
               </Flex>
             </BlockFlex>
           </Footer>
+          {
+          activeModal
+            ? (
+              <Flex direction="column">
+                <TextPanelBlock>
+                  <TextPanelImgBox>
+                    <UserImg
+                      backgroundImage={postAuthorImage}
+                      width="40px"
+                      height="40px"
+                      boxSizing="border-box"
+                      backgroundClip="content-box"
+                      border="none"
+                      display="inline-block"
+                      borderRadius="50%"
+                    />
+                  </TextPanelImgBox>
+                  <TextPanelComentBox>
+                    <CommentsCommentBoxForm>
+                      <CommentsCommentTexteditor>
+                        <Flex flexWrap="wrap">
+                          asda
+                        </Flex>
+                      </CommentsCommentTexteditor>
+                    </CommentsCommentBoxForm>
+                  </TextPanelComentBox>
+                </TextPanelBlock>
+              </Flex>
+            )
+            : null
+            }
         </Container>
         <SideBar>
           <SideBarPosition>
@@ -579,28 +695,30 @@ function Post() {
                 </SideBarBiographyP>
               </SideBarBiographyBlock>
               <SideBarUserButtonBlock>
-                {followed ? (
-                  <FollowButton
-                    click={handleFollow}
-                    marginLeft="0px"
-                    // primary
-                    border="1px solid #7DE2D1"
-                    color="#7DE2D1"
-                    background="none"
-                  >
-                    UnFollow
-                  </FollowButton>
-                )
-                  : (
-                    <FollowButton
-                      click={handleFollow}
-                      marginLeft="0px"
-                      primary
-                    >
-                      Follow
-                    </FollowButton>
+                {id !== idUser
+                  && (
+                    followed ? (
+                      <FollowButton
+                        click={handleFollow}
+                        marginLeft="0px"
+                      // primary
+                        border="1px solid #7DE2D1"
+                        color="#7DE2D1"
+                        background="none"
+                      >
+                        UnFollow
+                      </FollowButton>
+                    )
+                      : (
+                        <FollowButton
+                          click={handleFollow}
+                          marginLeft="0px"
+                          primary
+                        >
+                          Follow
+                        </FollowButton>
+                      )
                   )}
-
               </SideBarUserButtonBlock>
             </SideBarUserBlock>
           </SideBarPosition>

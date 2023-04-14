@@ -42,7 +42,7 @@ function Register() {
       email: values.email,
       password: values.password,
     };
-    createUser({
+    axios.post('https://localhost:44353/api/User', {
       name: user.firstName,
       surname: user.secondName,
       email: user.email,

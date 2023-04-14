@@ -233,23 +233,19 @@ function Post(postData: any) {
   const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
-    getUser(postData.postData.idUser)
-      .then((data: any) => {
-        setPostAuthor(data);
+    axios.get(`https://localhost:44353/api/User/${postData.postData.idUser}`)
+      .then((res: any) => {
+        setPostAuthor(res.data);
 
-        getUserImage(postData.postData.idUser)
-          .then((image: any) => {
-            setPostAuthorImage(image);
-          })
-          .then(() => {
-            getPostImage(postData.postData.idPost)
-              .then((postImage: any) => {
-                if (postImage) {
-                  setPostDataImage(`data:image/jpeg;base64,${postImage}`);
-                } else {
-                  setPostDataImage(null);
-                }
-              });
+        axios.get(`https://localhost:44353/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
+          setPostAuthorImage(res1.data);
+        }).then(() => {
+          axios.get(`https://localhost:44353/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
+            if (res2.data) {
+              setPostDataImage(`data:image/jpeg;base64,${res2.data}`);
+            } else {
+              setPostDataImage(null);
+            }
           });
       });
   }, []);

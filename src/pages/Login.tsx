@@ -29,7 +29,7 @@ function Login() {
       email: values.email,
       password: values.password,
     };
-    userLogin({
+    axios.post('https://localhost:44353/auth/Login', {
       email: userData.email,
       password: userData.password,
     })
@@ -46,10 +46,10 @@ function Login() {
         };
 
         dispatch(userAuth(userObj));
-        getUserImage(userObj.id)
-          .then((image: any) => {
-            dispatch(setUserImage(image));
-          });
+        axios.get(`https://localhost:44353/api/UserImage/${userObj.id}`).then((res: any) => {
+          dispatch(setUserImage(res.data));
+          // debugger;
+        });
         navigate('/');
       }).catch((err) => {
         if (err.response.status === 404) {

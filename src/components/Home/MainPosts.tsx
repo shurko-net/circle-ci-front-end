@@ -27,9 +27,9 @@ function MainPosts() {
   const [posts, setPosts] = useState<any>([]);
 
   useEffect(() => {
-    getPost()
-      .then((data: any) => {
-        setPosts(data.sort((a: any, b: any) => b.idPost - a.idPost));
+    axios.get('https://localhost:44353/api/Post')
+      .then((res: any) => {
+        setPosts(res.data.sort((a: any, b: any) => b.idPost - a.idPost));
       });
   }, []);
 

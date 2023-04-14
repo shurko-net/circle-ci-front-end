@@ -120,30 +120,30 @@ function PostCreator() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const onButtonClick = () => {
-    updateCategory({
+    axios.put('https://localhost:44353/api/Category', {
       idCategory: 1,
       name: 'Puppet',
-    })
-      .then(() => {
-        createPost({
-          idUser: user.id,
-          idCategory: 1,
-          date: new Date(),
-          postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-          title,
-          likes: 0, // ?
-        })
-          .then((data: any) => {
-            setTitle('');
-            setEditorState(EditorState.createEmpty());
-            const formData = new FormData();
-            formData.append('id', data.idPost);
-            formData.append('file', imageFile);
-            postImage(formData);
-          })
-          .catch((err: any) => {
-            console.log(err);
-          });
+    }).then(() => {
+      axios.post('https://localhost:44353/api/Post', {
+        idUser: user.id,
+        idCategory: 1,
+        date: new Date(),
+        postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+        title,
+        likes: 0,
+      }).then((res: any) => {
+        setTitle('');
+        setEditorState(EditorState.createEmpty());
+        const formData = new FormData();
+        formData.append('id', res.data.idPost);
+        formData.append('file', imageFile);
+        axios.post('https://localhost:44353/api/PostImage', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }).catch((err: any) => {
+        console.log(err);
       });
   };
 

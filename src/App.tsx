@@ -4,7 +4,8 @@ import {
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import NavBar from './components/NavBar';
+// import NavBar from './components/NavBar';
+import styled from 'styled-components';
 import Home from './pages/Home';
 import './App.css';
 import Register from './pages/Register';
@@ -17,6 +18,23 @@ import AccountHome from './components/AccountButtonPanel/AccountHome';
 import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
 import Post from './pages/Post';
+import NewHeader from './components/NewHeaderDesign/NewHeader';
+import GlobalStyle from './globalStyles';
+import NewFooter from './components/NewFooterDesign/NewFooter';
+
+// const Wrapper = styled.div`
+//   width: 100%;
+//   min-height: 100%;
+//   overflow: hidden;
+//   display: flex;
+//   flex-direction: column;
+// `;
+
+const Container = styled.div`
+  margin: 0 auto;
+  max-width: 1330px;
+  padding: 0px 15px;
+`;
 import { getUserImage, userLogin } from './api/api';
 
 function App() {
@@ -25,7 +43,7 @@ function App() {
   const userPassword = localStorage.getItem('password');
 
   if (userEmail && userPassword) {
-    userLogin({
+    axios.post('https://localhost:44353/auth/Login', {
       email: userEmail,
       password: userPassword,
     })
@@ -41,10 +59,9 @@ function App() {
           subscribed: data.subscribed,
         };
         dispatch(userAuth(userObj));
-        getUserImage(userObj.id)
-          .then((image: any) => {
-            dispatch(setUserImage(image));
-          });
+        axios.get(`https://localhost:44353/api/UserImage/${userObj.id}`).then((res: any) => {
+          dispatch(setUserImage(res.data));
+        });
       }).catch((err) => {
         console.log(err.response.data);
       });
@@ -78,20 +95,23 @@ function App() {
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     axios
-      .post('https://localhost:7297/api/UserImage', formData, {
+      .post('https://localhost:44353/api/UserImage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-    getUserImage(userId)
-      .then((image) => {
-        dispatch(setUserImage(image));
+    axios.get(`https://localhost:44353/api/UserImage/${userId}`)
+      .then((res) => {
+        dispatch(setUserImage(res.data));
       });
   };
 
   return (
-    <div className="App">
-      <NavBar isLogged={isLogged} userImageLoad={userImageLoad} />
+
+    <Container>
+      <GlobalStyle />
+      <NewHeader />
+      {/* <NavBar isLogged={isLogged} userImageLoad={userImageLoad} /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Home />} />
@@ -117,8 +137,9 @@ function App() {
           )}
         <Route path="about" element={<OurStory />} />
       </Routes>
+      <NewFooter />
+    </Container>
 
-    </div>
   );
 }
 
