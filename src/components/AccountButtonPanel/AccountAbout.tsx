@@ -72,7 +72,7 @@ function AccountAbout() {
 
   const onSaveClick = () => {
     setIsEditorVisible(false);
-    axios.put<SaveResponse>('https://localhost:44353/api/User', {
+    axios.put<SaveResponse>('https://localhost:7260/api/User', {
       idUser: currentUser.id,
       tNumber: currentUser.phoneNumber,
       name: currentUser.firstName,

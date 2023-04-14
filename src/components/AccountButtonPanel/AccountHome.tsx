@@ -88,7 +88,7 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
 
   const onSubmitEmail = () => {
     dispatch(setUserEmail(textareaEmail));
-    axios.put('https://localhost:44353/api/User', {
+    axios.put('https://localhost:7260/api/User', {
       idUser: userData.id,
       name: textareaName.split(' ')[0] ?? 'Super',
       surname: textareaName.split(' ')[1] ?? 'Jarik2004',
@@ -101,7 +101,7 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
   };
 
   const onSubmit = () => {
-    axios.put('https://localhost:44353/api/User', {
+    axios.put('https://localhost:7260/api/User', {
       idUser: userData.id,
       tNumber: textareaPhone,
       name: textareaName.split(' ')[0] ?? 'Super',

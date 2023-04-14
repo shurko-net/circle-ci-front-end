@@ -230,14 +230,14 @@ function Post(postData: any) {
   const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
-    axios.get(`https://localhost:44353/api/User/${postData.postData.idUser}`)
+    axios.get(`https://localhost:7260/api/User/${postData.postData.idUser}`)
       .then((res: any) => {
         setPostAuthor(res.data);
 
-        axios.get(`https://localhost:44353/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
+        axios.get(`https://localhost:7260/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
           setPostAuthorImage(res1.data);
         }).then(() => {
-          axios.get(`https://localhost:44353/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
+          axios.get(`https://localhost:7260/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
             if (res2.data) {
               setPostDataImage(`data:image/jpeg;base64,${res2.data}`);
             } else {

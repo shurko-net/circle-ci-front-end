@@ -396,7 +396,7 @@ function Post() {
   const [activeModal, setActiveModal] = useState(false);
 
   const handleLike = () => {
-    axios.put('https://localhost:44353/api/Like', {
+    axios.put('https://localhost:7260/api/Like', {
       idPost: Number(postId),
       idUser: id,
     }).then((resp) => {
@@ -411,7 +411,7 @@ function Post() {
   };
 
   const handleFollow = () => {
-    axios.put('https://localhost:44353/api/Follow', {
+    axios.put('https://localhost:7260/api/Follow', {
       idUser,
       idFollower: id,
     }).then((resp) => {
@@ -426,25 +426,25 @@ function Post() {
   };
 
   useEffect(() => {
-    axios.get(`https://localhost:44353/api/Post/${postId}`)
+    axios.get(`https://localhost:7260/api/Post/${postId}`)
       .then((res:any) => {
         dispatch(setPost(res.data));
 
-        axios.get(`https://localhost:44353/api/UserImage/${idUser}`).then((img: any) => {
+        axios.get(`https://localhost:7260/api/UserImage/${idUser}`).then((img: any) => {
           setPostAuthorImage(img.data);
         });
-        axios.get(`https://localhost:44353/api/User/${idUser}`).then((userRes: any) => {
+        axios.get(`https://localhost:7260/api/User/${idUser}`).then((userRes: any) => {
           setUser(userRes.data);
         });
-        axios.get(`https://localhost:44353/api/Like/${postId}/${id}`).then((resLike: any) => {
+        axios.get(`https://localhost:7260/api/Like/${postId}/${id}`).then((resLike: any) => {
           dispatch(setLikes(resLike.data.likes));
           dispatch(setLiked(resLike.data.liked));
         });
-        axios.get(`https://localhost:44353/api/Follow/${idUser}/${id}`).then((resFollow: any) => {
+        axios.get(`https://localhost:7260/api/Follow/${idUser}/${id}`).then((resFollow: any) => {
           setUser(resFollow.data.user);
           setFollowed(resFollow.data.followed);
         });
-        axios.get(`https://localhost:44353/api/PostImage/${postId}`).then((res2: any) => {
+        axios.get(`https://localhost:7260/api/PostImage/${postId}`).then((res2: any) => {
           if (res2.data) {
             setPostMainImage(`data:image/jpeg;base64,${res2.data}`);
           } else {

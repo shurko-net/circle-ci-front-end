@@ -119,11 +119,11 @@ function PostCreator() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const onButtonClick = () => {
-    axios.put('https://localhost:44353/api/Category', {
+    axios.put('https://localhost:7260/api/Category', {
       idCategory: 1,
       name: 'Puppet',
     }).then(() => {
-      axios.post('https://localhost:44353/api/Post', {
+      axios.post('https://localhost:7260/api/Post', {
         idUser: user.id,
         idCategory: 1,
         date: new Date(),
@@ -136,7 +136,7 @@ function PostCreator() {
         const formData = new FormData();
         formData.append('id', res.data.idPost);
         formData.append('file', imageFile);
-        axios.post('https://localhost:44353/api/PostImage', formData, {
+        axios.post('https://localhost:7260/api/PostImage', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

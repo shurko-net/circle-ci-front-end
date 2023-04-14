@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
 import '../App.css';
 import axios from 'axios';
 import { userAuth, setUserImage } from '../store/slices/userSlice';
@@ -28,24 +29,25 @@ function Login() {
       email: values.email,
       password: values.password,
     };
-    axios.post('https://localhost:44353/auth/Login', {
+
+    axios.post('https://localhost:7260/auth/Login', {
       email: userData.email,
       password: userData.password,
     })
-      .then((data:any) => {
+      .then((response) => {
         const userObj = {
-          id: data.idUser,
-          firstName: data.name,
-          secondName: data.surname,
-          email: data.email,
-          password: data.password,
-          biography: data.biography,
-          phoneNumber: data.tNumber,
-          subscribed: data.subscribed,
+          id: response.data.idUser,
+          firstName: response.data.name,
+          secondName: response.data.surname,
+          email: response.data.email,
+          password: response.data.password,
+          biography: response.data.biography,
+          phoneNumber: response.data.tNumber,
+          subscribed: response.data.subscribed,
         };
 
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:44353/api/UserImage/${userObj.id}`).then((res: any) => {
+        axios.get(`https://localhost:7260/api/UserImage/${userObj.id}`).then((res: any) => {
           dispatch(setUserImage(res.data));
           // debugger;
         });
