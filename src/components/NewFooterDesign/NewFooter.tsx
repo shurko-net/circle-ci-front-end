@@ -2,17 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Footer = styled.footer`
-  position: absolute;
   bottom: 0;
   width: 100%;
+  left: 0;
+  /* margin-top: auto; */
 `;
 
 const FooterContainerContainer = styled.div`
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   left: 0;
   bottom: 0;
-  z-index: 50;
+  /* z-index: 50; */
   background: #D7D7D7;
 `;
 
@@ -24,7 +25,6 @@ const FooterBody = styled.div`
 
 const FooterMenuContainer = styled.div`
   min-height: 382px;
-  position: relative;
 `;
 
 const MenuFooter = styled.div`

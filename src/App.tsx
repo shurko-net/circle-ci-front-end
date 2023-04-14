@@ -21,19 +21,16 @@ import Post from './pages/Post';
 import NewHeader from './components/NewHeaderDesign/NewHeader';
 import GlobalStyle from './globalStyles';
 import NewFooter from './components/NewFooterDesign/NewFooter';
-
-// const Wrapper = styled.div`
-//   width: 100%;
-//   min-height: 100%;
-//   overflow: hidden;
-//   display: flex;
-//   flex-direction: column;
-// `;
+import NewMain from './components/NewMainDesign/NewMain';
 
 const Container = styled.div`
-  margin: 0 auto;
-  max-width: 1330px;
-  padding: 0px 15px;
+  /* margin: 0 auto;
+  max-width: 1330px; */
+  /* padding: 0px 15px; */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* min-height: 100%; */
 `;
 
 function App() {
@@ -110,9 +107,10 @@ function App() {
     <Container>
       <GlobalStyle />
       <NewHeader />
+
       {/* <NavBar isLogged={isLogged} userImageLoad={userImageLoad} /> */}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<NewMain />} />
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/me/save" element={<Saved />} />
