@@ -35,7 +35,6 @@ const Container = styled.div`
   max-width: 1330px;
   padding: 0px 15px;
 `;
-import { getUserImage, userLogin } from './api/api';
 
 function App() {
   const dispatch = useDispatch();
