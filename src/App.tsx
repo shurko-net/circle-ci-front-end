@@ -17,6 +17,7 @@ import AccountHome from './components/AccountButtonPanel/AccountHome';
 import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
 import Post from './pages/Post';
+import { getUserImage, userLogin } from './api/api';
 
 function App() {
   const dispatch = useDispatch();
@@ -24,25 +25,26 @@ function App() {
   const userPassword = localStorage.getItem('password');
 
   if (userEmail && userPassword) {
-    axios.post('https://localhost:7297/auth/Login', {
+    userLogin({
       email: userEmail,
       password: userPassword,
     })
-      .then((response) => {
+      .then((data:any) => {
         const userObj: IUser = {
-          id: response.data.idUser,
-          firstName: response.data.name,
-          secondName: response.data.surname,
-          email: response.data.email,
-          password: response.data.password,
-          biography: response.data.biography,
-          phoneNumber: response.data.tNumber,
-          subscribed: response.data.subscribed,
+          id: data.idUser,
+          firstName: data.name,
+          secondName: data.surname,
+          email: data.email,
+          password: data.password,
+          biography: data.biography,
+          phoneNumber: data.tNumber,
+          subscribed: data.subscribed,
         };
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:7297/api/UserImage/${userObj.id}`).then((res: any) => {
-          dispatch(setUserImage(res.data));
-        });
+        getUserImage(userObj.id)
+          .then((image: any) => {
+            dispatch(setUserImage(image));
+          });
       }).catch((err) => {
         console.log(err.response.data);
       });
@@ -81,9 +83,9 @@ function App() {
           'Content-Type': 'multipart/form-data',
         },
       });
-    axios.get(`https://localhost:7297/api/UserImage/${userId}`)
-      .then((res) => {
-        dispatch(setUserImage(res.data));
+    getUserImage(userId)
+      .then((image) => {
+        dispatch(setUserImage(image));
       });
   };
 

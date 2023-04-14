@@ -12,6 +12,9 @@ import {
   setPost, setLikes, setLiked,
 } from '../store/slices/postSlice';
 import Button from '../components/Button';
+import {
+  getPostById, getPostImage, getPostLike, getUserFollow, getUserImage,
+} from '../api/api';
 // import { setFolowers } from '../store/slices/userSlice';
 // interface PostProps {
 //   fillIcon?: string;
@@ -341,31 +344,40 @@ function Post() {
   };
 
   useEffect(() => {
-    axios.get(`https://localhost:7297/api/Post/${postId}`)
-      .then((res:any) => {
-        dispatch(setPost(res.data));
+    getPostById(postId)
+      .then((data:any) => {
+        dispatch(setPost(data));
 
-        axios.get(`https://localhost:7297/api/UserImage/${idUser}`).then((img: any) => {
-          setPostAuthorImage(img.data);
-        });
-        axios.get(`https://localhost:7297/api/User/${idUser}`).then((userRes: any) => {
-          setUser(userRes.data);
-        });
-        axios.get(`https://localhost:7297/api/Like/${postId}/${id}`).then((resLike: any) => {
-          dispatch(setLikes(resLike.data.likes));
-          dispatch(setLiked(resLike.data.liked));
-        });
-        axios.get(`https://localhost:7297/api/Follow/${idUser}/${id}`).then((resFollow: any) => {
-          setUser(resFollow.data.user);
-          setFollowed(resFollow.data.followed);
-        });
-        axios.get(`https://localhost:7297/api/PostImage/${postId}`).then((res2: any) => {
-          if (res2.data) {
-            setPostMainImage(`data:image/jpeg;base64,${res2.data}`);
-          } else {
-            setPostMainImage(null);
-          }
-        });
+        getUserImage(idUser)
+          .then((image: any) => {
+            setPostAuthorImage(image);
+          });
+        // getUser(idUser)
+        axios.get(`https://localhost:7297/api/User/${idUser}`)
+          .then((userData: any) => {
+            // debugger;
+            setUser(userData);
+          });
+        getPostLike(postId, id)
+          .then((postData: any) => {
+            dispatch(setLikes(postData.likes));
+            dispatch(setLiked(postData.liked));
+          });
+        getUserFollow(idUser, id)
+          .then((resFollow: any) => {
+            // debugger;
+            console.log(user);
+            setUser(resFollow.user);
+            setFollowed(resFollow.followed);
+          });
+        getPostImage(postId)
+          .then((postImage: any) => {
+            if (postImage) {
+              setPostMainImage(`data:image/jpeg;base64,${postImage}`);
+            } else {
+              setPostMainImage(null);
+            }
+          });
       });
   }, [postId, idUser, id]);
 

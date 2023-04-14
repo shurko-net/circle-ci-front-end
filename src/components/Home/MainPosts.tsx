@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+
 import Post from './Post';
+import { getPost } from '../../api/api';
 
 const MainPost = styled.div`
    position: relative;
@@ -26,9 +27,9 @@ function MainPosts() {
   const [posts, setPosts] = useState<any>([]);
 
   useEffect(() => {
-    axios.get('https://localhost:7297/api/Post')
-      .then((res: any) => {
-        setPosts(res.data.sort((a: any, b: any) => b.idPost - a.idPost));
+    getPost()
+      .then((data: any) => {
+        setPosts(data.sort((a: any, b: any) => b.idPost - a.idPost));
       });
   }, []);
 

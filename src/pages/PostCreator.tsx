@@ -7,8 +7,9 @@ import {
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+// import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
+import { createPost, postImage, updateCategory } from '../api/api';
 
 const Page = styled.div`
     margin-top: 70px;
@@ -119,32 +120,31 @@ function PostCreator() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const onButtonClick = () => {
-    axios.put('https://localhost:7297/api/Category', {
+    updateCategory({
       idCategory: 1,
       name: 'Puppet',
-    }).then(() => {
-      axios.post('https://localhost:7297/api/Post', {
-        idUser: user.id,
-        idCategory: 1,
-        date: new Date(),
-        postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-        title,
-        likes: 0,
-      }).then((res: any) => {
-        setTitle('');
-        setEditorState(EditorState.createEmpty());
-        const formData = new FormData();
-        formData.append('id', res.data.idPost);
-        formData.append('file', imageFile);
-        axios.post('https://localhost:7297/api/PostImage', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      }).catch((err: any) => {
-        console.log(err);
+    })
+      .then(() => {
+        createPost({
+          idUser: user.id,
+          idCategory: 1,
+          date: new Date(),
+          postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+          title,
+          likes: 0, // ?
+        })
+          .then((data: any) => {
+            setTitle('');
+            setEditorState(EditorState.createEmpty());
+            const formData = new FormData();
+            formData.append('id', data.idPost);
+            formData.append('file', imageFile);
+            postImage(formData);
+          })
+          .catch((err: any) => {
+            console.log(err);
+          });
       });
-    });
   };
 
   const handleTitleChange = (e: any) => {
@@ -185,8 +185,6 @@ function PostCreator() {
       options: [],
     },
   };
-
-  console.log(postImageLoad);
 
   return (
     <Page>
