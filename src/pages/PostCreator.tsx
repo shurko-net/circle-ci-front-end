@@ -7,8 +7,9 @@ import {
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+// import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
+import { createPost, postImage, updateCategory } from '../api/api';
 
 const Page = styled.div`
     margin-top: 70px;
@@ -144,7 +145,6 @@ function PostCreator() {
       }).catch((err: any) => {
         console.log(err);
       });
-    });
   };
 
   const handleTitleChange = (e: any) => {
@@ -185,8 +185,6 @@ function PostCreator() {
       options: [],
     },
   };
-
-  console.log(postImageLoad);
 
   return (
     <Page>

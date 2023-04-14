@@ -5,10 +5,10 @@ import * as yup from 'yup';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
 import '../App.css';
-import axios from 'axios';
+
 import { userAuth, setUserImage } from '../store/slices/userSlice';
+import { userLogin, getUserImage } from '../api/api';
 
 const paragraph = { color: '#404040', marginTop: '4px', fontSize: '1.2rem' };
 
@@ -29,21 +29,20 @@ function Login() {
       email: values.email,
       password: values.password,
     };
-
     axios.post('https://localhost:44353/auth/Login', {
       email: userData.email,
       password: userData.password,
     })
-      .then((response) => {
+      .then((data:any) => {
         const userObj = {
-          id: response.data.idUser,
-          firstName: response.data.name,
-          secondName: response.data.surname,
-          email: response.data.email,
-          password: response.data.password,
-          biography: response.data.biography,
-          phoneNumber: response.data.tNumber,
-          subscribed: response.data.subscribed,
+          id: data.idUser,
+          firstName: data.name,
+          secondName: data.surname,
+          email: data.email,
+          password: data.password,
+          biography: data.biography,
+          phoneNumber: data.tNumber,
+          subscribed: data.subscribed,
         };
 
         dispatch(userAuth(userObj));

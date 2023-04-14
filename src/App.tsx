@@ -35,6 +35,7 @@ const Container = styled.div`
   max-width: 1330px;
   padding: 0px 15px;
 `;
+import { getUserImage, userLogin } from './api/api';
 
 function App() {
   const dispatch = useDispatch();
@@ -46,16 +47,16 @@ function App() {
       email: userEmail,
       password: userPassword,
     })
-      .then((response) => {
+      .then((data:any) => {
         const userObj: IUser = {
-          id: response.data.idUser,
-          firstName: response.data.name,
-          secondName: response.data.surname,
-          email: response.data.email,
-          password: response.data.password,
-          biography: response.data.biography,
-          phoneNumber: response.data.tNumber,
-          subscribed: response.data.subscribed,
+          id: data.idUser,
+          firstName: data.name,
+          secondName: data.surname,
+          email: data.email,
+          password: data.password,
+          biography: data.biography,
+          phoneNumber: data.tNumber,
+          subscribed: data.subscribed,
         };
         dispatch(userAuth(userObj));
         axios.get(`https://localhost:44353/api/UserImage/${userObj.id}`).then((res: any) => {
