@@ -4,7 +4,6 @@ import {
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-// import NavBar from './components/NavBar';
 import styled from 'styled-components';
 import Home from './pages/Home';
 import './App.css';
@@ -18,20 +17,14 @@ import AccountHome from './components/AccountButtonPanel/AccountHome';
 import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
 import Post from './pages/Post';
-// import NewHeader from './components/NewHeaderDesign/NewHeader';
 import GlobalStyle from './globalStyles';
 import NewFooter from './components/NewFooterDesign/NewFooter';
-// import NewMain from './components/NewMainDesign/NewMain';
 import NavBar from './components/NavBar';
 
 const Container = styled.div`
-  /* margin: 0 auto;
-  max-width: 1330px; */
-  /* padding: 0px 15px; */
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* min-height: 100%; */
 `;
 
 function App() {

@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 const Container = styled.div`
     height: 100%;
-    width: 100%;
+    width: 800px;
+    background: #FFFFFF;
+    border: 1px solid #CFCFCF;
+    box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    font-family: 'Soehne web buch', sans-serif;
     @media (min-width: 1080px) {
       margin-bottom: 48px;
     }
@@ -23,52 +29,24 @@ const Container = styled.div`
     }
 `;
 
-const Content = styled.div`
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
-    align-items: center;
-`;
-
-const Description = styled.div`
-    margin-right: 20px;
-    min-width: 0;
-    width: 100%;
-    display: block;
-`;
-
 const User = styled.div`
     padding: 16px;
-    display: block;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    border-radius: 8px;
-    transition: box-shadow 0.5s;
-    cursor: pointer;
-    &:hover {
-      box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-    }
 `;
 
 const UserContent = styled.div`
     display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-direction: row;
-    padding-bottom: 8px;
-`;
-
-const UserImgBlock = styled.div`
-    position: relative;
-    display: block;
+    padding-bottom: 20px;
 `;
 
 const UserImg = styled.img`
     display: block;
     background-size: 100%;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    background-color: rgba(242, 242, 242, 1);
-    box-sizing: border-box;
+    width: 36px;
+    height: 36px;
 `;
 
 const UserNameContainer = styled.div`
@@ -84,14 +62,11 @@ const UserNameBlock = styled.div`
 `;
 
 const UserNameText = styled.h4`
-    padding-right: 2px;
-    word-break: break-all;
-    max-height: 16px;
-    line-height: 16px;
-    font-size: 13px;
-    font-weight: 500;
-    overflow: hidden;
-    color: rgba(41, 41, 41, 1);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  color: #414141;
 `;
 
 const Title = styled.h2`
@@ -133,12 +108,6 @@ const Title = styled.h2`
       max-height: 40px;
       font-size: 16px;
     }
-`;
-
-const BlockContent = styled.div`
-    padding-top: 4px;
-    display: block;
-    position: relative;
 `;
 
 const PostContent = styled.div`
@@ -193,15 +162,47 @@ const DateWrapper = styled.span`
 `;
 
 const Img = styled.img`
-  background-color: rgba(242, 242, 242, 1);
-  box-sizing: border-box;
+  margin: 18px 0;
   display: block;
-  position: absolute;
   background-size: 100%;
-  height: 100px;
-  width: 200px;
-  left: 75%;
-  top: -1250%
+  height: 528px;
+  width: 100%;
+  object-fit: fill;
+`;
+
+const BottomContent = styled.div`
+  display: flex;
+  align-items: center;
+  height: 54px;
+  background: #F1F1F1;
+  border-radius: 0px 0px 20px 20px;
+`;
+
+const IconButton = styled.button`
+    user-select: none;
+    outline: 0;
+    border: 0;
+    cursor: pointer;
+    fill: rgba(117, 117, 117, 1);
+    padding: 0 0 0 20px;
+    background: transparent;
+    
+`;
+
+const LikeIcon = styled(ThumbUpIcon)<{ fillIcon?: string }>`
+   &:hover {
+    stroke: black;
+    fill: black;
+  }
+  fill:  ${(props) => props.fillIcon || ''};
+`;
+
+const LikesCount = styled.p`
+  font-size: 13px;
+  color: rgba(117, 117, 117, 1);
+  line-height: 20px;
+  font-weight: 400;
+  padding: 0 6px;
 `;
 
 interface IUser {
@@ -228,11 +229,19 @@ function Post(postData: any) {
   });
   const [postAuthorImage, setPostAuthorImage] = useState('');
   const [postDataImage, setPostDataImage] = useState<any>();
+  const [likes, setLikes] = useState<number>(postData.postData.likes);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
 
   useEffect(() => {
     axios.get(`https://localhost:7260/api/User/${postData.postData.idUser}`)
       .then((res: any) => {
         setPostAuthor(res.data);
+        console.log(postData.postData.likes);
+
+        axios.get(`https://localhost:7260/api/Like/${postData.postData.idPost}/${postData.postData.idUser}`)
+          .then((resp: any) => {
+            setIsLiked(resp.data.liked);
+          });
 
         axios.get(`https://localhost:7260/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
           setPostAuthorImage(res1.data);
@@ -248,45 +257,55 @@ function Post(postData: any) {
       });
   }, []);
 
+  const handleLike = () => {
+    axios.put('https://localhost:7260/api/Like', {
+      idPost: Number(postData.postData.idPost),
+      idUser: postData.postData.idUser,
+    }).then(() => {
+      setIsLiked(!isLiked);
+      setLikes(!isLiked ? likes + 1 : likes - 1);
+    });
+  };
+
   return (
     <Container>
       <Link
         to={`post/${postData.postData.idPost}`}
         style={{ textDecoration: 'none' }}
       >
-        <Content>
-          <Description>
-            <User>
-              <UserContent>
-                <UserImgBlock>
-                  <UserImg style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
-                </UserImgBlock>
-                <UserNameContainer>
-                  <UserNameBlock>
-                    <UserNameText>{`${postAuthor.name ?? 'Yarik'} ${postAuthor.surname}`}</UserNameText>
-                  </UserNameBlock>
-                </UserNameContainer>
-              </UserContent>
-              <Title>{postData.postData.title}</Title>
-              <BlockContent>
-                {postDataImage && <Img style={{ backgroundImage: `url(${postDataImage})` }} />}
-              </BlockContent>
-              <BlockContent>
-                <PostContent
-                  dangerouslySetInnerHTML={{ __html: postData.postData.postContent }}
-                />
-              </BlockContent>
-              <DataPost>
-                <DataPostContainer>
-                  <DateWrapper>
-                    {new Date(postData.postData.date).toDateString()}
-                  </DateWrapper>
-                </DataPostContainer>
-              </DataPost>
-            </User>
-          </Description>
-        </Content>
+        <User>
+          <UserContent>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <UserImg style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
+              <UserNameContainer>
+                <UserNameBlock>
+                  <UserNameText>{`${postAuthor.name ?? 'Yarik'} ${postAuthor.surname}`}</UserNameText>
+                </UserNameBlock>
+              </UserNameContainer>
+            </div>
+            <DataPost>
+              <DataPostContainer>
+                <DateWrapper>
+                  {new Date(postData.postData.date).toDateString()}
+                </DateWrapper>
+              </DataPostContainer>
+            </DataPost>
+          </UserContent>
+          <Title>{postData.postData.title}</Title>
+          {postDataImage && <Img style={{ backgroundImage: `url(${postDataImage})` }} />}
+          <PostContent
+            dangerouslySetInnerHTML={{ __html: postData.postData.postContent }}
+          />
+        </User>
       </Link>
+      <BottomContent>
+        <IconButton onClick={handleLike}>
+          {!isLiked ? <LikeIcon color="action" /> : <LikeIcon /> }
+        </IconButton>
+        <LikesCount>
+          {likes}
+        </LikesCount>
+      </BottomContent>
     </Container>
   );
 }
