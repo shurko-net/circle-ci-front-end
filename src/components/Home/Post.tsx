@@ -236,7 +236,6 @@ function Post(postData: any) {
     axios.get(`https://localhost:7260/api/User/${postData.postData.idUser}`)
       .then((res: any) => {
         setPostAuthor(res.data);
-        console.log(postData.postData.likes);
 
         axios.get(`https://localhost:7260/api/Like/${postData.postData.idPost}/${postData.postData.idUser}`)
           .then((resp: any) => {
@@ -255,7 +254,7 @@ function Post(postData: any) {
           });
         });
       });
-  }, []);
+  }, [postData.filter]);
 
   const handleLike = () => {
     axios.put('https://localhost:7260/api/Like', {

@@ -89,9 +89,18 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-function NavBar({ isLogged, userImageLoad }:
+const Search = styled.input`
+  background: #FFFFFF;
+  border: 2px solid #AFAFAF;
+  border-radius: 20px;
+  height: 30px;
+  width: 200px;
+  padding: 0 10px;
+`;
 
-{ isLogged: boolean, userImageLoad: string }) {
+function NavBar({ isLogged, userImageLoad, filterText }:
+
+{ isLogged: boolean, userImageLoad: string, filterText: any }) {
   return (
     <NavBarWrapper>
       <Body>
@@ -112,17 +121,12 @@ function NavBar({ isLogged, userImageLoad }:
             <NavbarBrand>
               <Link to="/about">
                 <Button>
-                  Our story
+                  Історія
                 </Button>
               </Link>
-              {/* <Link to="/member">
-                <Button>
-                  Membership
-                </Button>
-              </Link> */}
               {isLogged && (
                 <>
-                  <Link to="/create-post">
+                  <Link to="/create-post" style={{ marginRight: '20px' }}>
                     <Button>
                       Write
                     </Button>
@@ -135,16 +139,20 @@ function NavBar({ isLogged, userImageLoad }:
               <>
                 <Link to="/login">
                   <Button>
-                    Sign In
+                    Увійти
                   </Button>
                 </Link>
-                <Link to="/register">
+                <Link to="/register" style={{ marginRight: '20px' }}>
                   <Button>
-                    Get started
+                    Рєеструватися
                   </Button>
                 </Link>
               </>
               )}
+              <Search
+                placeholder="Пошук"
+                onChange={(e: any) => filterText(e.target.value)}
+              />
             </NavbarBrand>
           </Content>
         </Container>

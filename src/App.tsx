@@ -31,6 +31,7 @@ function App() {
   const dispatch = useDispatch();
   const userEmail = localStorage.getItem('email');
   const userPassword = localStorage.getItem('password');
+  const [searchedText, setSearchedText] = useState<string>('');
 
   if (userEmail && userPassword) {
     axios.post('https://localhost:7260/auth/Login', {
@@ -53,7 +54,7 @@ function App() {
           dispatch(setUserImage(res.data));
         });
       }).catch((err) => {
-        console.log(err.response.data);
+        console.log(err);
       });
   }
 
@@ -101,9 +102,9 @@ function App() {
     <Container>
       <GlobalStyle />
       {/* <NewHeader /> */}
-      <NavBar isLogged={isLogged} userImageLoad={userImageLoad} />
+      <NavBar filterText={setSearchedText} isLogged={isLogged} userImageLoad={userImageLoad} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home filterText={searchedText} />} />
         <Route path="/account" element={<Home />} />
         <Route path="/posts" element={<Home />} />
         <Route path="/me/save" element={<Saved />} />

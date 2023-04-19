@@ -69,7 +69,6 @@ const SideBarUserBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: max-content;
 `;
 
 const SideBarUserDiv = styled.div`
@@ -114,8 +113,8 @@ function Account({ children, userImageLoad, user } :
               firstUrl={`/${subdomain}/home`}
               secondUrl={`/${subdomain}/about`}
               text={userFullName}
-              nameFirstButton="Home"
-              nameSecondButton="About"
+              nameFirstButton="Дім"
+              nameSecondButton="Біографія"
             />
             <UpContainer>
               {children}

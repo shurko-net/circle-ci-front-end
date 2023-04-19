@@ -8,7 +8,7 @@ import React, {
 import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
-import BookmarksIcon from '@mui/icons-material/Bookmarks';
+// import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { Link, useNavigate } from 'react-router-dom';
 
 import './UserOptionMenu.css';
@@ -97,18 +97,18 @@ function UserPanel({ userImageLoad }:{ userImageLoad: string }) {
         <Link to={`/${subdomain}/home`}>
           <button type="submit" onClick={onClose}>
             <PersonIcon />
-            <span>Profile</span>
+            <span>Профіль</span>
           </button>
         </Link>
-        <Link to="/me/save">
+        {/* <Link to="/me/save">
           <button type="submit" onClick={onClose}>
             <BookmarksIcon />
-            <span>Save</span>
+            <span>Ва</span>
           </button>
-        </Link>
+        </Link> */}
         <button type="submit" onClick={signOut}>
           <CloseIcon />
-          <span>Sign Out</span>
+          <span>Вийти</span>
         </button>
 
       </div>

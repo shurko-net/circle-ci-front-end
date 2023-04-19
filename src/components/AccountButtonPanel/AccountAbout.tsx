@@ -108,7 +108,7 @@ function AccountAbout() {
         )
         : (
           <>
-            <Button type="submit" onClick={onVisibleClick}>Show Editor</Button>
+            <Button type="submit" onClick={onVisibleClick}>Редагувати</Button>
             <AboutField dangerouslySetInnerHTML={{ __html: userBiog }} />
           </>
         )}

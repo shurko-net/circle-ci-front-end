@@ -78,9 +78,9 @@ function Login() {
           <div className="wrapper">
             <div className="register-box">
               <h2 style={{ fontSize: '2.2rem' }}>
-                Welcome back
+                З поверненням
               </h2>
-              <p style={paragraph}>Enter your details</p>
+              <p style={paragraph}>Введіть ваші дані</p>
               <div className="form">
                 <div className="form-group">
                   <div className="label">Email</div>
@@ -99,7 +99,7 @@ function Login() {
                 && <div className="error-style"><p className="error">{errors.email}</p></div>}
 
                 <div className="form-group">
-                  <div className="label">Your password</div>
+                  <div className="label">Пароль</div>
                   <div className="icon"><LockIcon fontSize="medium" /></div>
                   <input
                     className={errors.password ? 'invalid' : 'input'}

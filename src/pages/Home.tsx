@@ -15,20 +15,32 @@ const Posts = styled.div`
   justify-content: center;
 `;
 
-function Home() {
+function Home({ filterText }: { filterText?: any }) {
   const [posts, setPosts] = useState<any>([]);
+  const [filteredPosts, setFilteredPosts] = useState<any>([]);
 
   useEffect(() => {
     axios.get('https://localhost:7260/api/Post')
       .then((res: any) => {
-        setPosts(res.data.sort((a: any, b: any) => b.idPost - a.idPost));
+        const tempPosts = res.data.sort((a: any, b: any) => b.idPost - a.idPost);
+        setPosts(tempPosts);
+        setFilteredPosts(tempPosts);
       });
   }, []);
+
+  useEffect(() => {
+    setFilteredPosts(filterText
+      ? filteredPosts.filter((post: any) => post.title.toLowerCase()
+        .includes(filterText.toLowerCase()))
+      : posts);
+  }, [filterText]);
 
   return (
     <Main>
       <Posts>
-        { posts.map((post: any, index: number) => <Post key={index} postData={post} />)}
+        {filteredPosts.map(
+          (post: any, index: number) => <Post filter={filterText} key={index} postData={post} />,
+        )}
       </Posts>
     </Main>
   );

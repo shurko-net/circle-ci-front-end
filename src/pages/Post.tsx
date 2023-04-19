@@ -407,7 +407,6 @@ function Post() {
 
   const handleComment = () => {
     setActiveModal(!activeModal);
-    console.log(postAuthorImage);
   };
 
   const handleFollow = () => {
@@ -415,7 +414,6 @@ function Post() {
       idUser,
       idFollower: id,
     }).then((resp) => {
-      console.log(resp);
       setUser(resp.data.user);
       setFollowed(resp.data.followed);
     }).catch((err) => console.log(err));

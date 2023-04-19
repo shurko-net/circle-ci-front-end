@@ -73,9 +73,9 @@ function Register() {
           <div className="wrapper">
             <div className="register-box">
               <h2 style={{ fontSize: '2.2rem' }}>
-                Registration
+                Рєестрація
               </h2>
-              <p style={paragraph}>Enter your details</p>
+              <p style={paragraph}>Введіть ваші дані</p>
               <div className="form">
                 <div className="form-group">
                   <div className="label">Email</div>
@@ -93,7 +93,7 @@ function Register() {
                 {touched.email && errors.email
                 && <div className="error-style"><p className="error">{errors.email}</p></div>}
                 <div className="form-group">
-                  <div className="label">Your first name</div>
+                  <div className="label">Ваше імя</div>
                   <div className="icon"><PersonIcon fontSize="medium" /></div>
                   <input
                     className={errors.name ? 'invalid' : 'input'}
@@ -109,7 +109,7 @@ function Register() {
                  && <div className="error-style"><p className="error">{errors.name}</p></div>}
 
                 <div className="form-group">
-                  <div className="label">Your second name</div>
+                  <div className="label">Ваша фамілія</div>
                   <div className="icon"><PersonOutlineOutlinedIcon fontSize="medium" /></div>
                   <input
                     className={errors.secondName ? 'invalid' : 'input'}
@@ -125,7 +125,7 @@ function Register() {
                  && <div className="error-style"><p className="error">{errors.secondName}</p></div>}
 
                 <div className="form-group">
-                  <div className="label">Your password</div>
+                  <div className="label">Пароль</div>
                   <div className="icon"><LockIcon fontSize="medium" /></div>
                   <input
                     className={errors.password ? 'invalid' : 'input'}
@@ -141,7 +141,7 @@ function Register() {
                 && <div className="error-style"><p className="error">{errors.password}</p></div>}
 
                 <div className="form-group">
-                  <div className="label">Your password</div>
+                  <div className="label">Повторити пароль</div>
                   <div className="icon"><LockOutlinedIcon fontSize="medium" /></div>
                   <input
                     className={errors.confirmPassword ? 'invalid' : 'input'}

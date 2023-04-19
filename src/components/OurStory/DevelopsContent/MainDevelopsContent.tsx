@@ -77,16 +77,16 @@ function MainDevelopsContent() {
   return (
     <MainContent>
       <MiddleHeading>
-        Site Developers
+        Розробники сайту
       </MiddleHeading>
       <ParagrafWrap>
         <ParagrafDevelopsContent>
-          Anyone can write on CircleCI.
-          Thought-leaders, journalists, experts,
-          and individuals with unique perspectives share their thinking here.
-          You’ll find pieces by independent writers from around the globe,
-          stories we feature and leading authors, and smart takes on our
-          own suite of blogs and publications.
+          Кожен може писати на CircleCI.
+          Лідери думок, журналісти, експерти,
+          і люди з унікальними перспективами діляться тут своїми думками.
+          Ви знайдете твори незалежних письменників з усього світу,
+          історій, які ми представляємо, і провідних авторів, і розумний розглядає наші
+          власний пакет блогів і публікацій.
         </ParagrafDevelopsContent>
       </ParagrafWrap>
     </MainContent>

@@ -146,8 +146,8 @@ function AccountHome({ userImageLoad, onImageChange }:AccountHomeModalProps) {
       />
       <HomeLine
         info={`${userFullName}`}
-        name="Profile information"
-        downInfo="Edit yout photo, name, bio, etc."
+        name="Інформація профілю"
+        downInfo="Змінити інформацію профілю"
         img="Yaroslav.png"
         color=""
         textHeader="Profile information"
