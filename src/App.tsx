@@ -119,7 +119,7 @@ function App() {
           : (
             <>
               <Route path={`/${subdomain}/home`} element={<AccountHome userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
-              <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
+              <Route path={`/${subdomain}/about`} element={<AccountAbout userImageLoad={userImageLoad} />} />
               <Route path="/create-post" element={<PostCreator />} />
               <Route path="post/:postId" element={<Post />} />
               {/* <Route path="/profile" element={<Account />} /> */}

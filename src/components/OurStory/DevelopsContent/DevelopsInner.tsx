@@ -40,7 +40,7 @@ const LatName = styled.h4`
 
 display: inline-block; 
   font-size: 14px;
-  color: grey;
+  color: black;
 `;
 
 const ImgContainer = styled.div`
@@ -81,7 +81,7 @@ const Txt = styled.p`
     text-align-last: left;
     line-height: 2;
     font-size: .95rem;
-    color: grey;
+    color: black;
     text-align: left;
 `;
 
@@ -101,7 +101,7 @@ const Icons = styled.div`
 const A = styled.a`
     padding-left: 10px;
     padding-right: 10px;
-    color: grey;
+    color: black;
     &:hover {
       color: #333333;
     }
@@ -110,8 +110,9 @@ const A = styled.a`
 
 const MainContainer = styled.div`
   position: relative;
-  width: 23%;
-  height: 100%;
+  width: 355px;
+  height: 400px;
+  margin-bottom: 12px;
 `;
 
 const TheFront = styled.div`
@@ -123,7 +124,7 @@ const TheFront = styled.div`
   border-radius: 15px;
   padding: 0 15px;
   transition: 1s;
- 
+ background-color: #60BDC2;
 `;
 
 const TheBack = styled.div`
@@ -136,6 +137,7 @@ const TheBack = styled.div`
   padding: 0 15px;
   transition: 1s;
   backface-visibility: hidden;
+  background-color: #60BDC2;
 `;
 
 const TheCard = styled.div`

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Text from './Text';
 import Button from './Button';
 import UserPanel from './UserOptionMenu/UserOptionMenu';
@@ -99,8 +99,9 @@ const Search = styled.input`
 `;
 
 function NavBar({ isLogged, userImageLoad, filterText }:
-
 { isLogged: boolean, userImageLoad: string, filterText: any }) {
+  const location = useLocation();
+
   return (
     <NavBarWrapper>
       <Body>
@@ -149,10 +150,12 @@ function NavBar({ isLogged, userImageLoad, filterText }:
                 </Link>
               </>
               )}
+              {location.pathname === '/' && (
               <Search
                 placeholder="Пошук"
                 onChange={(e: any) => filterText(e.target.value)}
               />
+              )}
             </NavbarBrand>
           </Content>
         </Container>

@@ -12,6 +12,8 @@ import { useDropzone } from 'react-dropzone';
 
 const Page = styled.div`
     margin-top: 70px;
+    min-height: 840px;
+    height: calc(100vh - 70px);
 `;
 
 const BodyEditor = styled.div`

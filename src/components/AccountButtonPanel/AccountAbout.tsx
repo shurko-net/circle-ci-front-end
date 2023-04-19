@@ -43,7 +43,8 @@ const Button = styled.button`
 `;
 
 const EditorPlaceholder = styled.div`
-  margin-top: 20px
+  margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 const ButtonsPlaceholder = styled.div`
@@ -55,7 +56,7 @@ const AboutField = styled.div`
   margin-top: 20px;
 `;
 
-function AccountAbout() {
+function AccountAbout({ userImageLoad }: any) {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: any) => state.user);
 
@@ -89,7 +90,8 @@ function AccountAbout() {
 
   return (
     <Account
-      user={false}
+      user
+      userImageLoad={userImageLoad}
     >
       {isEditorVisble
         ? (
