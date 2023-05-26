@@ -1,119 +1,103 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import NewPost from '../NewPost/NewPost';
+import NewSidebar from '../NewSidebar/NewSidebar';
 
-const StyledLink = styled(Link)`
-    cursor: pointer;
-    margin: 0;
-    padding: 0;
-    font-weight: inherit;
-    letter-spacing: inherit;
-    font-family: inherit;
-    border: inherit;
-    font-size: inherit;
-    fill: inherit;
-    color: inherit;
-`;
+// const StyledLink = styled(Link)`
+//     cursor: pointer;
+//     margin: 0;
+//     padding: 0;
+//     font-weight: inherit;
+//     letter-spacing: inherit;
+//     font-family: inherit;
+//     border: inherit;
+//     font-size: inherit;
+//     fill: inherit;
+//     color: inherit;
+//     display: flex;
+//     text-decoration: none;
+// `;
 
-const Main = styled.main`
-    /* margin: 0 auto; */
-    top: 100px;
-    /* padding-bottom: 100px; */
+const MainContainer = styled.div`
+    padding-top: 100px;
     flex: 1 1 auto;
+    max-width: 100%;
+    background-color: #e8e8e8;
 `;
 
 const Container = styled.div`
-    position: relative;
-    display: flex;
-    left: 0;
+    margin: -100px auto 0;
+    padding: 100px 0 0;
+    max-width: 100%;
+    max-width: 576px;
+    margin-left: auto;
+    margin-right: auto;
+    @media screen and (min-width: 576px) {
+      overflow: unset;
+    }
+    @media screen and (min-width: 767.98px) {
+      max-width: unset;
+      width: 720px;
+    }
+    @media screen and (min-width: 991.98px) {
+      width: 960px;
+    }
+    @media screen and (min-width: 1300px) {
+      width: 1330px;
+      padding: 100px 15px 0;
+    }
 `;
 
 const Body = styled.div`
-    margin: 0 auto;
-    max-width: 1330px;
-    padding: 0px 15px;
-`;
-
-const PostContainer = styled.div`
-    max-width: 897px;
-`;
-
-const SidebarBody = styled.div`
-    max-width: 404px;
-`;
-
-const PostBody = styled.div`
-    max-width: 786px;
-    max-height: 968px;
-    border-radius: 15px;
-    display: flex;
-`;
-
-const PostHeader = styled.div`
-    display: flex;
-`;
-
-const PostHeaderAvatar = styled.div`
-    flex: 0 0 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: red;
-`;
-
-const PostHeaderimg = styled.img`
-    
-`;
-
-const NicknameBody = styled.div`
-    margin-left: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    display: flex;
-`;
-
-const NicknameItems = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const Nickname = styled.h4`
+  display: grid;
   
+  row-gap: 26px;
+  
+  
+  grid-template-columns: minmax(0,1fr);
+  grid-template-areas:
+    "sidebar ."
+    "main .";
+  ;
+  @media screen and (min-width: 576px) {
+    column-gap: 26px;
+    margin: 54px 0;
+  }
+  @media screen and (min-width: 767.98px) {
+    grid-template-areas:
+        "sidebar ."
+        "main .";
+    grid-template-columns: minmax(0,786px) minmax(0,auto);
+  }
+  @media screen and (min-width: 991.98px) {
+    grid-template-areas: "main sidebar";
+    grid-template-columns: minmax(0,786px) minmax(0,378px);
+  }
+ 
 `;
 
-const PostImage = styled.div`
-    flex: 0 0 768px;
-    min-height: 528px;
-    background: blue;    
+const Main = styled.main`
+  grid-area: main;
+`;
+
+const MainRelative = styled.div`
+  position: relative;
 `;
 
 function NewMain() {
   return (
-    <Main>
+    <MainContainer>
       <Container>
         <Body>
-          <PostContainer>
-            <PostBody>
-              <PostHeader>
-                <PostHeaderAvatar>
-                  <PostHeaderimg />
-                </PostHeaderAvatar>
-                <NicknameBody>
-                  <NicknameItems>
-                    <StyledLink to="/user">
-                      <Nickname>nickname</Nickname>
-                    </StyledLink>
-                  </NicknameItems>
-                </NicknameBody>
-              </PostHeader>
-              <PostImage>
-                <PostHeaderimg />
-              </PostImage>
-            </PostBody>
-          </PostContainer>
-          <SidebarBody />
+          <Main>
+            <MainRelative>
+              <NewPost />
+            </MainRelative>
+          </Main>
+          <NewSidebar />
         </Body>
       </Container>
-    </Main>
+    </MainContainer>
   );
 }
 
