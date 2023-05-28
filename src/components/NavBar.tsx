@@ -129,7 +129,7 @@ function NavBar({ isLogged, userImageLoad, filterText }:
                 <>
                   <Link to="/create-post" style={{ marginRight: '20px' }}>
                     <Button>
-                      Write
+                      Створити пост
                     </Button>
                   </Link>
                   <UserPanel userImageLoad={userImageLoad} />
