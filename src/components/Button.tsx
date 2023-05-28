@@ -14,12 +14,13 @@ interface ButtonProps {
   primary?: boolean;
   color?: string;
   background?: string;
+  margin?: string;
   click?: () => void;
 }
 
 const ButtonNavBar = styled.button<{ primary?: boolean; display?: string;
   marginLeft?: string; fontWeight?: string; border?: string; padding?: string;
-  borderRadius?: string; transition?: string; background?: string }>`
+  borderRadius?: string; transition?: string; background?: string; margin?: string }>`
   display: ${(props) => props.display || 'block'};
   margin-left: ${(props) => props.marginLeft || '20px'};
   font-weight: ${(props) => props.fontWeight || 'normal'};
@@ -28,6 +29,7 @@ const ButtonNavBar = styled.button<{ primary?: boolean; display?: string;
   padding: ${(props) => props.padding || '7px 16px 9px'};
   border-radius: ${(props) => props.borderRadius || '18px'};
   color:  ${(props) => props.color || 'black'};
+  margin: ${(props) => props.margin || '0px'};
   cursor:pointer;
   transition: ${(props) => props.transition || 'all .07s ease-in-out'};
   &:hover {
@@ -42,7 +44,7 @@ const ButtonNavBar = styled.button<{ primary?: boolean; display?: string;
 
 export default function Button({
   openBtn, children, click, primary, display, marginLeft,
-  fontWeight, border, padding, borderRadius, transition, color, background,
+  fontWeight, border, padding, borderRadius, transition, color, background, margin,
 
 }: ButtonProps) {
   return (
@@ -60,6 +62,7 @@ export default function Button({
       transition={transition}
       color={color}
       background={background}
+      margin={margin}
     >
       {children}
 

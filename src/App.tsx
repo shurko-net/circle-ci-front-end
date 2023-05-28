@@ -19,6 +19,7 @@ import Saved from './pages/Saved';
 import PostCreator from './pages/PostCreator';
 import Post from './pages/Post';
 import NewHeader from './components/NewHeaderDesign/NewHeader';
+// import NavBar from './components/NavBar';
 import GlobalStyle from './globalStyles';
 import NewFooter from './components/NewFooterDesign/NewFooter';
 import NewMain from './components/NewMainDesign/NewMain';

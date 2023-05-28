@@ -2,17 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Footer = styled.footer`
-  bottom: 0;
+  /* bottom: 0; */
   width: 100%;
-  left: 0;
+  /* left: 0; */
   /* margin-top: auto; */
 `;
 
 const FooterContainerContainer = styled.div`
   /* position: fixed; */
   width: 100%;
-  left: 0;
-  bottom: 0;
+  /* left: 0;
+  bottom: 0; */
   /* z-index: 50; */
   background: #D7D7D7;
 `;
