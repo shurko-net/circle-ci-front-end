@@ -1,26 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import axios from 'axios';
-import Post from './Post';
-
-const MainPost = styled.div`
-   position: relative;
-   top: 70px;
-   display: block;
-   display: flex;
-   justify-content: center;
-   flex-direction: column;
-   padding: 0 400px;
-   @media (min-width: 1080px) {
-    padding-top: 32px;
-   }
-   @media (max-width: 1079.98px) {
-    padding-top: 32px;
-   }
-   @media (max-width: 903.98px) {
-    padding-top: 10px;
-   }
-`;
+import NewPost from '../NewPost/NewPost';
 
 function MainPosts() {
   const [posts, setPosts] = useState<any>([]);
@@ -33,11 +13,9 @@ function MainPosts() {
   }, []);
 
   return (
-    <MainPost>
-      <div>
-        {posts.map((post: any, index: number) => <Post key={index} postData={post} />)}
-      </div>
-    </MainPost>
+    <div>
+      {posts.map((post: any, index: number) => <NewPost key={index} postData={post} />)}
+    </div>
   );
 }
 

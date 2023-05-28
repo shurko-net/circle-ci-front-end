@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import NewPost from '../NewPost/NewPost';
+import { Outlet } from 'react-router-dom';
+
 import NewSidebar from '../NewSidebar/NewSidebar';
 
 // const StyledLink = styled(Link)`
@@ -91,7 +92,8 @@ function NewMain() {
         <Body>
           <Main>
             <MainRelative>
-              <NewPost />
+
+              <Outlet />
             </MainRelative>
           </Main>
           <NewSidebar />
