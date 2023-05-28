@@ -90,7 +90,7 @@ const MenuFooterColumn = styled.div`
 const MenuFooterLink = styled.a`
 `;
 
-function NewFooter() {
+function AboutFooter() {
   return (
     <Footer>
       <FooterContainerContainer>
@@ -134,4 +134,4 @@ function NewFooter() {
   );
 }
 
-export default NewFooter;
+export default AboutFooter;

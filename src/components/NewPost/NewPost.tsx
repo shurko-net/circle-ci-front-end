@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
+import axios from 'axios';
+
+interface IUser {
+  idUser: number,
+  name?: string,
+  surname?: string,
+  email?: string,
+  password?: string,
+  tNumber?: string,
+  biography?: string,
+  subscribed?: number,
+}
 
 const StyledLink = styled(Link)`
     cursor: pointer;
@@ -295,40 +307,86 @@ const PostMainPanelButtonText = styled.span`
 
 `;
 
-function NewPost() {
+// const Img = styled.img`
+//   background-color: rgba(242, 242, 242, 1);
+//   box-sizing: border-box;
+//   display: block;
+//   position: absolute;
+//   background-size: 100%;
+//   height: 100px;
+//   width: 200px;
+//   left: 75%;
+//   top: -1250%
+// `;
+
+function NewPost(postData: any) {
+  const [postAuthor, setPostAuthor] = useState<IUser>({
+    biography: '',
+    email: '',
+    idUser: 0,
+    name: '',
+    password: '',
+    subscribed: 0,
+    surname: '',
+    tNumber: '',
+  });
+  const [postAuthorImage, setPostAuthorImage] = useState('');
+  const [postDataImage, setPostDataImage] = useState<any>();
+
+  useEffect(() => {
+    axios.get(`https://localhost:44353/api/User/${postData.postData.idUser}`)
+      .then((res: any) => {
+        setPostAuthor(res.data);
+
+        axios.get(`https://localhost:44353/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
+          setPostAuthorImage(res1.data);
+        }).then(() => {
+          axios.get(`https://localhost:44353/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
+            if (res2.data) {
+              setPostDataImage(`data:image/jpeg;base64,${res2.data}`);
+            } else {
+              setPostDataImage(null);
+            }
+          });
+        });
+      });
+  }, []);
   return (
     <Post>
       <PostHeader>
         <PostHeaderTextWrapper>
-          <StyledLink to="/user">
+          <StyledLink to={`post/${postData.postData.idPost}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
-                <PostHeaderImg src="https://i.pinimg.com/564x/db/f9/63/dbf9630b177ba7ddc0af11d395daf3ae.jpg" />
+                <PostHeaderImg style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
               </PostHeaderImgWrapper>
             </PostHeaderImgBlock>
             <PostHeaderText>
-              <PostHeaderNickname>Jarik Super</PostHeaderNickname>
+              <PostHeaderNickname>{`${postAuthor.name ?? 'Yarik'} ${postAuthor.surname}`}</PostHeaderNickname>
               <PostHeaderDotContainer />
               <PostHeaderSubscribe>Subscribe</PostHeaderSubscribe>
             </PostHeaderText>
           </StyledLink>
         </PostHeaderTextWrapper>
         <PostHeaderDateContainer>
-          17 hours ago
+          {new Date(postData.postData.date).toDateString()}
         </PostHeaderDateContainer>
       </PostHeader>
       <PostMainThemeContainer>
         <PostMainTheme>Theme</PostMainTheme>
       </PostMainThemeContainer>
       <PostMainImageContainer to="/user">
-        <PostMainImage src="https://i.pinimg.com/564x/0a/e5/31/0ae5318d4dce3e2899ac2bb671ce6d90.jpg" />
+        {postDataImage && <PostMainImage style={{ backgroundImage: `url(${postDataImage})` }} />}
+
+        {/* <PostMainImage /> */}
+
       </PostMainImageContainer>
       <PostMainDescriptionContainer>
-        <PostMainDescription>
-          In this report, we synthesize inputs from a quantitative survey,
+        <PostMainDescription dangerouslySetInnerHTML={{ __html: postData.postData.postContent }}>
+          {/* In this report, we synthesize inputs from a quantitative survey,
           our daily work with thousands of clients,
           and 40 years of experience to inform,
-          interest, and benefit your business in 2023.
+          interest, and benefit your business in 2023. */}
         </PostMainDescription>
 
         <PostMainDescriptionButton>
