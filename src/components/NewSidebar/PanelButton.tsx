@@ -34,6 +34,8 @@ const UserPanelButtonText = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
   line-height: 1.22;
+  font-family: "MitrMedium";
+  
 `;
 
 function PanelButton({ text }:{ text: string }) {

@@ -4,6 +4,10 @@ import { Outlet } from 'react-router-dom';
 
 import NewSidebar from '../NewSidebar/NewSidebar';
 
+interface NewMainProps {
+  userImageLoad: string,
+}
+
 // const StyledLink = styled(Link)`
 //     cursor: pointer;
 //     margin: 0;
@@ -85,18 +89,17 @@ const MainRelative = styled.div`
   position: relative;
 `;
 
-function NewMain() {
+function NewMain({ userImageLoad }:NewMainProps) {
   return (
     <MainContainer>
       <Container>
         <Body>
           <Main>
             <MainRelative>
-
               <Outlet />
             </MainRelative>
           </Main>
-          <NewSidebar />
+          <NewSidebar userImageLoad={userImageLoad} />
         </Body>
       </Container>
     </MainContainer>

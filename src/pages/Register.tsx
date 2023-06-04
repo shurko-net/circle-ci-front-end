@@ -43,7 +43,7 @@ function Register() {
       password: values.password,
     };
 
-    axios.post('https://localhost:44353/api/User', {
+    axios.post('https://localhost:44353/api/register', {
       name: user.firstName,
       surname: user.secondName,
       email: user.email,

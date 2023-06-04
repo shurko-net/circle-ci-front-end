@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Routes, Route,
+  Navigate,
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -16,8 +17,8 @@ import { IUser } from './types';
 import AccountAbout from './components/AccountButtonPanel/AccountAbout';
 import AccountHome from './components/AccountButtonPanel/AccountHome';
 import Saved from './pages/Saved';
-import PostCreator from './pages/PostCreator';
-import Post from './pages/Post';
+// import PostCreator from './pages/PostCreator';
+// import Post from './pages/Post';
 // import NavBar from './components/NavBar';
 import GlobalStyle from './globalStyles';
 import NewMain from './components/NewMainDesign/NewMain';
@@ -25,6 +26,9 @@ import About from './pages/About';
 import Layout from './components/Layout';
 // import NewPost from './components/NewPost/NewPost';
 import MainPosts from './components/Home/MainPosts';
+// import Account from './pages/Account';
+import NewPostCreator from './pages/NewPostCreator';
+import NewProfile from './components/NewProfile/NewProfile';
 
 const Container = styled.div`
   display: flex;
@@ -38,7 +42,7 @@ function App() {
   const userPassword = localStorage.getItem('password');
 
   if (userEmail && userPassword) {
-    axios.post('https://localhost:44353/auth/Login', {
+    axios.post('https://localhost:44353/api/auth/login', {
       email: userEmail,
       password: userPassword,
     })
@@ -54,7 +58,7 @@ function App() {
           subscribed: response.data.subscribed,
         };
         dispatch(userAuth(userObj));
-        axios.get(`https://localhost:44353/api/UserImage/${userObj.id}`).then((res: any) => {
+        axios.get(`https://localhost:44353/api/get-user-image/${userObj.id}`).then((res: any) => {
           dispatch(setUserImage(res.data));
         });
       }).catch((err) => {
@@ -90,12 +94,12 @@ function App() {
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     axios
-      .post('https://localhost:44353/api/UserImage', formData, {
+      .post('https://localhost:44353/api/upload-user-image', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-    axios.get(`https://localhost:44353/api/UserImage/${userId}`)
+    axios.get(`https://localhost:44353/api/get-user-image/${userId}`)
       .then((res) => {
         dispatch(setUserImage(res.data));
       });
@@ -105,40 +109,42 @@ function App() {
 
     <Container>
       <GlobalStyle />
-
-      {/* <NavBar isLogged={isLogged} userImageLoad={userImageLoad} /> */}
       <Routes>
-        <Route path="/about" element={<About />} />
-      </Routes>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<NewMain />}>
+        <Route
+          path="/"
+          element={isLogged
+            ? <Layout />
+            : <Navigate to="/login" replace />}
+        >
+          <Route path="/" element={<NewMain userImageLoad={userImageLoad} />}>
             <Route path="/" element={<MainPosts />} />
+            <Route path="profile" element={<NewProfile userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
           </Route>
-          <Route path="account" element={<Home />} />
+          <Route path="create-post" element={<NewPostCreator />} />
+          <Route
+            path={`/${subdomain}/home`}
+            element={(
+              <AccountHome
+                userImageLoad={userImageLoad}
+                onImageChange={onImageChange}
+              />
+)}
+          />
+          <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
           <Route path="posts" element={<Home />} />
           <Route path="/me/save" element={<Saved />} />
           <Route path="/me/responses" element={<Saved />} />
-          {!isLogged
-            ? (
-              <>
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-              </>
-            )
-            : (
-              <>
-                <Route path={`/${subdomain}/home`} element={<AccountHome userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
-                <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
-                <Route path="/create-post" element={<PostCreator />} />
-                <Route path="post/:postId" element={<Post />} />
-                {/* <Route path="/profile" element={<Account />} /> */}
-              </>
-
-            )}
-          {/* <Route path="about" element={<OurStory />} /> */}
         </Route>
+        <Route
+          path="/register"
+          element={isLogged ? <Navigate replace to="/" /> : <Register />}
+        />
+        <Route path="/login" element={isLogged ? <Navigate replace to="/" /> : <Login />} />
       </Routes>
+      <Routes>
+        <Route path="/about" element={<About />} />
+      </Routes>
+
     </Container>
 
   );

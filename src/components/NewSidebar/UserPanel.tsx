@@ -1,10 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useSelector, useDispatch } from 'react-redux';
 import Button from '../NewButton';
 import PanelButton from './PanelButton';
+import { userSignOut } from '../../store/slices/userSlice';
+
+interface UserPanelProps {
+  userImageLoad: string
+}
 
 const StyledLink = styled(Link)`
     cursor: pointer;
@@ -54,11 +60,13 @@ const UserPanelImgFlex = styled.div`
   display: flex;
 `;
 
-const UserPanelImg = styled.img`
+const UserPanelImg = styled.div`
   width: 63px;
   height: 63px;
   border-radius: 50%;
-  object-fit: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 const UserNicknameContainer = styled.div`
@@ -95,19 +103,41 @@ const UserPanelButtonContainer = styled.div`
   }
 `;
 
-function UserPanel() {
+function UserPanel({ userImageLoad }: UserPanelProps) {
+  const subdomain = useSelector((state: any) => state.user.subdomain);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
+
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const ref = useRef<HTMLDivElement>(null);
+
+  // useOnClickOutside(ref, () => setIsOpen(false));
+
+  const signOut = () => {
+    dispatch(userSignOut());
+    navigate('/');
+    // setIsOpen(false);
+  };
+
+  // const onClose = () => setIsOpen(false);
+  // const subdomain = useSelector((state: any) => state.user.subdomain);
+
   return (
     <UserPanelContainer>
       <UserPanelHeaderContainer>
         <UserPanelUserLinkFlex>
-          <StyledLink to="/profile">
+          <StyledLink to={`/${subdomain}/home`}>
             <UserPanelImgContainer>
               <UserPanelImgFlex>
-                <UserPanelImg src="https://i.pinimg.com/564x/70/b1/2e/70b12ec6ed5010cf53b2ee5c014bba4d.jpg" />
+                <UserPanelImg
+                  style={{ backgroundImage: `url(${userImageLoad})` }}
+                />
               </UserPanelImgFlex>
             </UserPanelImgContainer>
             <UserNicknameContainer>
-              <UserNickname>Stas Shurko</UserNickname>
+              <UserNickname>{userFullName}</UserNickname>
             </UserNicknameContainer>
           </StyledLink>
         </UserPanelUserLinkFlex>
@@ -129,6 +159,7 @@ function UserPanel() {
           borderRadius="20px"
           padding="0.6875rem 0 0.6875rem 0"
           margin="0 0 0.875rem 0"
+          click={signOut}
         >
           <LogOutButtonText>Log out</LogOutButtonText>
         </Button>

@@ -18,7 +18,7 @@ const styleLink = {
   textDecoration: 'none',
   color: '#000',
   fontWeight: 900,
-  fontSize: '18px',
+  fontSize: '1.125rem',
   lineHeight: `${18 / 22 * 100}%`,
   fontFamily: 'InterBlack',
 };
@@ -27,9 +27,9 @@ const styleLinkLogo = {
   textDecoration: 'none',
   color: '#000',
   fontWeight: 900,
-  fontSize: '18px',
+  fontSize: '1.125rem',
   lineHeight: `${18 / 22 * 100}%`,
-  fontFamily: 'InterBlack',
+  fontFamily: 'Fira Sans',
 };
 
 const setActive = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '');
@@ -475,7 +475,7 @@ function NewHeader() {
     setMenuIsOpen(false);
   };
 
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
@@ -494,13 +494,13 @@ function NewHeader() {
               <Link to="/" style={styleLinkLogo}>Circle CI</Link>
               <DivBlock />
               {!isLogged && (
-                <div className="start">
-                  <span>
-                    <Link to="/register" style={styleLink}>
-                      <button type="submit">Get stated</button>
-                    </Link>
-                  </span>
-                </div>
+              <div className="start">
+                <span>
+                  <Link to="/register" style={styleLink}>
+                    <button type="submit">Get stated</button>
+                  </Link>
+                </span>
+              </div>
               )}
               <HeaderMenuMenu>
                 <MenuList>
@@ -564,14 +564,14 @@ function NewHeader() {
                 className={`items ${searchIsOpen}`}
               >
                 {Boolean(filtrePosts.length)
-                      && filtrePosts?.map(
-                        (item, index) => index < 3
-              && (
-              <button type="submit" key={item.name}>
-                {item.name}
-              </button>
-              ),
-                      )}
+                    && filtrePosts?.map(
+                      (item, index) => index < 3
+                        && (
+                          <button type="submit" key={item.name}>
+                            {item.name}
+                          </button>
+                        ),
+                    )}
               </SearchItemsMobile>
             </SearchGroup>
             )}
@@ -590,62 +590,62 @@ function NewHeader() {
                 <StyledMenuIcon />
               </MenuIconButton>
               {menuIsOpen
-                && (
-                  <ModalWrapper>
-                    <ModalContainer>
-                      <SideBarMenuBtnContainer>
-                        <MoadalFlexBtnContainer>
-                          <ModalBtnInlineBlock className={`${activeComponent === 1 ? 'active' : ''}`}>
-                            <button
-                              className={`${activeComponent === 1 ? 'active' : ''}`}
-                              type="submit"
-                              onClick={() => handleActiveClick(1)}
-                            >
-                              <MenuIcon />
-                            </button>
-                          </ModalBtnInlineBlock>
-                          <ModalBtnInlineBlock className={`${activeComponent === 2 ? 'active' : ''}`}>
-                            <button
-                              className={`${activeComponent === 2 ? 'active' : ''}`}
-                              type="submit"
-                              onClick={() => handleActiveClick(2)}
-                            >
-                              <AccountCircleIcon />
-                            </button>
-                          </ModalBtnInlineBlock>
-                          <ModalBtnInlineBlock>
-                            <button type="submit" onClick={handleCloseMenu}>
-                              <CloseIcon />
-                            </button>
-                          </ModalBtnInlineBlock>
-                        </MoadalFlexBtnContainer>
-                      </SideBarMenuBtnContainer>
-                      {activeComponent === 1
-                      && (
-                      <ModalMenuContainer>
-                        <ModalMenuBlock>Home</ModalMenuBlock>
-                        <ModalMenuBlock>Actual</ModalMenuBlock>
-                        <ModalMenuBlock>Subscriptions</ModalMenuBlock>
-                        <ModalMenuBlock>Community</ModalMenuBlock>
-                        <ModalMenuBlock>Blogs</ModalMenuBlock>
-                        <ModalMenuBlock>Courses</ModalMenuBlock>
-                      </ModalMenuContainer>
-                      )}
-                      {activeComponent === 2
-                      && (
-                      <ModalMenuContainer>
-                        <ModalMenuBlock>Profile</ModalMenuBlock>
-                        <ModalMenuBlock>Posts</ModalMenuBlock>
-                        <ModalMenuBlock>Subscriptions</ModalMenuBlock>
-                        <ModalMenuBlock>Groups</ModalMenuBlock>
-                        <ModalMenuBlock>Favorites</ModalMenuBlock>
-                        <ModalMenuBlock>Settings</ModalMenuBlock>
-                      </ModalMenuContainer>
-                      )}
+                  && (
+                    <ModalWrapper>
+                      <ModalContainer>
+                        <SideBarMenuBtnContainer>
+                          <MoadalFlexBtnContainer>
+                            <ModalBtnInlineBlock className={`${activeComponent === 1 ? 'active' : ''}`}>
+                              <button
+                                className={`${activeComponent === 1 ? 'active' : ''}`}
+                                type="submit"
+                                onClick={() => handleActiveClick(1)}
+                              >
+                                <MenuIcon />
+                              </button>
+                            </ModalBtnInlineBlock>
+                            <ModalBtnInlineBlock className={`${activeComponent === 2 ? 'active' : ''}`}>
+                              <button
+                                className={`${activeComponent === 2 ? 'active' : ''}`}
+                                type="submit"
+                                onClick={() => handleActiveClick(2)}
+                              >
+                                <AccountCircleIcon />
+                              </button>
+                            </ModalBtnInlineBlock>
+                            <ModalBtnInlineBlock>
+                              <button type="submit" onClick={handleCloseMenu}>
+                                <CloseIcon />
+                              </button>
+                            </ModalBtnInlineBlock>
+                          </MoadalFlexBtnContainer>
+                        </SideBarMenuBtnContainer>
+                        {activeComponent === 1
+                          && (
+                            <ModalMenuContainer>
+                              <ModalMenuBlock>Home</ModalMenuBlock>
+                              <ModalMenuBlock>Actual</ModalMenuBlock>
+                              <ModalMenuBlock>Subscriptions</ModalMenuBlock>
+                              <ModalMenuBlock>Community</ModalMenuBlock>
+                              <ModalMenuBlock>Blogs</ModalMenuBlock>
+                              <ModalMenuBlock>Courses</ModalMenuBlock>
+                            </ModalMenuContainer>
+                          )}
+                        {activeComponent === 2
+                          && (
+                            <ModalMenuContainer>
+                              <ModalMenuBlock>Profile</ModalMenuBlock>
+                              <ModalMenuBlock>Posts</ModalMenuBlock>
+                              <ModalMenuBlock>Subscriptions</ModalMenuBlock>
+                              <ModalMenuBlock>Groups</ModalMenuBlock>
+                              <ModalMenuBlock>Favorites</ModalMenuBlock>
+                              <ModalMenuBlock>Settings</ModalMenuBlock>
+                            </ModalMenuContainer>
+                          )}
 
-                    </ModalContainer>
-                  </ModalWrapper>
-                )}
+                      </ModalContainer>
+                    </ModalWrapper>
+                  )}
             </Menu>
             )}
           </HeaderBody>

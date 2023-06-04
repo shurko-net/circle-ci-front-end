@@ -69,11 +69,13 @@ const PostHeaderImgWrapper = styled.div`
   display: flex;
 `;
 
-const PostHeaderImg = styled.img`
+const PostHeaderImg = styled.div`
   height: 48px;
   width: 48px;
   border-radius: 50%;
-  object-fit: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 const PostHeaderText = styled.div`
@@ -146,12 +148,12 @@ const PostMainImageContainer = styled(StyledLink)`
   padding: 0px 0px 67.2% 0px;
 `;
 
-const PostMainImage = styled.img`
-  object-fit: cover;
-  object-position: center;
+const PostMainImage = styled.div`
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   width: 100%;
   height: 100%;
-  background-position: 50%;
   color: #FFFFFF;
   position: absolute;
   top: 0;
@@ -351,6 +353,24 @@ function NewPost(postData: any) {
         });
       });
   }, []);
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const dateNew = new Date(postData.postData.date);
+  const month = months[dateNew.getMonth()];
+  const day = dateNew.getDate();
   return (
     <Post>
       <PostHeader>
@@ -369,11 +389,12 @@ function NewPost(postData: any) {
           </StyledLink>
         </PostHeaderTextWrapper>
         <PostHeaderDateContainer>
-          {new Date(postData.postData.date).toDateString()}
+          {`${month} ${day}`}
+          {/* {new Date(postData.postData.date).toDateString()} */}
         </PostHeaderDateContainer>
       </PostHeader>
       <PostMainThemeContainer>
-        <PostMainTheme>Theme</PostMainTheme>
+        <PostMainTheme>{postData.postData.title}</PostMainTheme>
       </PostMainThemeContainer>
       <PostMainImageContainer to="/user">
         {postDataImage && <PostMainImage style={{ backgroundImage: `url(${postDataImage})` }} />}

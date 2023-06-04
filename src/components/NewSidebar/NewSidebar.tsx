@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Themes from './Themes';
 
 import Button from '../NewButton';
@@ -8,6 +9,10 @@ import Button from '../NewButton';
 import UserPanel from './UserPanel';
 
 import Suggestions from './Suggestions';
+
+interface NewSidebarProps {
+  userImageLoad: string
+}
 
 const StyledLink = styled(Link)`
     cursor: pointer;
@@ -31,7 +36,7 @@ const LayoutSidebar = styled.div`
   }
 `;
 
-const CreatePost = styled.div`
+const CreatePost = styled(StyledLink)`
   @media (max-width: 991.98px) {
     display: none;
   }
@@ -42,7 +47,7 @@ const ButtonText = styled.span`
   font-size: 1.625rem;
   line-height: 1.154;
   color: #FFFFFF;
-  font-family: 'CabinSemiBold';
+  font-family: 'MitrMedium';
   @media (max-width: 767.98px) {
     font-size: 1.5rem;
   }
@@ -110,10 +115,11 @@ const SmallCreatePostButtonText = styled.span`
 
 `;
 
-function NewSidebar() {
+function NewSidebar({ userImageLoad }:NewSidebarProps) {
+  const subdomain = useSelector((state: any) => state.user.subdomain);
   return (
     <LayoutSidebar>
-      <CreatePost>
+      <CreatePost to="/create-post">
         <Button
           width="100%"
           borderRadius="20px"
@@ -125,7 +131,7 @@ function NewSidebar() {
       </CreatePost>
       <SmallCreatePostBody>
         <SmallCreatePostContainer>
-          <SmallCreatePostLink to="/user">
+          <SmallCreatePostLink to={`/${subdomain}/home`}>
             <SmallCreatePostImgContainer>
               <SmallCreatePostImg src="https://i.pinimg.com/564x/70/b1/2e/70b12ec6ed5010cf53b2ee5c014bba4d.jpg" />
             </SmallCreatePostImgContainer>
@@ -135,7 +141,7 @@ function NewSidebar() {
           </SmallCreatePostButton>
         </SmallCreatePostContainer>
       </SmallCreatePostBody>
-      <UserPanel />
+      <UserPanel userImageLoad={userImageLoad} />
       <Themes />
       <Suggestions />
     </LayoutSidebar>
