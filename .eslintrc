@@ -41,6 +41,8 @@
         "react/jsx-props-no-spreading": "off",
         "no-unused-vars": "off",
         "no-mixed-operators" :"off",
-        
+        "consistent-return": "off",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": ["error"]
     }
 }

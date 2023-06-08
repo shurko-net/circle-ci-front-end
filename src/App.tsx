@@ -1,34 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Routes, Route,
-  Navigate,
-} from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-// import NavBar from './components/NavBar';
+import React from 'react';
+
 import styled from 'styled-components';
-import Home from './pages/Home';
+
 import './App.css';
-import Register from './pages/Register';
-import Login from './pages/Login';
-// import OurStory from './pages/OurStory';
-import { userAuth, setUserImage } from './store/slices/userSlice';
-import { IUser } from './types';
-import AccountAbout from './components/AccountButtonPanel/AccountAbout';
-import AccountHome from './components/AccountButtonPanel/AccountHome';
-import Saved from './pages/Saved';
-// import PostCreator from './pages/PostCreator';
-// import Post from './pages/Post';
-// import NavBar from './components/NavBar';
-import GlobalStyle from './globalStyles';
-import NewMain from './components/NewMainDesign/NewMain';
-import About from './pages/About';
-import Layout from './components/Layout';
-// import NewPost from './components/NewPost/NewPost';
-import MainPosts from './components/Home/MainPosts';
-// import Account from './pages/Account';
-import NewPostCreator from './pages/NewPostCreator';
-import NewProfile from './components/NewProfile/NewProfile';
+
+import NewLogin from './pages/NewLogin';
 
 const Container = styled.div`
   display: flex;
@@ -37,78 +13,11 @@ const Container = styled.div`
 `;
 
 function App() {
-  const dispatch = useDispatch();
-  const userEmail = localStorage.getItem('email');
-  const userPassword = localStorage.getItem('password');
-
-  if (userEmail && userPassword) {
-    axios.post('https://localhost:44353/api/auth/login', {
-      email: userEmail,
-      password: userPassword,
-    })
-      .then((response) => {
-        const userObj: IUser = {
-          id: response.data.idUser,
-          firstName: response.data.name,
-          secondName: response.data.surname,
-          email: response.data.email,
-          password: response.data.password,
-          biography: response.data.biography,
-          phoneNumber: response.data.tNumber,
-          subscribed: response.data.subscribed,
-        };
-        dispatch(userAuth(userObj));
-        axios.get(`https://localhost:44353/api/get-user-image/${userObj.id}`).then((res: any) => {
-          dispatch(setUserImage(res.data));
-        });
-      }).catch((err) => {
-        console.log(err.response.data);
-      });
-  }
-
-  const {
-    isLogged, subdomain, userId, userImage,
-  } = useSelector((state: any) => ({
-    isLogged: state.user.isLogged,
-    subdomain: state.user.subdomain,
-    userId: state.user.id,
-    userImage: state.user.image,
-  }));
-  const [userImageLoad, setUserImageLoad] = useState<any>(userImage);
-  useEffect(() => {
-    setUserImageLoad(userImage);
-  }, [userImage]);
-
-  const onImageChange = (e: any) => {
-    if (!e.target.files[0]) {
-      return;
-    }
-
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setUserImageLoad(fileReader.result);
-    };
-    fileReader.readAsDataURL(e.target.files[0]);
-
-    const formData = new FormData();
-    formData.append('id', userId);
-    formData.append('file', e.target.files[0]);
-    axios
-      .post('https://localhost:44353/api/upload-user-image', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    axios.get(`https://localhost:44353/api/get-user-image/${userId}`)
-      .then((res) => {
-        dispatch(setUserImage(res.data));
-      });
-  };
-
   return (
 
     <Container>
-      <GlobalStyle />
+      <NewLogin />
+      {/* <GlobalStyle />
       <Routes>
         <Route
           path="/"
@@ -118,7 +27,10 @@ function App() {
         >
           <Route path="/" element={<NewMain userImageLoad={userImageLoad} />}>
             <Route path="/" element={<MainPosts />} />
-            <Route path="profile" element={<NewProfile userImageLoad={userImageLoad} onImageChange={onImageChange} />} />
+            <Route
+              path="profile"
+              element={<NewProfile userImageLoad={userImageLoad} onImageChange={onImageChange} />}
+            />
           </Route>
           <Route path="create-post" element={<NewPostCreator />} />
           <Route
@@ -143,7 +55,7 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/about" element={<About />} />
-      </Routes>
+      </Routes> */}
 
     </Container>
 
