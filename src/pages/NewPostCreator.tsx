@@ -5,11 +5,11 @@ import {
   convertToRaw, EditorState,
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import MainPostCreator from '../components/NewPostCreator/MainPostCreator';
 import SideBarPostCreator from '../components/NewPostCreator/SideBarPostCreator';
+import instance from '../http';
+import { useAppSelector } from '../hook';
 
 const Body = styled.div`
     padding-top: 100px;
@@ -69,7 +69,7 @@ const GridContainer = styled.div`
 `;
 
 function NewPostCreator() {
-  const user = useSelector((state: any) => state.user);
+  const user = useAppSelector((state: any) => state.auth);
   const [postImageLoad, setPostImageLoad] = useState<any>();
   const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
   const [imageFile, setImageFile] = useState<any>();
@@ -89,31 +89,26 @@ function NewPostCreator() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const onButtonClick = () => {
-    axios.put('https://localhost:44353/api/update-category', {
+    instance.post('https://localhost:44353/api/create-post', {
+      idUser: user.id,
       idCategory: 1,
-      name: 'Puppet',
-    }).then(() => {
-      axios.put('https://localhost:44353/api/update-post', {
-        idUser: user.id,
-        idCategory: 1,
-        date: new Date(),
-        postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-        title,
-        likes: 0,
-      }).then((res: any) => {
-        setTitle('');
-        setEditorState(EditorState.createEmpty());
-        const formData = new FormData();
-        formData.append('id', res.data.idPost);
-        formData.append('file', imageFile);
-        axios.post('https://localhost:44353/api/upload-post-image', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      }).catch((err: any) => {
-        console.log(err);
+      date: new Date(),
+      postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+      title,
+      likes: 0,
+    }).then((res: any) => {
+      setTitle('');
+      setEditorState(EditorState.createEmpty());
+      const formData = new FormData();
+      formData.append('id', res.data.idPost);
+      formData.append('file', imageFile);
+      instance.post('https://localhost:44353/api/upload-post-image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
+    }).catch((err: any) => {
+      console.log(err);
     });
   };
 

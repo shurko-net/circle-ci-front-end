@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import NewProfileModal from './NewProfileModal';
 
 interface NewProfileProps {
-  userImageLoad: string;
+  userImageLoad?: string;
   onImageChange?: (e: any) => void,
 }
 

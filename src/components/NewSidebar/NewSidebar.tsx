@@ -11,7 +11,7 @@ import UserPanel from './UserPanel';
 import Suggestions from './Suggestions';
 
 interface NewSidebarProps {
-  userImageLoad: string
+  userImageLoad?: string
 }
 
 const StyledLink = styled(Link)`

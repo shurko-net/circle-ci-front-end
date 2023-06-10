@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 import NewSidebar from '../NewSidebar/NewSidebar';
 
 interface NewMainProps {
-  userImageLoad: string,
+  userImageLoad?: string,
 }
 
 // const StyledLink = styled(Link)`

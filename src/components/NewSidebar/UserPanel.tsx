@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useSelector, useDispatch } from 'react-redux';
 import Button from '../NewButton';
 import PanelButton from './PanelButton';
-import { userSignOut } from '../../store/slices/userSlice';
+import { logout } from '../../store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '../../hook';
 
 interface UserPanelProps {
-  userImageLoad: string
+  userImageLoad?: string
 }
 
 const StyledLink = styled(Link)`
@@ -104,21 +104,22 @@ const UserPanelButtonContainer = styled.div`
 `;
 
 function UserPanel({ userImageLoad }: UserPanelProps) {
-  const subdomain = useSelector((state: any) => state.user.subdomain);
-  const dispatch = useDispatch();
+  const subdomain = useAppSelector((state: any) => state.user.subdomain);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const userFullName = useSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
-
+  const userFullName = useAppSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
+  console.log(useAppSelector((state: any) => state));
   // const [isOpen, setIsOpen] = useState<boolean>(false);
   // const ref = useRef<HTMLDivElement>(null);
 
   // useOnClickOutside(ref, () => setIsOpen(false));
 
   const signOut = () => {
-    dispatch(userSignOut());
-    navigate('/');
-    // setIsOpen(false);
+    dispatch(logout())
+      .then(() => {
+        navigate('/auth/login');
+      });
   };
 
   // const onClose = () => setIsOpen(false);
@@ -146,12 +147,12 @@ function UserPanel({ userImageLoad }: UserPanelProps) {
         </SettingsButtonContainer>
       </UserPanelHeaderContainer>
       <UserPanelButtonContainer>
-        <PanelButton text="Profile" />
-        <PanelButton text="Posts" />
-        <PanelButton text="Subscriptions" />
-        <PanelButton text="Groups" />
-        <PanelButton text="Favorites" />
-        <PanelButton text="Settings" />
+        <PanelButton text="Profile" url="/profile" />
+        <PanelButton text="Posts" url="/profile" />
+        <PanelButton text="Subscriptions" url="/profile" />
+        <PanelButton text="Groups" url="/profile" />
+        <PanelButton text="Favorites" url="/profile" />
+        <PanelButton text="Settings" url="/profile" />
       </UserPanelButtonContainer>
       <LogOutButtonContainer>
         <Button

@@ -1,10 +1,18 @@
-import React from 'react';
-
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-
 import './App.css';
-
-import NewLogin from './pages/NewLogin';
+import {
+  Route, Routes,
+} from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from './hook';
+import { checkAuth } from './store/slices/authSlice';
+import NewMain from './components/NewMainDesign/NewMain';
+import MainPosts from './components/Home/MainPosts';
+import NewProfile from './components/NewProfile/NewProfile';
+import Layout from './components/Layout';
+import NewPostCreator from './pages/NewPostCreator';
+import NewAuthwall from './pages/NewAuthwall';
+import { setUser } from './store/slices/userSlice';
 
 const Container = styled.div`
   display: flex;
@@ -13,52 +21,73 @@ const Container = styled.div`
 `;
 
 function App() {
-  return (
+  const { isLoading, isAuth, user } = useAppSelector((state: any) => ({
+    isAuth: state.auth.isAuth,
+    user: state.auth.user,
+    isLoading: state.auth.isLoading,
+  }));
+  const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      dispatch(checkAuth());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuth && user) {
+      dispatch(setUser({
+        id: user.id,
+        firstName: user.name,
+        secondName: user.surname,
+        password: user.passwordHash,
+        email: user.email,
+        biography: user.biography,
+        phoneNumber: user.tNumber,
+        followers: user.followers,
+      }));
+      // debugger;
+    }
+  }, [isAuth, user]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuth) {
+    return (
+      <Container>
+        <NewAuthwall />
+      </Container>
+    );
+  }
+
+  return (
     <Container>
-      <NewLogin />
-      {/* <GlobalStyle />
+      {/* {isAuth && ( */}
       <Routes>
+
         <Route
           path="/"
-          element={isLogged
-            ? <Layout />
-            : <Navigate to="/login" replace />}
+          element={
+            <Layout />
+             }
         >
-          <Route path="/" element={<NewMain userImageLoad={userImageLoad} />}>
+
+          <Route path="/" element={<NewMain />}>
             <Route path="/" element={<MainPosts />} />
             <Route
               path="profile"
-              element={<NewProfile userImageLoad={userImageLoad} onImageChange={onImageChange} />}
+              element={<NewProfile />}
             />
+
           </Route>
           <Route path="create-post" element={<NewPostCreator />} />
-          <Route
-            path={`/${subdomain}/home`}
-            element={(
-              <AccountHome
-                userImageLoad={userImageLoad}
-                onImageChange={onImageChange}
-              />
-)}
-          />
-          <Route path={`/${subdomain}/about`} element={<AccountAbout />} />
-          <Route path="posts" element={<Home />} />
-          <Route path="/me/save" element={<Saved />} />
-          <Route path="/me/responses" element={<Saved />} />
         </Route>
-        <Route
-          path="/register"
-          element={isLogged ? <Navigate replace to="/" /> : <Register />}
-        />
-        <Route path="/login" element={isLogged ? <Navigate replace to="/" /> : <Login />} />
+        <Route path="*" element={<div>404... not found </div>} />
       </Routes>
-      <Routes>
-        <Route path="/about" element={<About />} />
-      </Routes> */}
-
+      {/* )} */}
     </Container>
-
   );
 }
 

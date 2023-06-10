@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+interface PanelButtonProps {
+  text: string;
+  url: string;
+}
+
 const StyledLink = styled(Link)`
     cursor: pointer;
     margin: 0;
@@ -38,10 +43,10 @@ const UserPanelButtonText = styled.span`
   
 `;
 
-function PanelButton({ text }:{ text: string }) {
+function PanelButton({ text, url }:PanelButtonProps) {
   return (
     <UserPanelButtonContainer>
-      <UserPanelButton to="/profile">
+      <UserPanelButton to={url}>
         <UserPanelButtonText>{text}</UserPanelButtonText>
       </UserPanelButton>
     </UserPanelButtonContainer>
