@@ -7,9 +7,11 @@ import Button from '../NewButton';
 import PanelButton from './PanelButton';
 import { logout } from '../../store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../../hook';
+import Preloader from '../../preloader';
 
 interface UserPanelProps {
-  userImageLoad?: string
+  selectedImage?: string;
+  isLoadingPage: boolean;
 }
 
 const StyledLink = styled(Link)`
@@ -64,9 +66,8 @@ const UserPanelImg = styled.div`
   width: 63px;
   height: 63px;
   border-radius: 50%;
+  outline: 0;
   background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
 `;
 
 const UserNicknameContainer = styled.div`
@@ -103,17 +104,11 @@ const UserPanelButtonContainer = styled.div`
   }
 `;
 
-function UserPanel({ userImageLoad }: UserPanelProps) {
-  const subdomain = useAppSelector((state: any) => state.user.subdomain);
+function UserPanel({ selectedImage, isLoadingPage }: UserPanelProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const userFullName = useAppSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
-  console.log(useAppSelector((state: any) => state));
-  // const [isOpen, setIsOpen] = useState<boolean>(false);
-  // const ref = useRef<HTMLDivElement>(null);
-
-  // useOnClickOutside(ref, () => setIsOpen(false));
 
   const signOut = () => {
     dispatch(logout())
@@ -121,19 +116,19 @@ function UserPanel({ userImageLoad }: UserPanelProps) {
         navigate('/auth/login');
       });
   };
-
-  // const onClose = () => setIsOpen(false);
-  // const subdomain = useSelector((state: any) => state.user.subdomain);
+  if (isLoadingPage) {
+    return <Preloader />;
+  }
 
   return (
     <UserPanelContainer>
       <UserPanelHeaderContainer>
         <UserPanelUserLinkFlex>
-          <StyledLink to={`/${subdomain}/home`}>
+          <StyledLink to="/profile">
             <UserPanelImgContainer>
               <UserPanelImgFlex>
                 <UserPanelImg
-                  style={{ backgroundImage: `url(${userImageLoad})` }}
+                  style={{ backgroundImage: `url(${selectedImage})` }}
                 />
               </UserPanelImgFlex>
             </UserPanelImgContainer>

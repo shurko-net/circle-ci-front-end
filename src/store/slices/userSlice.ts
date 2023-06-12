@@ -13,11 +13,15 @@ const userSlice = createSlice({
     subscribed: 0,
     subdomain: '',
     image: '',
+    backgroundImage: '',
     followers: 0,
   },
   reducers: {
     setUserImage(state, action) {
-      state.image = `data:image/jpeg;base64,${action.payload}`;
+      state.image = action.payload;
+    },
+    setUserBackgroundImage(state, action) {
+      state.backgroundImage = action.payload;
     },
     setUserEmail(state, action) {
       state.email = action.payload;
@@ -56,7 +60,7 @@ const userSlice = createSlice({
 
 export const {
   setUserImage, setUserEmail, setUserSubdomain, setUserName, setUserBio,
-  setUserPhone, setFolowers, setUser,
+  setUserPhone, setFolowers, setUser, setUserBackgroundImage,
 } = userSlice.actions;
 
 export default userSlice.reducer;

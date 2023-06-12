@@ -8,6 +8,7 @@ interface NewProfileModalProps {
   modalOpen: boolean;
   closenModal: () => void;
   onImageChange?: (e?: any) => void,
+  src?: string;
 }
 
 const Button = styled.button`
@@ -196,7 +197,9 @@ const ModalFooterLabel = styled.label`
   color: #fff;
 `;
 
-function NewProfileModal({ modalOpen, closenModal, onImageChange }: NewProfileModalProps) {
+function NewProfileModal({
+  src, modalOpen, closenModal, onImageChange,
+}: NewProfileModalProps) {
   return (
     <NewModal isOpen={modalOpen} closenModal={closenModal}>
       <ModalContainer>
@@ -216,7 +219,7 @@ function NewProfileModal({ modalOpen, closenModal, onImageChange }: NewProfileMo
                 Just something that represents you.
               </ModalMainContentText>
             </ModalMainContentTextContainer>
-            <ModalMainContentImg src="https://static.licdn.com/sc/h/c5ybm82ti04zuasz2a0ubx7bu" />
+            <ModalMainContentImg src={src} />
             <ModalMainContentUnderPhotoText>
               At Circle Ci, we ask members to use their real names
               and faces, so we recommend that you take a photo or

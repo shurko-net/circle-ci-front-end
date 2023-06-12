@@ -5,7 +5,8 @@ import { Outlet } from 'react-router-dom';
 import NewSidebar from '../NewSidebar/NewSidebar';
 
 interface NewMainProps {
-  userImageLoad?: string,
+  selectedImage: string;
+  isLoadingPage: boolean;
 }
 
 // const StyledLink = styled(Link)`
@@ -89,7 +90,7 @@ const MainRelative = styled.div`
   position: relative;
 `;
 
-function NewMain({ userImageLoad }:NewMainProps) {
+function NewMain({ selectedImage, isLoadingPage }:NewMainProps) {
   return (
     <MainContainer>
       <Container>
@@ -99,7 +100,7 @@ function NewMain({ userImageLoad }:NewMainProps) {
               <Outlet />
             </MainRelative>
           </Main>
-          <NewSidebar userImageLoad={userImageLoad} />
+          <NewSidebar isLoadingPage={isLoadingPage} selectedImage={selectedImage} />
         </Body>
       </Container>
     </MainContainer>

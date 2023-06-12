@@ -11,6 +11,10 @@ import SideBarPostCreator from '../components/NewPostCreator/SideBarPostCreator'
 import instance from '../http';
 import { useAppSelector } from '../hook';
 
+interface NewPostCreatorProps {
+  userId: string;
+}
+
 const Body = styled.div`
     padding-top: 100px;
     flex: 1 1 auto;
@@ -68,7 +72,7 @@ const GridContainer = styled.div`
   }
 `;
 
-function NewPostCreator() {
+function NewPostCreator({ userId }: NewPostCreatorProps) {
   const user = useAppSelector((state: any) => state.auth);
   const [postImageLoad, setPostImageLoad] = useState<any>();
   const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
@@ -87,10 +91,11 @@ function NewPostCreator() {
 
   const [title, setTitle] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  console.log(user.id);
 
   const onButtonClick = () => {
     instance.post('https://localhost:44353/api/create-post', {
-      idUser: user.id,
+      idUser: userId,
       idCategory: 1,
       date: new Date(),
       postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
@@ -100,7 +105,7 @@ function NewPostCreator() {
       setTitle('');
       setEditorState(EditorState.createEmpty());
       const formData = new FormData();
-      formData.append('id', res.data.idPost);
+      formData.append('id', res.data.id);
       formData.append('file', imageFile);
       instance.post('https://localhost:44353/api/upload-post-image', formData, {
         headers: {

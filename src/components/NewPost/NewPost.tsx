@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
-import axios from 'axios';
+import instance from '../../http';
 
 interface IUser {
   idUser: number,
@@ -74,8 +74,6 @@ const PostHeaderImg = styled.div`
   width: 48px;
   border-radius: 50%;
   background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
 `;
 
 const PostHeaderText = styled.div`
@@ -336,16 +334,17 @@ function NewPost(postData: any) {
   const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
-    axios.get(`https://localhost:44353/api/User/${postData.postData.idUser}`)
+    instance.get(`https://localhost:44353/api/get-user/${postData.postData.idUser}`)
       .then((res: any) => {
         setPostAuthor(res.data);
 
-        axios.get(`https://localhost:44353/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
+        instance.get(`https://localhost:44353/api/get-user-image/${postData.postData.idUser}`).then((res1: any) => {
           setPostAuthorImage(res1.data);
         }).then(() => {
-          axios.get(`https://localhost:44353/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
+          instance.get(`https://localhost:44353/api/get-post-image/${postData.postData.id}`).then((res2: any) => {
             if (res2.data) {
-              setPostDataImage(`data:image/jpeg;base64,${res2.data}`);
+              debugger;
+              setPostDataImage(res2.data);
             } else {
               setPostDataImage(null);
             }
@@ -378,7 +377,7 @@ function NewPost(postData: any) {
           <StyledLink to={`post/${postData.postData.idPost}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
-                <PostHeaderImg style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
+                <PostHeaderImg style={{ backgroundImage: `url(${postAuthorImage})` }} />
               </PostHeaderImgWrapper>
             </PostHeaderImgBlock>
             <PostHeaderText>
