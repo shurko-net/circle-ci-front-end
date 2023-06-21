@@ -6,6 +6,8 @@ import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
 import instance from '../../http';
+import { useAppDispatch, useAppSelector } from '../../hook';
+import { setPost } from '../../store/slices/postSlice';
 
 interface IUser {
   idUser: number,
@@ -180,12 +182,12 @@ const PostMainDescription = styled.div`
   border-bottom: 1px solid #DCD9D9;
 `;
 
-const PostMainDescriptionButton = styled.button`
+const PostMainDescriptionButton = styled(StyledLink)`
   position: absolute;
   margin-bottom: 0;
   right: 0;
-  bottom: 1.25rem;
-  padding-left: 0.8rem;
+  bottom: 1.2rem;
+  padding-left: 1.4rem;
   cursor: pointer;
   color: #97D6DA;
   font-weight: 600;
@@ -265,7 +267,7 @@ const PostMainPanelButton = styled.button`
   width: 100%;
   min-height: 1.875rem;
   line-height: 3.375rem;
-  cursor: pointer;
+  /* cursor: pointer; */
   border: none;
   overflow: hidden;
   max-width: 480px;
@@ -288,10 +290,7 @@ const PostMainPanelButtonFlexBlock = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   align-items: center;
-  svg:hover {
-    /* color: rgb(142, 142, 142); */
-    color: #000000;
-  }
+  
 `;
 
 const PostMainPanelLeft = styled.div`
@@ -307,19 +306,23 @@ const PostMainPanelButtonText = styled.span`
 
 `;
 
-// const Img = styled.img`
-//   background-color: rgba(242, 242, 242, 1);
-//   box-sizing: border-box;
-//   display: block;
-//   position: absolute;
-//   background-size: 100%;
-//   height: 100px;
-//   width: 200px;
-//   left: 75%;
-//   top: -1250%
-// `;
-
 function NewPost(postData: any) {
+  const {
+    likes,
+  } = useAppSelector((state:any) => ({
+    likes: state.post.likes,
+  }));
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    instance.get(`https://localhost:44353/api/get-post/${postData.postData.id}`)
+      .then((res:any) => {
+        dispatch(setPost(res.data));
+      });
+  }, [postData.postData.id]);
+
+  const [postLoadTime, setPostLoadTime] = useState('');
   const [postAuthor, setPostAuthor] = useState<IUser>({
     biography: '',
     email: '',
@@ -334,6 +337,19 @@ function NewPost(postData: any) {
   const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      const postDate = new Date(postData.postData.date);
+      const currentTime = new Date();
+      const timeDiff = currentTime.getTime() - postDate.getTime();
+      const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      setPostLoadTime(`${hours}h ${minutes}m back`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [postData.postData.date]);
+
+  useEffect(() => {
     instance.get(`https://localhost:44353/api/get-user/${postData.postData.idUser}`)
       .then((res: any) => {
         setPostAuthor(res.data);
@@ -343,7 +359,6 @@ function NewPost(postData: any) {
         }).then(() => {
           instance.get(`https://localhost:44353/api/get-post-image/${postData.postData.id}`).then((res2: any) => {
             if (res2.data) {
-              debugger;
               setPostDataImage(res2.data);
             } else {
               setPostDataImage(null);
@@ -353,23 +368,6 @@ function NewPost(postData: any) {
       });
   }, []);
 
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  const dateNew = new Date(postData.postData.date);
-  const month = months[dateNew.getMonth()];
-  const day = dateNew.getDate();
   return (
     <Post>
       <PostHeader>
@@ -388,28 +386,33 @@ function NewPost(postData: any) {
           </StyledLink>
         </PostHeaderTextWrapper>
         <PostHeaderDateContainer>
-          {`${month} ${day}`}
+          {`${postLoadTime}`}
           {/* {new Date(postData.postData.date).toDateString()} */}
         </PostHeaderDateContainer>
       </PostHeader>
       <PostMainThemeContainer>
         <PostMainTheme>{postData.postData.title}</PostMainTheme>
       </PostMainThemeContainer>
-      <PostMainImageContainer to="/user">
+      <PostMainImageContainer to={`post/${postData.postData.id}`}>
         {postDataImage && <PostMainImage style={{ backgroundImage: `url(${postDataImage})` }} />}
 
         {/* <PostMainImage /> */}
 
       </PostMainImageContainer>
       <PostMainDescriptionContainer>
-        <PostMainDescription dangerouslySetInnerHTML={{ __html: postData.postData.postContent }}>
-          {/* In this report, we synthesize inputs from a quantitative survey,
-          our daily work with thousands of clients,
-          and 40 years of experience to inform,
-          interest, and benefit your business in 2023. */}
+        <PostMainDescription>
+          {(() => {
+            const wordLimit = 28;
+            const html = postData.postData.content;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const text = doc.body.textContent || '';
+            const words = text.split(' ');
+            const limitedWords = words.slice(0, wordLimit).join(' ');
+            return <div>{limitedWords}</div>;
+          })()}
         </PostMainDescription>
-
-        <PostMainDescriptionButton>
+        <PostMainDescriptionButton to={`post/${postData.postData.id}`}>
           <span>...Learn more</span>
         </PostMainDescriptionButton>
       </PostMainDescriptionContainer>
@@ -432,7 +435,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faThumbsUp} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>Like</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>{likes}</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>
@@ -442,7 +445,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faCommentDots} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>999+</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>0</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>

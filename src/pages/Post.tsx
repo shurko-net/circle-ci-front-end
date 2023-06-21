@@ -1,392 +1,540 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+// import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { useDispatch, useSelector } from 'react-redux';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import Container from '../components/Container';
-import Flex from '../components/Flex';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  setPost, setLikes, setLiked,
+  faStar, faCommentDots, faEye, faThumbsUp,
+} from '@fortawesome/free-regular-svg-icons';
+import { useAppDispatch, useAppSelector } from '../hook';
+import instance from '../http';
+import {
+  setComment, setLiked, setLikes, setPost,
 } from '../store/slices/postSlice';
-import Button from '../components/Button';
-import UserImg from '../components/UserImg';
+import checkEvenOrOddTime from '../lib/checkEvenOrOddTime';
+// import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+// import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+// import BookmarkIcon from '@mui/icons-material/Bookmark';
+// import { useDispatch, useSelector } from 'react-redux';
+// import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+// import Container from '../components/Container';
+// import Flex from '../components/Flex';
+// import {
+//   setPost, setLikes, setLiked,
+// } from '../store/slices/postSlice';
+// import Button from '../components/Button';
+// import UserImg from '../components/UserImg';
 // import { setFolowers } from '../store/slices/userSlice';
+// import instance from '../http';
+
 // interface PostProps {
 //   fillIcon?: string;
 // }
-const Block = styled.div`
-    display: block;
+
+const Container = styled.div`
+
 `;
 
-const MarginBottom = styled(Block)`
-    @media (min-width: 1080px) {
-        margin-bottom: 68px;
-    }   
+const PostBody = styled.div`
+  background-color: #fff;
+  position: relative;
+  margin-bottom: 0.75rem;
+  border-radius: 1.25rem;
 `;
 
-const Header = styled.header`
-    @media (min-width: 1080px) {
-        margin-top: 56px;
-        margin-bottom: 32px;
-     }
-     display: block;
+const PostContent = styled.div`
+  
 `;
 
-const ImageBlock = styled(Block)`
-    margin-right: 16px;
-`;
-
-const ImageBlockRelative = styled(Block)`
-    position: relative;
-`;
-
-const Image = styled.image`
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: rgba(242, 242, 242, 1);
-    box-sizing: border-box;
-    display: block;
-    background-size: 100%;
-`;
-
-const UserTextContainer = styled.div`
-    font-size: 16px;
-    line-height: 24px;
-    color: rgba(41, 41, 41, 1);
-    font-weight: 400;
-`;
-
-const UserTextBottom = styled.div`
-    display: flex;
-    margin-bottom: 4px;
-    align-items: center;
-`;
-
-const InlineBlock = styled.div`
-    display: inline-block;
-`;
-
-const DateText = styled.p`
-    color: rgba(117, 117, 117, 1);
-    line-height: 20px;
-    font-size: 14px;
-    font-weight: 400;
-`;
-
-const Word = styled.div`
-    word-wrap: break-word;
-    word-break: break-word;
-`;
-
-const Title = styled.h1`
-  @media (min-width: 1080px) {
-    letter-spacing: -0.016em;
-    line-height: 40px;
-    margin-top: 0.6em;
-    font-size: 32px;
-  }
-  margin-bottom: -0.27em;
-  font-style: normal;
-  color: rgba(41, 41, 41, 1);
-  font-weight: 400;
-`;
-
-const SideBar = styled.div`
-  @media (min-width: 1080px) {
-    max-width: 368px;
-    min-width: 368px;
-    display: block; 
-    padding-left: clamp(24px, 24px + 100vw - 1080px, 40px);
-  }
-  min-height: 100vh;
-  border-left: 1px solid rgba(242, 242, 242, 1);
-  box-sizing: border-box;
-  padding-right: 24px;
-  background-color: rgba(255, 255, 255, 1);
-`;
-
-const Footer = styled.footer`
-  @media (min-width: 1080px) {
-    margin-bottom: 26px;
-  }
-  position: static;
-  box-sizing: content-box;
-  max-height: 52px;
-  height: 52px;
-  border-top: none;
-  display: flex;
+const PostPanel = styled.div`
+  /* position: sticky; */
+  /* bottom: env(safe-area-inset-bottom,0); */
   align-items: center;
-  background-color: rgba(255, 255, 255, 1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  /* z-index: 5; */
+  background-color: #fff;
+  border-bottom-left-radius: 1.25rem;
+  border-bottom-right-radius: 1.25rem;
 `;
 
-const BlockFlex = styled(Block)`
-  flex: 1 0 auto;
-`;
-
-const Indent = styled.div`
-  @media (min-width: 1080px) {
-    max-width: 680px;
+const PostContentContainer = styled.article`
+  box-sizing: border-box;
+  padding: 1rem 1rem 0;
+  @media (min-width: 1024px) {
+    padding: 1rem 1.25rem;
   }
-  margin: 0 24px;
-  min-width: 0;
-  width: 100%;
 `;
 
-const LeftSide = styled(Flex)`
+const PostContentHeader = styled.div`
+  position: relative;
 `;
 
-const RightSide = styled(Flex)`
+const PostContentHeaderBody = styled.div`
+    margin-bottom: 0.5rem;
 `;
 
-const LikeBlock = styled(Block)`
-  max-width: 155px;
+const PostContentHeaderHeaderContainer = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
 `;
 
-const SpanBlock = styled.span`
+const PostContentHeaderHeaderBody = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 0.5rem;
+  align-items: center;
+`;
+
+const PostContentHeaderHeaderUser = styled.span`
+  margin: 0 0.3125rem 0 0 ;
+  display: flex;
+`;
+
+const PostContentHeaderHeaderUserImgLink = styled(Link)`
+  border-radius: 50%;
   display: inline-block;
-`;
-
-const IconDiv = styled.div`
-  margin-right: 4px;
-  position: relative;
-`;
-
-const LikeIcon = styled(ThumbUpIcon)<{ fillIcon?: string }>`
-   &:hover {
-    stroke: black;
-    fill: black;
-  }
-  fill:  ${(props) => props.fillIcon || ''};
-`;
-
-const IconButton = styled.button`
-    user-select: none;
-    outline: 0;
-    border: 0;
-    cursor: pointer;
-    fill: rgba(117, 117, 117, 1);
-    padding: 0;
-    background: transparent;
-    
-`;
-
-const LikesCount = styled.p`
-  font-size: 13px;
-  color: rgba(117, 117, 117, 1);
-  line-height: 20px;
-  font-weight: 400;
-`;
-
-const SaveBlock = styled(Block)`
-  flex: 0 0 auto;
-`;
-
-const SaveButton = styled.button`
-  padding: 8px 2px;
-  cursor: pointer;
-  fill: rgba(117, 117, 117, 1);
-  margin: 0;
-  font-weight: inherit;
-  letter-spacing: inherit;
-  font-family: inherit;
-  border: inherit;
-  font-size: inherit;
-  color: inherit;
-  background: transparent;
-  overflow: visible;
-`;
-
-const BookmarkAdd = styled(BookmarkAddIcon)`
-  &:hover {
-    stroke: black;
-    fill: black;
-  }
-`;
-
-const Bookmark = styled(BookmarkIcon)`
-  &:hover {
-    stroke: black;
-    fill: black;
-  }
-`;
-
-const SideBarPosition = styled.div`
-    position: relative;
-    height: 100%;
-    display: inline-block;
-    width: 100%;
-`;
-
-const SideBarUserBlock = styled(Block)`
-    margin-top: 40px;
-    border-bottom: none;
-    padding-bottom: 0px;
-`;
-
-const SideBarUserImageBlock = styled(Block)`
-  position: relative;
-`;
-
-const SideBarUserImage = styled(Image)`
-  width: 88px;
-  height: 88px;
-`;
-
-const SideBarUserNameBlock = styled(Block)`
-    margin-top: 16px;
-`;
-
-const SideBarUserNameH2 = styled.h2`
-    font-weight: 500;
-    letter-spacing: 0;
-    font-size: 16px;
-    color: rgba(41, 41, 41, 1);
-    line-height: 20px;
-`;
-
-const SideBarUserFollowersTop = styled(Block)`
-  margin-top: 4px;
-`;
-
-const SideBarUserFollowersSpan = styled.span`
-  line-height: 24px;
-  font-size: 16px;
-  color: rgba(117, 117, 117, 1);
-  font-weight: 400;
-`;
-
-const SideBarBiographyBlock = styled(Block)`
-  margin-top: 12px;
-`;
-
-const SideBarBiographyP = styled.div`
-  color: rgba(117, 117, 117, 1);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-`;
-
-const SideBarUserButtonBlock = styled.div`
-  margin-bottom: 40px;
-  margin-top: 24px;
-  display: flex;
-`;
-
-const SideBarBiographySpan = styled(Word)`
-
-`;
-
-const FollowButton = styled(Button)`
-
-`;
-
-const Img = styled.img`
-  margin-top: 12px;
-  background-color: rgba(242, 242, 242, 1);
-  box-sizing: border-box;
-  display: block;
-  background-size: 100%;
-  height: 300px;
-  width: 680px;
-`;
-
-const CommentBlock = styled.div`
-  margin-left: 24px;
-  display: flex;
-`;
-
-const CommentButton = styled.button`
-  padding: 4px 0px;
-  opacity: 1;
-  cursor: pointer;
-  fill: rgba(117, 117, 117, 1);
-  border: 0;
-  align-items: center;
-  display: flex;
-  background: transparent;
-  overflow: visible;
-`;
-
-const CommentP = styled.p`
-    color: rgba(117, 117, 117, 1);
-    line-height: 20px;
-    font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 400;
-`;
-
-const ComentSpan = styled.span`
-  margin-left: 4px;
-  margin-top: 0px;
-`;
-
-const TextPanelBlock = styled.div`
-  padding: 0.4rem 1.6rem 0.8rem;
-  display: flex;
-  align-items: flex-start;
   flex-shrink: 0;
-  border: none;
-  border-top: 1px solid transparent;
-  margin: 0;
-`;
-
-const TextPanelImgBox = styled.div`
-  flex-shrink: 0;
-  margin-right: 0.4rem;
+  margin: 0 0.5rem 0 0; 
+  max-width: 100%;
   overflow: hidden;
-  border: 0;
-  margin-top: 4px;
-  margin-left: 0;
+  vertical-align: middle;
 `;
 
-const TextPanelComentBox = styled.div`
-  border: solid transparent;
-  border-width: 3px 0;
-  max-width: calc(100% - 44px);
-  flex-grow: 1;
+const PostContentHeaderHeaderUserImgDiv = styled.div`
+  width: 100%;
+  height: 100%;
 `;
 
-const CommentsCommentBoxForm = styled.form`
-  display: block;
+const PostContentHeaderHeaderUserImg = styled.img`
+    border-radius: 3px;
+    display: block;
+    overflow: hidden;
+    width: 24px;
+    height: 24px;
+`;
+
+const PostContentHeaderHeaderUserInfo = styled.span`
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+`;
+
+const PostContentHeaderHeaderUserInfoUsername = styled(Link)`
+    font-size: .8125rem;
+    font-weight: 700;
+    line-height: .9375rem;
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    white-space: nowrap;
+`;
+
+const PostContentHeaderHeaderUserInfoDateTimePublished = styled.span`
+      color: #777;
+    display: inline-block;
+    font-size: .8125rem;
+    font-weight: 500;
+    line-height: .9375rem;
+    margin: 0;
+    vertical-align: middle;
+`;
+
+const PostContentHeaderHeaderUserInfoDateTime = styled.time`
+`;
+
+const PostTitleH1 = styled.h1`
+  overflow-x: auto;
+  word-break: break-word;
+  margin: 0 0 8px;
+  font-family: Fira Sans,sans-serif;
+  color: #333;
+  font-size: 1.5rem;
+  line-height: 1.3;
+`;
+
+const ArticleBody = styled.div`
   box-sizing: border-box;
-  min-width: 0;
+  padding-top: 1rem;
+`;
+
+const ArticleFormattedBody = styled.div`
+  color: #111;
+  font-size: 1rem;
+  line-height: 1.56;
+  overflow-wrap: break-word;
+  & img {
+    height: 100%!important;
+    width: 100%!important;
+  }
+`;
+
+const ArticlePresenterMeta = styled.div`
+  box-sizing: border-box;
+  color: #548eaa;
+  font-size: 1rem;
+  line-height: 180%;
+  margin: 24px 0;
+  max-width: 780px;
+`;
+
+const ArticlePresenterMetaList = styled.div`
+
+`;
+
+const ArticlePresenterMetaTitle = styled.span`
+  color: #444;
+  font-weight: 700;
+  margin-right: 4px;
+`;
+
+const SeparatedListList = styled.ul`
+  display: inline;
+  list-style: none;
+  margin: 0;
   padding: 0;
 `;
 
-const CommentsCommentTexteditor = styled.div`
-  border: 1px solid grey;
-  border-radius: 20px;
+const SeparatedListItem = styled.div`
+    display: inline-block;
+    padding: 0;
 `;
 
-// const CommentsCommentBoxTexteditor = styled.div`
-//   font-size: 1.4rem;
-//   flex: 1 1 auto;
-//   min-width: 0;
-//   padding: 9.5px;
-//   color: white;
-// `;
+const PostPanelIcons = styled.div`
+  @media (min-width: 1024px) {
+    padding: 0 20px;
+  }
+  background-color: #fff;
+  border-top: 1px solid #d5dddf;
+  box-sizing: border-box;
+  height: 48px;
+  padding: 0 16px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 780px;
+  min-width: 320px;
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  border-bottom-left-radius: 1.25rem;
+  border-bottom-right-radius: 1.25rem;
+  
+  button:not(:first-child) {
+    margin-left: 32px;
+  }
+`;
+
+const PostPanelButton = styled.button`
+    /* margin-left: 32px; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    transition: none;
+    @media (min-width: 1024px) {
+      cursor: pointer;
+    }
+    position: relative;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+`;
+
+const ImgIconWrapper = styled.span`
+  color: #bdcdd6;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  svg:hover {
+    color: #000000;
+  }
+`;
+
+const ButtonCounter = styled.span`
+    color: #798e98;
+    font-size: .8125rem;
+    font-weight: 700;
+    line-height: 1;
+`;
+
+const ImgIcon = styled(FontAwesomeIcon)`
+    width: 1.5rem;
+    height: 1.5rem;
+`;
+
+const ArticleBlocksComments = styled.div`
+  
+`;
+
+const CommentsWrapper = styled.div`
+
+`;
+
+const CommentsWrapperWrapper = styled.div`
+    background-color: #fff;
+    border-radius: 1.25rem;
+    margin-bottom: 24px;
+`;
+
+const CommentsWrapperHeader = styled.header`
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  min-height: 55px;
+  padding: 15px 16px;
+`;
+
+const CommentsWrapperInner = styled.div`
+    
+`;
+
+const CommentsWrapperTitle = styled.h2`
+    color: #333;
+    font-size: .875rem;
+    font-weight: 700;
+    margin: 0 auto 0 0;
+`;
+
+const CommentsWrapperCommentsCount = styled.span`
+  color: #4b8eab;
+  margin: 0 0 0 6px;
+`;
+
+const CommentsTree = styled.div`
+    box-sizing: border-box;
+    padding: 16px 0 0;
+`;
+
+const CommentThread = styled.section`
+    position: relative;
+`;
+
+const CommentThreadComment = styled.article`
+    position: relative;
+    padding: 0 16px 12px;
+`;
+
+const CommentThreadIndent = styled.div`
+  @media (min-width: 1024px) {
+    margin-left: 12px;
+  }
+  margin-left: 2px;
+`;
+
+const Comment = styled.div`
+    position: relative;
+    transition: opacity .3s ease;
+`;
+
+const CommentHeader = styled.header`
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    height: 24px;
+    margin: -4px;
+    padding: 4px;
+    position: relative;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 24px;
+`;
+
+const CommentHeaderinner = styled.div`
+    display: flex;
+    margin: 0 4px 0 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+const CommentUserInfo = styled.span`
+    align-items: center;
+    display: flex;
+    max-width: 100%;
+`;
+
+const UserInfoUserpic = styled(Link)`
+    border-radius: 3px;
+    display: inline-block;
+    flex-shrink: 0;
+    margin: 0 8px 0 0;
+    max-width: 100%;
+    overflow: hidden;
+    vertical-align: middle;
+`;
+
+const EntityImage = styled.div`
+    height: 100%;
+    width: 100%;
+`;
+
+const EntityImagePic = styled.img`
+    border-radius: 3px;
+    display: block;
+    overflow: hidden;
+    height: 24px;
+    width: 24px;
+`;
+
+const UserInfoUser = styled.span`
+  @media (min-width: 768px) {
+    align-items: baseline;
+    flex-direction: row;
+  }
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+const UserInfoUserName = styled(Link)`
+  @media (min-width: 768px) {
+    margin: 0 5px 0 0;
+  }
+  line-height: .9375rem;
+  text-decoration: none;
+  font-size: .8125rem;
+  font-weight: 700;
+  color: #333;
+  display: inline-block;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+`;
+
+const ComentThreadCommentTime = styled.time`
+    color: #777;
+    line-height: .6875rem;
+    white-space: nowrap;
+    font-size: .75rem;
+`;
+
+const CommentBodyContent = styled.div`
+    color: #111;
+    font-size: .9375rem;
+    line-height: 1.375rem;
+    margin-top: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    word-break: break-word;
+`;
+
+const CommentForm = styled.div`
+    background-color: #f7f7f7;
+    padding: 18px 16px 12px;
+    position: relative;
+    /* border-top: 1px solid rgba(146,156,165,.4); */
+    border-radius: 1.25rem;
+    
+`;
+
+const CommentFormField = styled.div`
+    position: relative;
+    margin-bottom: 12px;
+`;
+
+const CommentFormControls = styled.div`
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+`;
+
+const CommentFormLabel = styled.label`
+    color: #333;
+    display: block;
+    font-size: .8125rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 18px;
+    padding: 0;
+`;
+
+const CommentFormEditor = styled.div`
+    background: #fff;
+`;
+
+const Editor = styled.textarea`
+    overflow: auto;
+    display: block;
+    outline: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+    font-weight: 600;
+    overflow-y: hidden;
+    resize: none;
+    background: #F4F4F4;
+    border: 1px solid #C4C4C4;
+    border-radius: 10px;
+    width: 100%;
+    position: relative;
+    padding: 0.75rem;
+`;
+
+const CommentFormControlsButton = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const CommentFormButtonSend = styled.button`
+      background-color: transparent;
+    border-color: #d2d2d2;
+    color: #737d81;
+    cursor: not-allowed;
+    border: 1px solid;
+    font-size: .75rem;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 1rem;
+    padding: 0.375rem 1rem 0.375rem 1rem;
+    min-width: 6.4rem;
+    max-width: 480px;
+`;
+
+const CommentsEmpty = styled.div`
+    padding: 16px 16px 18px;
+    color: #777;
+    font-weight: 400;
+    font-size: .9375rem;
+    line-height: 1.4375rem;
+    letter-spacing: .01313rem;
+    text-align: center;
+`;
 
 function Post() {
+  const dispatch = useAppDispatch();
   const {
-    idUser, date, postContent, title, likes, isLiked,
-  } = useSelector((state:any) => ({
+    idUser, date, postContent, title, likes, isLiked, comments,
+  } = useAppSelector((state:any) => ({
     idUser: state.post.idUser,
     date: state.post.date,
     postContent: state.post.postContent,
     title: state.post.title,
     likes: state.post.likes,
     isLiked: state.post.isLiked,
+    comments: state.post.comments,
   }));
 
-  const { id } = useSelector((state:any) => ({
+  const { id } = useAppSelector((state:any) => ({
     id: state.user.id,
   }));
-  const dispatch = useDispatch();
   const [postAuthorImage, setPostAuthorImage] = useState('');
   const [postMainImage, setPostMainImage] = useState<any>();
   const [user, setUser] = useState<any>({});
@@ -394,9 +542,11 @@ function Post() {
   const [save, setSave] = useState(false);
   const [followed, setFollowed] = useState();
   const [activeModal, setActiveModal] = useState(false);
+  const [commentsTitel, setCommentsTitel] = useState('');
+  const [postComments, setPostComments] = useState(comments);
 
   const handleLike = () => {
-    axios.put('https://localhost:44353/api/Like', {
+    instance.put('https://localhost:44353/api/like', {
       idPost: Number(postId),
       idUser: id,
     }).then((resp) => {
@@ -405,46 +555,56 @@ function Post() {
     });
   };
 
-  const handleComment = () => {
-    setActiveModal(!activeModal);
-    console.log(postAuthorImage);
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    setCommentsTitel(e.target.value);
   };
 
-  const handleFollow = () => {
-    axios.put('https://localhost:44353/api/Follow', {
+  const handleSendComment = () => {
+    instance.post('https://localhost:44353/api/save-comment', {
+      content: commentsTitel,
       idUser,
-      idFollower: id,
-    }).then((resp) => {
-      console.log(resp);
-      setUser(resp.data.user);
-      setFollowed(resp.data.followed);
-    }).catch((err) => console.log(err));
-  };
-
-  const handleSave = () => {
-    setSave(true);
+      idPost: postId,
+    }).then((res: any) => {
+      setPostComments([res.data, ...postComments]);
+      dispatch(setComment([res.data, ...postComments]));
+      setCommentsTitel('');
+    });
   };
 
   useEffect(() => {
-    axios.get(`https://localhost:44353/api/Post/${postId}`)
+    instance.get(`https://localhost:44353/api/all-comments/${postId}`)
+      .then((res:any) => {
+        dispatch(setComment(res.data.map((item:any) => ({
+          ...item,
+          created: new Date(item.created),
+        })).sort((a:any, b:any) => b.created - a.created)));
+        setPostComments((res.data.map((item:any) => ({
+          ...item,
+          created: new Date(item.created),
+        })).sort((a:any, b:any) => b.created - a.created)));
+      });
+  }, [postId]);
+
+  useEffect(() => {
+    instance.get(`https://localhost:44353/api/get-post/${postId}`)
       .then((res:any) => {
         dispatch(setPost(res.data));
 
-        axios.get(`https://localhost:44353/api/UserImage/${idUser}`).then((img: any) => {
+        instance.get(`https://localhost:44353/api/get-user-image/${idUser}`).then((img: any) => {
           setPostAuthorImage(img.data);
         });
-        axios.get(`https://localhost:44353/api/User/${idUser}`).then((userRes: any) => {
+        instance.get(`https://localhost:44353/api/get-user/${idUser}`).then((userRes: any) => {
           setUser(userRes.data);
         });
-        axios.get(`https://localhost:44353/api/Like/${postId}/${id}`).then((resLike: any) => {
+        instance.get(`https://localhost:44353/api/is-liked/${postId}/${id}`).then((resLike: any) => {
           dispatch(setLikes(resLike.data.likes));
           dispatch(setLiked(resLike.data.liked));
         });
-        axios.get(`https://localhost:44353/api/Follow/${idUser}/${id}`).then((resFollow: any) => {
+        instance.get(`https://localhost:44353/api/is-sub/${idUser}/${id}`).then((resFollow: any) => {
           setUser(resFollow.data.user);
           setFollowed(resFollow.data.followed);
         });
-        axios.get(`https://localhost:44353/api/PostImage/${postId}`).then((res2: any) => {
+        instance.get(`https://localhost:44353/api/get-post-image/${postId}`).then((res2: any) => {
           if (res2.data) {
             setPostMainImage(`data:image/jpeg;base64,${res2.data}`);
           } else {
@@ -455,275 +615,185 @@ function Post() {
   }, [postId, idUser, id]);
 
   const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
   ];
   const dateNew = new Date(date);
   const month = months[dateNew.getMonth()];
+
   const day = dateNew.getDate();
+  const hours = dateNew.getHours();
+  const minutes = dateNew.getMinutes();
+
   return (
-    <Container
-      maxWidth="1336px"
-      margin="auto"
-      display="block"
-      marginTop="70px"
-    >
-      <Flex
-        justify="space-evenly"
-        direction="row"
-      >
-        <Container
-          minWidth="728px"
-          maxWidth="728px"
-          flex="1 1 auto"
-          display="block"
-        >
-          <Block>
-            <MarginBottom>
-              <Flex
-                justify="center"
-              >
-                <Container
-                  maxWidth="680px"
-                  margin="0 24px"
-                  display="block"
-                  minWidth="0"
-                  width="100%"
-                >
-                  <Block>
-                    <Header>
-                      <Flex
-                        justify="space-between"
-                        align="flex-start"
-                      >
-                        <Flex>
-                          <ImageBlock>
-                            <Link to="/user">
-                              <ImageBlockRelative>
-                                <Image style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
-                              </ImageBlockRelative>
-                            </Link>
-                          </ImageBlock>
-                          <Block>
-                            <UserTextContainer>
-                              <UserTextBottom>
-                                <Block>
-                                  <InlineBlock>
-                                    <Flex
-                                      align="center"
-                                    >
-                                      <Link
-                                        style={{ textDecoration: 'none', color: 'black' }}
-                                        to="/user"
-                                      >
-                                        <p>
-                                          {`${user.name} ${user.surname}`}
-                                        </p>
-                                      </Link>
-                                    </Flex>
-                                  </InlineBlock>
-                                </Block>
-                              </UserTextBottom>
-                            </UserTextContainer>
-                            <Flex
-                              flexWrap="wrap"
-                              align="center"
-                            >
-                              <DateText>
-                                <span>
-                                  {`${month} ${day}`}
-                                </span>
-                              </DateText>
-                            </Flex>
-                          </Block>
-                        </Flex>
-                      </Flex>
-                    </Header>
-                    <Block>
-                      <Word>
-                        <Block>
-                          <Title>
-                            {title}
-                          </Title>
-                        </Block>
-                        {postMainImage && (
-                        <Block>
-                          <Img style={{ backgroundImage: `url(${postMainImage})` }} />
-                        </Block>
-                        )}
-                        <Block
-                          style={{ marginTop: '2em' }}
-                          dangerouslySetInnerHTML={{ __html: postContent }}
-                        />
-                      </Word>
-                    </Block>
-                  </Block>
-                </Container>
-              </Flex>
-            </MarginBottom>
-          </Block>
-          <Footer>
-            <BlockFlex>
-              <Flex justify="center">
-                <Indent>
-                  <Flex justify="space-between">
-                    <LeftSide
-                      direction="row"
-                      align="center"
-                    >
-                      <LikeBlock>
-                        <SpanBlock>
-                          <Flex
-                            direction="row"
-                            align="center"
-                          >
-                            <IconDiv>
-                              <IconButton onClick={handleLike}>
-                                {!isLiked ? <LikeIcon color="action" /> : <LikeIcon /> }
-                              </IconButton>
-                            </IconDiv>
-                            <LikesCount>
-                              {likes}
-                            </LikesCount>
+    <Container>
+      <PostBody>
+        <PostContent>
+          <PostContentContainer>
+            <PostContentHeader>
+              <PostContentHeaderBody>
+                <PostContentHeaderHeaderContainer>
+                  <PostContentHeaderHeaderBody>
+                    <PostContentHeaderHeaderUser>
+                      <PostContentHeaderHeaderUserImgLink to="/user">
+                        <PostContentHeaderHeaderUserImgDiv>
+                          <PostContentHeaderHeaderUserImg src={postAuthorImage} />
+                        </PostContentHeaderHeaderUserImgDiv>
+                      </PostContentHeaderHeaderUserImgLink>
+                      <PostContentHeaderHeaderUserInfo>
+                        <PostContentHeaderHeaderUserInfoUsername to="/user">
+                          {`${user.name} ${user.surname}`}
+                        </PostContentHeaderHeaderUserInfoUsername>
+                        <PostContentHeaderHeaderUserInfoDateTimePublished>
+                          <PostContentHeaderHeaderUserInfoDateTime>
+                            {`${day} ${month} in ${hours}:${minutes}`}
+                          </PostContentHeaderHeaderUserInfoDateTime>
+                        </PostContentHeaderHeaderUserInfoDateTimePublished>
+                      </PostContentHeaderHeaderUserInfo>
+                    </PostContentHeaderHeaderUser>
+                  </PostContentHeaderHeaderBody>
+                </PostContentHeaderHeaderContainer>
+                <PostTitleH1>
+                  <span>
+                    {title}
+                  </span>
+                </PostTitleH1>
+              </PostContentHeaderBody>
+              <ArticleBody>
+                <ArticleFormattedBody dangerouslySetInnerHTML={{ __html: postContent }} />
+              </ArticleBody>
+            </PostContentHeader>
+            <ArticlePresenterMeta>
+              <ArticlePresenterMetaList>
+                <ArticlePresenterMetaTitle>Tegs:</ArticlePresenterMetaTitle>
+                <SeparatedListList>
+                  <SeparatedListItem>jwt</SeparatedListItem>
+                </SeparatedListList>
+              </ArticlePresenterMetaList>
+              <ArticlePresenterMetaList />
+            </ArticlePresenterMeta>
+          </PostContentContainer>
+        </PostContent>
+        <PostPanel>
+          <PostPanelIcons>
+            <PostPanelButton onClick={handleLike}>
+              <ImgIconWrapper>
+                {isLiked ? <ImgIcon icon={faThumbsUp} style={{ color: ' #000000' }} /> : <ImgIcon icon={faThumbsUp} /> }
+                {/* <ImgIcon icon={faThumbsUp} /> */}
+              </ImgIconWrapper>
+              <ButtonCounter>
+                {likes}
+              </ButtonCounter>
+            </PostPanelButton>
+            <PostPanelButton>
+              <ImgIconWrapper>
+                <ImgIcon icon={faCommentDots} />
+              </ImgIconWrapper>
+              <ButtonCounter>0</ButtonCounter>
+            </PostPanelButton>
+            <PostPanelButton>
+              <ImgIconWrapper>
+                <ImgIcon icon={faStar} />
+              </ImgIconWrapper>
+            </PostPanelButton>
+            <PostPanelButton>
+              <ImgIconWrapper>
+                <ImgIcon icon={faEye} />
+              </ImgIconWrapper>
+              <ButtonCounter>0</ButtonCounter>
+            </PostPanelButton>
+          </PostPanelIcons>
+        </PostPanel>
+      </PostBody>
+      <ArticleBlocksComments>
+        <CommentsWrapper>
+          <CommentsWrapperWrapper>
+            <CommentsWrapperHeader>
+              <CommentsWrapperTitle>
+                Comments
+                <CommentsWrapperCommentsCount>{postComments.length}</CommentsWrapperCommentsCount>
+              </CommentsWrapperTitle>
+            </CommentsWrapperHeader>
+            <CommentsWrapperInner>
+              {postComments.length
+                ? (
+                  postComments.map((comment:any) => (
+                    <CommentsTree>
+                      <CommentThread>
+                        <CommentThreadComment>
+                          <CommentThreadIndent>
+                            <Comment>
+                              <CommentHeader>
+                                <CommentHeaderinner>
+                                  <CommentUserInfo>
+                                    <UserInfoUserpic to="">
+                                      <EntityImage>
+                                        <EntityImagePic src={comment.imageUrl} />
+                                      </EntityImage>
+                                    </UserInfoUserpic>
+                                    <UserInfoUser>
+                                      <UserInfoUserName to="">{comment.user.name}</UserInfoUserName>
+                                      <ComentThreadCommentTime>
+                                        {
+                                          checkEvenOrOddTime(new Date(), new Date(comment.created))
+                                        }
+                                      </ComentThreadCommentTime>
+                                    </UserInfoUser>
+                                  </CommentUserInfo>
+                                </CommentHeaderinner>
+                              </CommentHeader>
+                              <CommentBodyContent>
+                                {comment.content}
+                              </CommentBodyContent>
+                            </Comment>
+                          </CommentThreadIndent>
+                        </CommentThreadComment>
+                      </CommentThread>
+                    </CommentsTree>
+                  ))
 
-                          </Flex>
-                        </SpanBlock>
-                      </LikeBlock>
-                      <CommentBlock>
-                        <Block>
-                          <InlineBlock>
-                            <CommentButton onClick={handleComment}>
-                              <ChatBubbleOutlineIcon style={{ marginTop: '0px' }} />
-                              <CommentP>
-                                <ComentSpan>2</ComentSpan>
-                              </CommentP>
-                            </CommentButton>
-                          </InlineBlock>
-                        </Block>
-                      </CommentBlock>
-                    </LeftSide>
-                    <RightSide align="center">
-                      <SaveBlock>
-                        <Block>
-                          <SaveButton onClick={handleSave}>
-                            {save ? <Bookmark color="action" /> : <BookmarkAdd color="action" />}
-                          </SaveButton>
-                        </Block>
-                      </SaveBlock>
-                    </RightSide>
-                  </Flex>
-                </Indent>
-              </Flex>
-            </BlockFlex>
-          </Footer>
-          {
-          activeModal
-            ? (
-              <Flex direction="column">
-                <TextPanelBlock>
-                  <TextPanelImgBox>
-                    <UserImg
-                      backgroundImage={postAuthorImage}
-                      width="40px"
-                      height="40px"
-                      boxSizing="border-box"
-                      backgroundClip="content-box"
-                      border="none"
-                      display="inline-block"
-                      borderRadius="50%"
-                    />
-                  </TextPanelImgBox>
-                  <TextPanelComentBox>
-                    <CommentsCommentBoxForm>
-                      <CommentsCommentTexteditor>
-                        <Flex flexWrap="wrap">
-                          asda
-                        </Flex>
-                      </CommentsCommentTexteditor>
-                    </CommentsCommentBoxForm>
-                  </TextPanelComentBox>
-                </TextPanelBlock>
-              </Flex>
-            )
-            : null
-            }
-        </Container>
-        <SideBar>
-          <SideBarPosition>
-            <SideBarUserBlock>
-              <Link to="/user/profile">
-                <SideBarUserImageBlock>
-                  <SideBarUserImage style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
-                </SideBarUserImageBlock>
-              </Link>
-              <SideBarUserNameBlock>
-                <Link
-                  to="/user/profile"
-                  style={{ textDecoration: 'none', color: 'black' }}
-                >
-                  <SideBarUserNameH2>
-                    <Word>
-                      {`${user.name} ${user.surname}`}
-                    </Word>
-                  </SideBarUserNameH2>
-                </Link>
+                ) : (
+                  <CommentsEmpty>
+                    <span>There are no comments yet, you can be the first!</span>
+                  </CommentsEmpty>
+                )}
 
-              </SideBarUserNameBlock>
-              <SideBarUserFollowersTop>
-                <SideBarUserFollowersSpan>
-                  <Link
-                    to="profile/followers"
-                    style={{ textDecoration: 'none', color: 'inherit' }}
-                  >
-                    {`${user.followers} Followers`}
-                  </Link>
-                </SideBarUserFollowersSpan>
-              </SideBarUserFollowersTop>
-              <SideBarBiographyBlock>
-                <SideBarBiographyP>
-                  <SideBarBiographySpan dangerouslySetInnerHTML={{ __html: user.biography }} />
-                </SideBarBiographyP>
-              </SideBarBiographyBlock>
-              <SideBarUserButtonBlock>
-                {id !== idUser
-                  && (
-                    followed ? (
-                      <FollowButton
-                        click={handleFollow}
-                        marginLeft="0px"
-                      // primary
-                        border="1px solid #7DE2D1"
-                        color="#7DE2D1"
-                        background="none"
-                      >
-                        UnFollow
-                      </FollowButton>
-                    )
-                      : (
-                        <FollowButton
-                          click={handleFollow}
-                          marginLeft="0px"
-                          primary
-                        >
-                          Follow
-                        </FollowButton>
-                      )
-                  )}
-              </SideBarUserButtonBlock>
-            </SideBarUserBlock>
-          </SideBarPosition>
-        </SideBar>
-      </Flex>
+            </CommentsWrapperInner>
+          </CommentsWrapperWrapper>
+          <CommentForm>
+            <CommentFormField>
+              <CommentFormLabel>
+                Your comment
+              </CommentFormLabel>
+              <CommentFormEditor>
+                <Editor value={commentsTitel} onChange={handleCommentChange} placeholder="Leave your comment" />
+              </CommentFormEditor>
+
+            </CommentFormField>
+            <CommentFormControls>
+              <CommentFormControlsButton>
+                <CommentFormButtonSend
+                  disabled={commentsTitel === ''}
+                  style={commentsTitel ? { cursor: 'pointer' } : { cursor: 'not-allowed' }}
+                  onClick={handleSendComment}
+                >
+                  Send
+                </CommentFormButtonSend>
+              </CommentFormControlsButton>
+            </CommentFormControls>
+          </CommentForm>
+        </CommentsWrapper>
+      </ArticleBlocksComments>
     </Container>
   );
 }

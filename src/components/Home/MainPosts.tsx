@@ -3,13 +3,18 @@ import React, { useEffect, useState } from 'react';
 import NewPost from '../NewPost/NewPost';
 import instance from '../../http';
 
-function MainPosts() {
+interface MainPostsProps {
+  setIsLoading: (e: boolean) => void
+}
+
+function MainPosts({ setIsLoading }:MainPostsProps) {
   const [posts, setPosts] = useState<any>([]);
 
   useEffect(() => {
     instance.get('https://localhost:44353/api/all-posts')
       .then((res: any) => {
         setPosts(res.data.sort((a: any, b: any) => b.idPost - a.idPost));
+        setIsLoading(false);
       });
   }, []);
 

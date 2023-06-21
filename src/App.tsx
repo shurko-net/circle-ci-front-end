@@ -10,9 +10,16 @@ import NewProfile from './components/NewProfile/NewProfile';
 import Layout from './components/Layout';
 import NewPostCreator from './pages/NewPostCreator';
 import NewAuthwall from './pages/NewAuthwall';
-import { setUser, setUserBackgroundImage, setUserImage } from './store/slices/userSlice';
+import {
+  setUser,
+  setUserBackgroundImage,
+  setUserImage,
+} from './store/slices/userSlice';
 import Preloader from './preloader';
 import instance from './http';
+import Post from './pages/Post';
+import LoginMain from './components/NewLogin/LoginMain';
+import RegisterMain from './components/NewRegister/RegisterMain';
 
 const Container = styled.div`
   display: flex;
@@ -29,13 +36,14 @@ function App() {
     isAuth: state.auth.isAuth,
     user: state.auth.user,
     isLoading: state.auth.isLoading,
-
   }));
-  const { userImage, userId, backgroundImage } = useAppSelector((state: any) => ({
-    userImage: state.user.image,
-    userId: state.user.id,
-    backgroundImage: state.user.backgroundImage,
-  }));
+  const { userImage, userId, backgroundImage } = useAppSelector(
+    (state: any) => ({
+      userImage: state.user.image,
+      userId: state.user.id,
+      backgroundImage: state.user.backgroundImage,
+    }),
+  );
 
   const [selectedImage, setSelectedImage] = React.useState(userImage);
   const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(backgroundImage);
@@ -49,25 +57,20 @@ function App() {
   useEffect(() => {
     const images = [selectedImage, selectedBackgroundImage];
     let loadedCount = 0;
-
     images.forEach((image) => {
-      if (!image) {
+      if (image === '') {
         loadedCount += 1;
-        if (loadedCount === images.length) {
-          setAreImagesLoaded(true);
-        }
-        return;
+      } else {
+        const img = new Image();
+        img.onloadeddata = () => {
+          loadedCount += 1;
+        };
+        img.src = image;
       }
-
-      const img = new Image();
-      img.onload = () => {
-        loadedCount += 1;
-        if (loadedCount === images.length) {
-          setAreImagesLoaded(true);
-        }
-      };
-      img.src = image;
     });
+    if (loadedCount === images.length) {
+      setAreImagesLoaded(true);
+    }
   }, [selectedImage, selectedBackgroundImage]);
 
   useEffect(() => {
@@ -112,8 +115,17 @@ function App() {
       <Container>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/" element={<NewMain isLoadingPage={isLoadingPage} selectedImage={selectedImage} />}>
-              <Route path="/" element={<MainPosts />} />
+            <Route
+              path="/"
+              element={(
+                <NewMain
+                  isLoadingPage={isLoadingPage}
+                  selectedImage={selectedImage}
+                />
+              )}
+            >
+              <Route path="/" element={<MainPosts setIsLoading={setIsLoading} />} />
+
               <Route
                 path="profile"
                 element={(
@@ -126,8 +138,12 @@ function App() {
                   />
                 )}
               />
+              <Route path="post/:postId" element={<Post />} />
             </Route>
-            <Route path="create-post" element={<NewPostCreator userId={userId} />} />
+            <Route
+              path="create-post"
+              element={<NewPostCreator userId={userId} />}
+            />
           </Route>
           <Route path="*" element={<div>404... not found </div>} />
         </Routes>
@@ -137,7 +153,13 @@ function App() {
 
   return (
     <Container>
-      <NewAuthwall />
+      <Routes>
+        <Route path="/auth" element={<NewAuthwall />}>
+          <Route path="login" element={<LoginMain />} />
+          <Route path="register" element={<RegisterMain />} />
+        </Route>
+        <Route path="*" element={<div>404... not found </div>} />
+      </Routes>
     </Container>
   );
 }

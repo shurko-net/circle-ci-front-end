@@ -63,7 +63,6 @@ export const checkAuth = createAsyncThunk(
     }
     console.log(response);
     localStorage.setItem('token', response.data.accessToken);
-    // dispatch(setUser(response.data.user));
     return response.data.user;
   },
 );
@@ -73,7 +72,7 @@ const authSlice = createSlice({
   initialState: {
     user: {} as IUser,
     isAuth: false,
-    isLoading: true,
+    isLoading: false,
   },
   reducers: {},
   extraReducers(builder) {

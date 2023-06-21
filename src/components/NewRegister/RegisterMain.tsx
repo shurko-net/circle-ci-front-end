@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import FormSection from './FormSection';
-import LoginButtonSection from './LoginButtonSection';
+import FormSection from '../NewLogin/FormSection';
+import RegisterButtonSection from './RegisterButtonSection';
 
 const Main = styled.main`
     display: flex;
@@ -89,16 +89,30 @@ const AuthWallSignButton = styled(Link)`
     }
 `;
 
-function LoginMain() {
+function RegisterMain() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [surname, setSurname] = useState<string>('');
   return (
     <Main>
       <MainContainer>
         <MainBody>
-          <MainHeaderText>Sign in</MainHeaderText>
+          <MainHeaderText>Registration</MainHeaderText>
           <form>
             <FormBody>
+              <FormSection
+                onChange={(e: any) => setName(e.target.value)}
+                inputLabel="Name"
+                placeholder="Name"
+                value={name}
+              />
+              <FormSection
+                onChange={(e: any) => setSurname(e.target.value)}
+                inputLabel="Surname"
+                placeholder="Surname"
+                value={surname}
+              />
               <FormSection
                 onChange={(e: any) => setEmail(e.target.value)}
                 inputLabel="Email"
@@ -112,14 +126,19 @@ function LoginMain() {
                 value={password}
               />
             </FormBody>
-            <LoginButtonSection password={password} email={email} />
+            <RegisterButtonSection
+              name={name}
+              surname={surname}
+              password={password}
+              email={email}
+            />
             <OrContainer>
               <OrText> or </OrText>
             </OrContainer>
           </form>
           <AuthWallSign>
-            New to CircleCi?
-            <AuthWallSignButton to="/auth/register"> Join now </AuthWallSignButton>
+            Already registered?
+            <AuthWallSignButton to="/auth/login">Sign in</AuthWallSignButton>
           </AuthWallSign>
         </MainBody>
       </MainContainer>
@@ -127,4 +146,4 @@ function LoginMain() {
   );
 }
 
-export default LoginMain;
+export default RegisterMain;

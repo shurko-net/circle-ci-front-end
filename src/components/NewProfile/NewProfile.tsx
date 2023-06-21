@@ -68,7 +68,7 @@ const ProfileBackgroundImageContainer = styled.div`
   align-items: center;
   border-top-left-radius: 1.25rem;
   border-top-right-radius: 1.25rem;
-  background: rgba(117,117,117,1);
+  background: rgba(117, 117, 117, 1);
 `;
 
 const ProfileBackgroundImageRelative = styled.img`
@@ -153,7 +153,7 @@ const UserImage = styled.div`
   background-position: center;
 `;
 
-const IconWrapper = styled.div<{ visible?: boolean; icon?:any }>`
+const IconWrapper = styled.div<{ visible?: boolean; icon?: any }>`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -161,7 +161,6 @@ const IconWrapper = styled.div<{ visible?: boolean; icon?:any }>`
   display: inline-block;
   transition: opacity 0.4s ease-in-out;
   opacity: ${(props) => (props.visible ? 1 : 0)};
-
 `;
 
 // const Icon = styled(FontAwesomeIcon)`
@@ -178,7 +177,6 @@ const ProfileTopcardIamgeEditIcon = styled.section`
   position: absolute;
   top: calc(1rem + 0.25rem);
   right: calc(1rem + 0.25rem);
-  
 `;
 
 const ButtonEditBackgroundImg = styled.button`
@@ -186,7 +184,7 @@ const ButtonEditBackgroundImg = styled.button`
   width: 2rem;
   min-width: auto;
   border-radius: 50%;
-  transition-timing-function: cubic-bezier(.4,0,.2,1);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 167ms;
   align-items: center;
   border: none;
@@ -205,7 +203,7 @@ const ButtonEditBackgroundImg = styled.button`
   line-height: 0.7;
   background: #fff;
   &:hover {
-    color: #60BDC2;
+    color: #60bdc2;
   }
 `;
 
@@ -230,13 +228,15 @@ const InputEditBackgroundImg = styled.input`
 const NotBackgroundImg = styled.p`
   color: #fff;
   font-size: 1rem;
-
 `;
 
 function NewProfile({
-  userId, selectedImage,
-  setSelectedImage, selectedBackgroundImage, setSelectedBackgroundImage,
-}:NewProfileProps) {
+  userId,
+  selectedImage,
+  setSelectedImage,
+  selectedBackgroundImage,
+  setSelectedBackgroundImage,
+}: NewProfileProps) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [isHovered, setIsHovered] = useState(false);
@@ -250,14 +250,14 @@ function NewProfile({
   };
 
   const handleDeleteUserImg = () => {
-    instance
-      .delete(`https://localhost:44353/api/delete-user-image/${userId}`);
+    instance.delete(`https://localhost:44353/api/delete-user-image/${userId}`);
     setSelectedImage('');
   };
 
   const handleDeleteUserBackgroundImage = () => {
-    instance
-      .delete(`https://localhost:44353/api/delete-background-image/${userId}`);
+    instance.delete(
+      `https://localhost:44353/api/delete-background-image/${userId}`,
+    );
     setSelectedBackgroundImage('');
   };
 
@@ -290,11 +290,15 @@ function NewProfile({
     const formData = new FormData();
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
-    instance.put('https://localhost:44353/api/upload-background-image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    instance.put(
+      'https://localhost:44353/api/upload-background-image',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       },
-    });
+    );
   };
 
   const openModal = () => {
@@ -312,27 +316,30 @@ function NewProfile({
           <ProfileBackgroundImage>
             <ProfileBackgroundImageContainer>
               {selectedBackgroundImage === '' ? (
-                <NotBackgroundImg>Upload a background for your profile</NotBackgroundImg>
-              )
-                : (
-                  <ProfileBackgroundImageRelative src={selectedBackgroundImage} />
-                ) }
-
+                <NotBackgroundImg>
+                  Upload a background for your profile
+                </NotBackgroundImg>
+              ) : (
+                <ProfileBackgroundImageRelative src={selectedBackgroundImage} />
+              )}
             </ProfileBackgroundImageContainer>
           </ProfileBackgroundImage>
           <ProfileTopcardIamgeEditIcon>
             {selectedBackgroundImage === '' ? (
               <ButtonEditBackgroundImg>
-                <InputEditBackgroundImg type="file" onChange={onBackgroundImageChange} />
+                <InputEditBackgroundImg
+                  type="file"
+                  onChange={onBackgroundImageChange}
+                />
                 <FontAwesomeIcon icon={faPen} />
               </ButtonEditBackgroundImg>
-
             ) : (
-              <ButtonEditBackgroundImg onClick={handleDeleteUserBackgroundImage}>
+              <ButtonEditBackgroundImg
+                onClick={handleDeleteUserBackgroundImage}
+              >
                 <FontAwesomeIcon icon={faTrashCan} />
               </ButtonEditBackgroundImg>
             )}
-
           </ProfileTopcardIamgeEditIcon>
         </ProfileBackgroundImageEdit>
       </BackgroundImageContainer>
@@ -365,9 +372,7 @@ function NewProfile({
                       onMouseLeave={handleMouseLeave}
                       onClick={handleDeleteUserImg}
                     >
-                      <Icon
-                        icon={faTrashCan}
-                      />
+                      <Icon icon={faTrashCan} />
                     </IconWrapper>
                   </ProfilePhotoEditButton>
                   {/* <NewProfileModal modalOpen={modalOpen} closenModal={closenModal} /> */}

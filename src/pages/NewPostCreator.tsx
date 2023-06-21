@@ -98,7 +98,7 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
       idUser: userId,
       idCategory: 1,
       date: new Date(),
-      postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+      Content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       title,
       likes: 0,
     }).then((res: any) => {
@@ -107,7 +107,7 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
       const formData = new FormData();
       formData.append('id', res.data.id);
       formData.append('file', imageFile);
-      instance.post('https://localhost:44353/api/upload-post-image', formData, {
+      instance.put('https://localhost:44353/api/upload-post-image', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -152,7 +152,7 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
       options: ['unordered', 'ordered'],
     },
     textAlign: {
-      options: [],
+      options: ['left', 'center', 'right', 'justify'],
     },
   };
 
