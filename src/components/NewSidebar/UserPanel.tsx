@@ -1,10 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '../NewButton';
 import PanelButton from './PanelButton';
+import { logout } from '../../store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '../../hook';
+import Preloader from '../../preloader';
+
+interface UserPanelProps {
+  selectedImage?: string;
+  isLoadingPage: boolean;
+}
 
 const StyledLink = styled(Link)`
     cursor: pointer;
@@ -54,11 +62,12 @@ const UserPanelImgFlex = styled.div`
   display: flex;
 `;
 
-const UserPanelImg = styled.img`
+const UserPanelImg = styled.div`
   width: 63px;
   height: 63px;
   border-radius: 50%;
-  object-fit: cover;
+  outline: 0;
+  background-size: cover;
 `;
 
 const UserNicknameContainer = styled.div`
@@ -95,7 +104,22 @@ const UserPanelButtonContainer = styled.div`
   }
 `;
 
-function UserPanel() {
+function UserPanel({ selectedImage, isLoadingPage }: UserPanelProps) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const userFullName = useAppSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
+
+  const signOut = () => {
+    dispatch(logout())
+      .then(() => {
+        navigate('/auth/login');
+      });
+  };
+  if (isLoadingPage) {
+    return <Preloader />;
+  }
+
   return (
     <UserPanelContainer>
       <UserPanelHeaderContainer>
@@ -103,11 +127,13 @@ function UserPanel() {
           <StyledLink to="/profile">
             <UserPanelImgContainer>
               <UserPanelImgFlex>
-                <UserPanelImg src="https://i.pinimg.com/564x/70/b1/2e/70b12ec6ed5010cf53b2ee5c014bba4d.jpg" />
+                <UserPanelImg
+                  style={{ backgroundImage: `url(${selectedImage})` }}
+                />
               </UserPanelImgFlex>
             </UserPanelImgContainer>
             <UserNicknameContainer>
-              <UserNickname>Stas Shurko</UserNickname>
+              <UserNickname>{userFullName}</UserNickname>
             </UserNicknameContainer>
           </StyledLink>
         </UserPanelUserLinkFlex>
@@ -116,12 +142,12 @@ function UserPanel() {
         </SettingsButtonContainer>
       </UserPanelHeaderContainer>
       <UserPanelButtonContainer>
-        <PanelButton text="Profile" />
-        <PanelButton text="Posts" />
-        <PanelButton text="Subscriptions" />
-        <PanelButton text="Groups" />
-        <PanelButton text="Favorites" />
-        <PanelButton text="Settings" />
+        <PanelButton text="Profile" url="/profile" />
+        <PanelButton text="Posts" url="/profile" />
+        <PanelButton text="Subscriptions" url="/profile" />
+        <PanelButton text="Groups" url="/profile" />
+        <PanelButton text="Favorites" url="/profile" />
+        <PanelButton text="Settings" url="/profile" />
       </UserPanelButtonContainer>
       <LogOutButtonContainer>
         <Button
@@ -129,6 +155,7 @@ function UserPanel() {
           borderRadius="20px"
           padding="0.6875rem 0 0.6875rem 0"
           margin="0 0 0.875rem 0"
+          click={signOut}
         >
           <LogOutButtonText>Log out</LogOutButtonText>
         </Button>

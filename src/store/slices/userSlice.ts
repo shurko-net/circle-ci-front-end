@@ -12,42 +12,16 @@ const userSlice = createSlice({
     phoneNumber: '',
     subscribed: 0,
     subdomain: '',
-    isLogged: false,
     image: '',
+    backgroundImage: '',
     followers: 0,
   },
   reducers: {
-    userAuth(state, action) {
-      state.id = action.payload.id;
-      state.firstName = action.payload.firstName;
-      state.secondName = action.payload.secondName;
-      state.email = action.payload.email;
-      state.password = action.payload.password;
-      state.biography = action.payload?.biography ?? '';
-      state.phoneNumber = action.payload?.phoneNumber ?? '';
-      state.subscribed = action.payload?.subscribed ?? '';
-      state.subdomain = (action.payload.firstName + action.payload.secondName).toLowerCase();
-      state.isLogged = true;
-      state.followers = action.payload?.followers ?? '';
-      localStorage.setItem('email', action.payload.email);
-      localStorage.setItem('password', action.payload.password);
-    },
-    userSignOut(state) {
-      localStorage.clear();
-      state.id = 0;
-      state.firstName = '';
-      state.secondName = '';
-      state.email = '';
-      state.password = '';
-      state.biography = '';
-      state.phoneNumber = '';
-      state.subscribed = 0;
-      state.image = '';
-      state.isLogged = false;
-      state.followers = 0;
-    },
     setUserImage(state, action) {
-      state.image = `data:image/jpeg;base64,${action.payload}`;
+      state.image = action.payload;
+    },
+    setUserBackgroundImage(state, action) {
+      state.backgroundImage = action.payload;
     },
     setUserEmail(state, action) {
       state.email = action.payload;
@@ -69,12 +43,24 @@ const userSlice = createSlice({
     setFolowers(state, action) {
       state.followers = action.payload;
     },
+    setUser(state, action) {
+      state.id = action.payload.id;
+      state.firstName = action.payload.firstName;
+      state.secondName = action.payload.secondName;
+      state.password = action.payload.password;
+      state.biography = action.payload.biography;
+      state.phoneNumber = action.payload.phoneNumber;
+      state.subscribed = action.payload.subscribed;
+      state.subdomain = action.payload.subdomain;
+      state.image = action.payload.image;
+      state.followers = action.payload.followers;
+    },
   },
 });
 
 export const {
-  userAuth, userSignOut, setUserImage, setUserEmail, setUserSubdomain, setUserName, setUserBio,
-  setUserPhone, setFolowers,
+  setUserImage, setUserEmail, setUserSubdomain, setUserName, setUserBio,
+  setUserPhone, setFolowers, setUser, setUserBackgroundImage,
 } = userSlice.actions;
 
 export default userSlice.reducer;

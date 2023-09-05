@@ -4,6 +4,11 @@ import { Outlet } from 'react-router-dom';
 
 import NewSidebar from '../NewSidebar/NewSidebar';
 
+interface NewMainProps {
+  selectedImage: string;
+  isLoadingPage: boolean;
+}
+
 // const StyledLink = styled(Link)`
 //     cursor: pointer;
 //     margin: 0;
@@ -85,18 +90,17 @@ const MainRelative = styled.div`
   position: relative;
 `;
 
-function NewMain() {
+function NewMain({ selectedImage, isLoadingPage }:NewMainProps) {
   return (
     <MainContainer>
       <Container>
         <Body>
           <Main>
             <MainRelative>
-
               <Outlet />
             </MainRelative>
           </Main>
-          <NewSidebar />
+          <NewSidebar isLoadingPage={isLoadingPage} selectedImage={selectedImage} />
         </Body>
       </Container>
     </MainContainer>

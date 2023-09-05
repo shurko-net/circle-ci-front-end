@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
-import axios from 'axios';
+import instance, { BASE_URL } from '../../http';
+import checkEvenOrOddTime from '../../lib/checkEvenOrOddTime';
 
 interface IUser {
   idUser: number,
@@ -69,11 +70,11 @@ const PostHeaderImgWrapper = styled.div`
   display: flex;
 `;
 
-const PostHeaderImg = styled.img`
+const PostHeaderImg = styled.div`
   height: 48px;
   width: 48px;
   border-radius: 50%;
-  object-fit: cover;
+  background-size: cover;
 `;
 
 const PostHeaderText = styled.div`
@@ -146,12 +147,12 @@ const PostMainImageContainer = styled(StyledLink)`
   padding: 0px 0px 67.2% 0px;
 `;
 
-const PostMainImage = styled.img`
-  object-fit: cover;
-  object-position: center;
+const PostMainImage = styled.div`
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   width: 100%;
   height: 100%;
-  background-position: 50%;
   color: #FFFFFF;
   position: absolute;
   top: 0;
@@ -180,12 +181,12 @@ const PostMainDescription = styled.div`
   border-bottom: 1px solid #DCD9D9;
 `;
 
-const PostMainDescriptionButton = styled.button`
+const PostMainDescriptionButton = styled(StyledLink)`
   position: absolute;
   margin-bottom: 0;
   right: 0;
-  bottom: 1.25rem;
-  padding-left: 0.8rem;
+  bottom: 1.2rem;
+  padding-left: 1.4rem;
   cursor: pointer;
   color: #97D6DA;
   font-weight: 600;
@@ -265,7 +266,7 @@ const PostMainPanelButton = styled.button`
   width: 100%;
   min-height: 1.875rem;
   line-height: 3.375rem;
-  cursor: pointer;
+  /* cursor: pointer; */
   border: none;
   overflow: hidden;
   max-width: 480px;
@@ -288,10 +289,7 @@ const PostMainPanelButtonFlexBlock = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   align-items: center;
-  svg:hover {
-    /* color: rgb(142, 142, 142); */
-    color: #000000;
-  }
+  
 `;
 
 const PostMainPanelLeft = styled.div`
@@ -307,19 +305,43 @@ const PostMainPanelButtonText = styled.span`
 
 `;
 
-// const Img = styled.img`
-//   background-color: rgba(242, 242, 242, 1);
-//   box-sizing: border-box;
-//   display: block;
-//   position: absolute;
-//   background-size: 100%;
-//   height: 100px;
-//   width: 200px;
-//   left: 75%;
-//   top: -1250%
-// `;
-
 function NewPost(postData: any) {
+  const [post, setPost] = useState({
+    id: 0,
+    idUser: 0,
+    idCategory: 0,
+    date: 0,
+    content: '',
+    title: '',
+    likes: 0,
+    views: 0,
+  });
+
+  const [comments, setComments] = useState<any>({});
+
+  useEffect(() => {
+    instance.get(`${BASE_URL}/get-post/${postData.postData.id}`)
+      .then((res:any) => {
+        setPost({
+          id: res.data.id,
+          idUser: res.data.idUser,
+          idCategory: res.data.idCategory,
+          date: res.data.date,
+          content: res.data.content,
+          title: res.data.title,
+          likes: res.data.likes,
+          views: res.data.views,
+        });
+      });
+  }, [postData.postData.id]);
+
+  useEffect(() => {
+    instance.get(`${BASE_URL}/all-comments/${postData.postData.id}`)
+      .then((res:any) => {
+        setComments(res.data);
+      });
+  }, [postData.postData.id]);
+
   const [postAuthor, setPostAuthor] = useState<IUser>({
     biography: '',
     email: '',
@@ -334,16 +356,16 @@ function NewPost(postData: any) {
   const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
-    axios.get(`https://localhost:44353/api/User/${postData.postData.idUser}`)
+    instance.get(`${BASE_URL}/get-user/${postData.postData.idUser}`)
       .then((res: any) => {
-        setPostAuthor(res.data);
+        setPostAuthor(res.data.user);
 
-        axios.get(`https://localhost:44353/api/UserImage/${postData.postData.idUser}`).then((res1: any) => {
+        instance.get(`${BASE_URL}/get-user-image`).then((res1: any) => {
           setPostAuthorImage(res1.data);
         }).then(() => {
-          axios.get(`https://localhost:44353/api/PostImage/${postData.postData.idPost}`).then((res2: any) => {
+          instance.get(`${BASE_URL}/get-post-image/${postData.postData.id}`).then((res2: any) => {
             if (res2.data) {
-              setPostDataImage(`data:image/jpeg;base64,${res2.data}`);
+              setPostDataImage(res2.data);
             } else {
               setPostDataImage(null);
             }
@@ -351,6 +373,7 @@ function NewPost(postData: any) {
         });
       });
   }, []);
+
   return (
     <Post>
       <PostHeader>
@@ -358,7 +381,7 @@ function NewPost(postData: any) {
           <StyledLink to={`post/${postData.postData.idPost}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
-                <PostHeaderImg style={{ backgroundImage: `url(data:image/jpeg;base64,${postAuthorImage})` }} />
+                <PostHeaderImg style={{ backgroundImage: `url(${postAuthorImage})` }} />
               </PostHeaderImgWrapper>
             </PostHeaderImgBlock>
             <PostHeaderText>
@@ -369,27 +392,32 @@ function NewPost(postData: any) {
           </StyledLink>
         </PostHeaderTextWrapper>
         <PostHeaderDateContainer>
-          {new Date(postData.postData.date).toDateString()}
+          {
+            checkEvenOrOddTime(new Date(), new Date(post.date))
+          }
         </PostHeaderDateContainer>
       </PostHeader>
       <PostMainThemeContainer>
-        <PostMainTheme>Theme</PostMainTheme>
+        <PostMainTheme>{postData.postData.title}</PostMainTheme>
       </PostMainThemeContainer>
-      <PostMainImageContainer to="/user">
+      <PostMainImageContainer to={`post/${postData.postData.id}`}>
         {postDataImage && <PostMainImage style={{ backgroundImage: `url(${postDataImage})` }} />}
-
-        {/* <PostMainImage /> */}
 
       </PostMainImageContainer>
       <PostMainDescriptionContainer>
-        <PostMainDescription dangerouslySetInnerHTML={{ __html: postData.postData.postContent }}>
-          {/* In this report, we synthesize inputs from a quantitative survey,
-          our daily work with thousands of clients,
-          and 40 years of experience to inform,
-          interest, and benefit your business in 2023. */}
+        <PostMainDescription>
+          {(() => {
+            const wordLimit = 28;
+            const html = postData.postData.content;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const text = doc.body.textContent || '';
+            const words = text.split(' ');
+            const limitedWords = words.slice(0, wordLimit).join(' ');
+            return <div>{limitedWords}</div>;
+          })()}
         </PostMainDescription>
-
-        <PostMainDescriptionButton>
+        <PostMainDescriptionButton to={`post/${postData.postData.id}`}>
           <span>...Learn more</span>
         </PostMainDescriptionButton>
       </PostMainDescriptionContainer>
@@ -412,7 +440,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faThumbsUp} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>Like</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>{post.likes}</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>
@@ -422,7 +450,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faCommentDots} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>999+</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>{comments.length}</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>
@@ -434,7 +462,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faEye} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>999к</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>0</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>

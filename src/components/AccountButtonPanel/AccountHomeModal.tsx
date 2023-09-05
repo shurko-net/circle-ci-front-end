@@ -13,7 +13,7 @@ interface AccountHomeModalProps {
   onSubmit?: () => void,
   disabled?: boolean,
   maxlength?: number,
-  userImageLoad: string
+  userImageLoad: string,
   handleUploadClick?: (e? : any) => void,
   onImageChange?: (e? : any) => void,
   inputRef: any,

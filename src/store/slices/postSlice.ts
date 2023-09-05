@@ -12,16 +12,21 @@ const postSlice = createSlice({
     likes: 0,
     isLiked: false,
     image: '',
+    comments: [],
   },
   reducers: {
     setPost(state, action) {
-      state.idPost = action.payload.idPost;
+      state.idPost = action.payload.id;
       state.idUser = action.payload.idUser;
       state.idCategory = action.payload.idCategory;
       state.date = action.payload.date;
-      state.postContent = action.payload.postContent;
+      state.postContent = action.payload.content;
       state.title = action.payload.title;
       state.likes = action.payload.likes;
+      state.comments = action.payload;
+    },
+    setComment(state, action) {
+      state.comments = action.payload;
     },
     setLikes(state, action) {
       state.likes = action.payload;
@@ -43,7 +48,7 @@ const postSlice = createSlice({
 });
 
 export const {
-  setPost, setLikes, setLiked, setPostImage, setPostId, setPostDate,
+  setPost, setLikes, setLiked, setPostImage, setPostId, setPostDate, setComment,
 } = postSlice.actions;
 
 export default postSlice.reducer;

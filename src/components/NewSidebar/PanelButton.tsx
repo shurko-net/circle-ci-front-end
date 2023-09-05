@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+interface PanelButtonProps {
+  text: string;
+  url: string;
+}
+
 const StyledLink = styled(Link)`
     cursor: pointer;
     margin: 0;
@@ -34,12 +39,14 @@ const UserPanelButtonText = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
   line-height: 1.22;
+  font-family: "MitrMedium";
+  
 `;
 
-function PanelButton({ text }:{ text: string }) {
+function PanelButton({ text, url }:PanelButtonProps) {
   return (
     <UserPanelButtonContainer>
-      <UserPanelButton to="/profile">
+      <UserPanelButton to={url}>
         <UserPanelButtonText>{text}</UserPanelButtonText>
       </UserPanelButton>
     </UserPanelButtonContainer>

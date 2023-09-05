@@ -4,9 +4,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/index';
 import App from './App';
+import GlobalStyle from './globalStyles';
 
 ReactDOM.render(
   <React.StrictMode>
+    <GlobalStyle />
     <BrowserRouter>
       <Provider store={store}>
         <App />
