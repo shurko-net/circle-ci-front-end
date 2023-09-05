@@ -31,6 +31,7 @@ function App() {
   const [isLoadingPage, setIsLoading] = React.useState(true);
   const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
 
+<<<<<<< HEAD
   const dispatch = useAppDispatch();
   const { isLoading, isAuth, user } = useAppSelector((state: any) => ({
     isAuth: state.auth.isAuth,
@@ -64,6 +65,23 @@ function App() {
         const img = new Image();
         img.onloadeddata = () => {
           loadedCount += 1;
+=======
+  if (userEmail && userPassword) {
+    axios.post('https://localhost:44353/auth/Login', {
+      email: userEmail,
+      password: userPassword,
+    })
+      .then((data:any) => {
+        const userObj: IUser = {
+          id: data.idUser,
+          firstName: data.name,
+          secondName: data.surname,
+          email: data.email,
+          password: data.password,
+          biography: data.biography,
+          phoneNumber: data.tNumber,
+          subscribed: data.subscribed,
+>>>>>>> master
         };
         img.src = image;
       }
