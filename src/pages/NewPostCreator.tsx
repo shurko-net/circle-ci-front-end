@@ -8,7 +8,7 @@ import draftToHtml from 'draftjs-to-html';
 import { useDropzone } from 'react-dropzone';
 import MainPostCreator from '../components/NewPostCreator/MainPostCreator';
 import SideBarPostCreator from '../components/NewPostCreator/SideBarPostCreator';
-import instance from '../http';
+import instance, { BASE_URL } from '../http';
 import { useAppSelector } from '../hook';
 
 interface NewPostCreatorProps {
@@ -94,10 +94,9 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
   console.log(user.id);
 
   const onButtonClick = () => {
-    instance.post('https://localhost:44353/api/create-post', {
+    instance.post(`${BASE_URL}/create-post`, {
       idUser: userId,
       idCategory: 1,
-      date: new Date(),
       Content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
       title,
       likes: 0,
@@ -107,7 +106,7 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
       const formData = new FormData();
       formData.append('id', res.data.id);
       formData.append('file', imageFile);
-      instance.put('https://localhost:44353/api/upload-post-image', formData, {
+      instance.put(`${BASE_URL}/upload-post-image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

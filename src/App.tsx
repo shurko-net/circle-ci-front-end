@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './hook';
 import { checkAuth } from './store/slices/authSlice';
 import NewMain from './components/NewMainDesign/NewMain';
@@ -16,7 +16,7 @@ import {
   setUserImage,
 } from './store/slices/userSlice';
 import Preloader from './preloader';
-import instance from './http';
+import instance, { BASE_URL } from './http';
 import Post from './pages/Post';
 import LoginMain from './components/NewLogin/LoginMain';
 import RegisterMain from './components/NewRegister/RegisterMain';
@@ -92,19 +92,20 @@ function App() {
 
   useEffect(() => {
     instance
-      .get(`https://localhost:44353/api/get-user-image/${userId}`)
+      .get(`${BASE_URL}/get-user-image`)
       .then((res) => {
-        dispatch(setUserImage(res.data));
+        setSelectedImage(res.data.imageUrl);
       });
-    setSelectedImage(userImage);
+
     instance
-      .get(`https://localhost:44353/api/get-background-image/${userId}`)
+      .get(`${BASE_URL}/get-background-image`)
       .then((res) => {
-        dispatch(setUserBackgroundImage(res.data));
+        setSelectedBackgroundImage(res.data.imageUrl);
         setIsLoading(false);
       });
-    setSelectedBackgroundImage(backgroundImage);
-  }, [userImage, backgroundImage]);
+  }, []);
+
+  console.log(userImage);
 
   if (isLoading || !areImagesLoaded) {
     return <Preloader />;
@@ -154,9 +155,11 @@ function App() {
   return (
     <Container>
       <Routes>
+        <Route path="/" element={<Navigate to="/auth/login" replace />} />
         <Route path="/auth" element={<NewAuthwall />}>
           <Route path="login" element={<LoginMain />} />
           <Route path="register" element={<RegisterMain />} />
+
         </Route>
         <Route path="*" element={<div>404... not found </div>} />
       </Routes>

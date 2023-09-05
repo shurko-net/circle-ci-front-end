@@ -19,23 +19,25 @@ interface NewButtonProps {
   click?: () => void;
 }
 
-const NewButtonNavBar = styled.button<{ display?: string;
+const NewButtonNavBar = styled.button<{
+  display?: string;
   marginLeft?: string; fontWeight?: string; border?: string; padding?: string;
   borderRadius?: string; transition?: string; background?: string; margin?: string;
-  width?: string; height?: string }>`
-  /* display: ${(props) => props.display || 'block'}; */
+  width?: string; height?: string
+}>`
+    /* display: ${(props) => props.display || 'block'}; */
   font-weight: ${(props) => props.fontWeight || 'normal'};
-  background: ${(props) => (props.background || '#60BDC2')} ;
+  background: ${(props) => (props.background || '#60BDC2')};
   border: ${(props) => props.border || 'none'};
   padding: ${(props) => props.padding || ''};
   border-radius: ${(props) => props.borderRadius || ''};
-  color:  ${(props) => props.color || 'black'};
+  color: ${(props) => props.color || 'black'};
   margin: ${(props) => props.margin || ''};
   width: ${(props) => props.width || ''};
   height: ${(props) => props.height || ''};
   cursor: pointer;
 
-  
+
 `;
 
 export default function NewButton({

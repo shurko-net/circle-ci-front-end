@@ -18,24 +18,28 @@ interface ButtonProps {
   click?: () => void;
 }
 
-const ButtonNavBar = styled.button<{ primary?: boolean; display?: string;
+const ButtonNavBar = styled.button<{
+  primary?: boolean; display?: string;
   marginLeft?: string; fontWeight?: string; border?: string; padding?: string;
-  borderRadius?: string; transition?: string; background?: string; margin?: string }>`
+  borderRadius?: string; transition?: string; background?: string; margin?: string
+}>`
   display: ${(props) => props.display || 'block'};
   margin-left: ${(props) => props.marginLeft || '20px'};
   font-weight: ${(props) => props.fontWeight || 'normal'};
-  background: ${(props) => (props.primary === true ? '#7DE2D1' : '#ffffff')} ;
+  background: ${(props) => (props.primary === true ? '#7DE2D1' : '#ffffff')};
   border: ${(props) => props.border || 'none'};
   padding: ${(props) => props.padding || '7px 16px 9px'};
   border-radius: ${(props) => props.borderRadius || '18px'};
-  color:  ${(props) => props.color || 'black'};
+  color: ${(props) => props.color || 'black'};
   margin: ${(props) => props.margin || '0px'};
-  cursor:pointer;
+  cursor: pointer;
   transition: ${(props) => props.transition || 'all .07s ease-in-out'};
+
   &:hover {
-    box-shadow:0 4px 10px rgba(0, 0, 0, .1);
-    background:${(props) => props.background || '#7DE2D1'};
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+    background: ${(props) => props.background || '#7DE2D1'};
   }
+
   a {
     text-decoration: none;
     color: none;
@@ -43,8 +47,20 @@ const ButtonNavBar = styled.button<{ primary?: boolean; display?: string;
 `;
 
 export default function Button({
-  openBtn, children, click, primary, display, marginLeft,
-  fontWeight, border, padding, borderRadius, transition, color, background, margin,
+  openBtn,
+  children,
+  click,
+  primary,
+  display,
+  marginLeft,
+  fontWeight,
+  border,
+  padding,
+  borderRadius,
+  transition,
+  color,
+  background,
+  margin,
 
 }: ButtonProps) {
   return (

@@ -12,11 +12,11 @@ const Container = styled.span`
 `;
 
 const ButtonLeft = styled.div`
-    min-width: max-content;
-    padding-bottom: 16px;
-    margin-right: 32px;
-    display: block;
-    border-bottom: 1px solid rgba(41, 41, 41, 1);
+  min-width: max-content;
+  padding-bottom: 16px;
+  margin-right: 32px;
+  display: block;
+  border-bottom: 1px solid rgba(41, 41, 41, 1);
 `;
 
 const ButtonLink = styled.a`

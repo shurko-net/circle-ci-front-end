@@ -7,7 +7,7 @@ import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
 import { useAppDispatch, useAppSelector } from '../hook';
-import instance from '../http';
+import instance, { BASE_URL } from '../http';
 import {
   setComment, setLiked, setLikes, setPost,
 } from '../store/slices/postSlice';
@@ -546,10 +546,7 @@ function Post() {
   const [postComments, setPostComments] = useState(comments);
 
   const handleLike = () => {
-    instance.put('https://localhost:44353/api/like', {
-      idPost: Number(postId),
-      idUser: id,
-    }).then((resp) => {
+    instance.put(`${BASE_URL}/like/${Number(postId)}`).then((resp) => {
       dispatch(setLikes(resp.data.likes));
       dispatch(setLiked(resp.data.liked));
     });
@@ -560,7 +557,7 @@ function Post() {
   };
 
   const handleSendComment = () => {
-    instance.post('https://localhost:44353/api/save-comment', {
+    instance.post(`${BASE_URL}/save-comment`, {
       content: commentsTitel,
       idUser,
       idPost: postId,
@@ -572,7 +569,7 @@ function Post() {
   };
 
   useEffect(() => {
-    instance.get(`https://localhost:44353/api/all-comments/${postId}`)
+    instance.get(`${BASE_URL}/all-comments/${postId}`)
       .then((res:any) => {
         dispatch(setComment(res.data.map((item:any) => ({
           ...item,
@@ -586,25 +583,25 @@ function Post() {
   }, [postId]);
 
   useEffect(() => {
-    instance.get(`https://localhost:44353/api/get-post/${postId}`)
+    instance.get(`${BASE_URL}/get-post/${postId}`)
       .then((res:any) => {
-        dispatch(setPost(res.data));
+        dispatch(setPost(res.data.post));
 
-        instance.get(`https://localhost:44353/api/get-user-image/${idUser}`).then((img: any) => {
-          setPostAuthorImage(img.data);
+        instance.get(`${BASE_URL}/get-user-image`).then((img: any) => {
+          setPostAuthorImage(img.data.imageUrl);
         });
-        instance.get(`https://localhost:44353/api/get-user/${idUser}`).then((userRes: any) => {
-          setUser(userRes.data);
+        instance.get(`${BASE_URL}/get-user/${idUser}`).then((userRes: any) => {
+          setUser(userRes.data.user);
         });
-        instance.get(`https://localhost:44353/api/is-liked/${postId}/${id}`).then((resLike: any) => {
+        instance.get(`${BASE_URL}/is-liked/${postId}`).then((resLike: any) => {
           dispatch(setLikes(resLike.data.likes));
           dispatch(setLiked(resLike.data.liked));
         });
-        instance.get(`https://localhost:44353/api/is-sub/${idUser}/${id}`).then((resFollow: any) => {
-          setUser(resFollow.data.user);
+        instance.get(`${BASE_URL}/is-sub/${idUser}`).then((resFollow: any) => {
+          // setUser(resFollow.data.isOwner);
           setFollowed(resFollow.data.followed);
         });
-        instance.get(`https://localhost:44353/api/get-post-image/${postId}`).then((res2: any) => {
+        instance.get(`${BASE_URL}/get-post-image/${postId}`).then((res2: any) => {
           if (res2.data) {
             setPostMainImage(`data:image/jpeg;base64,${res2.data}`);
           } else {
@@ -699,7 +696,7 @@ function Post() {
               <ImgIconWrapper>
                 <ImgIcon icon={faCommentDots} />
               </ImgIconWrapper>
-              <ButtonCounter>0</ButtonCounter>
+              <ButtonCounter>{postComments.length}</ButtonCounter>
             </PostPanelButton>
             <PostPanelButton>
               <ImgIconWrapper>

@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import NewProfileModal from './NewProfileModal';
-import img1 from '../../assets/images/img1.png';
-import instance from '../../http';
+import instance, { BASE_URL } from '../../http';
 
 interface NewProfileProps {
   userId: string;
@@ -250,13 +249,13 @@ function NewProfile({
   };
 
   const handleDeleteUserImg = () => {
-    instance.delete(`https://localhost:44353/api/delete-user-image/${userId}`);
+    instance.delete(`${BASE_URL}/delete-user-image`);
     setSelectedImage('');
   };
 
   const handleDeleteUserBackgroundImage = () => {
     instance.delete(
-      `https://localhost:44353/api/delete-background-image/${userId}`,
+      `${BASE_URL}/delete-background-image/`,
     );
     setSelectedBackgroundImage('');
   };
@@ -270,9 +269,9 @@ function NewProfile({
     setSelectedImage(URL.createObjectURL(file));
 
     const formData = new FormData();
-    formData.append('id', userId);
+    // formData.append('id', userId);
     formData.append('file', e.target.files[0]);
-    instance.put('https://localhost:44353/api/upload-user-image', formData, {
+    instance.put(`${BASE_URL}/upload-user-image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -291,7 +290,7 @@ function NewProfile({
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     instance.put(
-      'https://localhost:44353/api/upload-background-image',
+      `${BASE_URL}/upload-background-image`,
       formData,
       {
         headers: {
@@ -355,7 +354,7 @@ function NewProfile({
                     modalOpen={modalOpen}
                     closenModal={closenModal}
                     onImageChange={onImageChange}
-                    src={img1}
+                    src="https://storage.googleapis.com/circle-ci-bucket/img1.png"
                   />
                 </UserCardPhotoEdit>
               ) : (

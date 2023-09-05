@@ -5,9 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
-import instance from '../../http';
-import { useAppDispatch, useAppSelector } from '../../hook';
-import { setPost } from '../../store/slices/postSlice';
+import instance, { BASE_URL } from '../../http';
+import checkEvenOrOddTime from '../../lib/checkEvenOrOddTime';
 
 interface IUser {
   idUser: number,
@@ -307,22 +306,42 @@ const PostMainPanelButtonText = styled.span`
 `;
 
 function NewPost(postData: any) {
-  const {
-    likes,
-  } = useAppSelector((state:any) => ({
-    likes: state.post.likes,
-  }));
+  const [post, setPost] = useState({
+    id: 0,
+    idUser: 0,
+    idCategory: 0,
+    date: 0,
+    content: '',
+    title: '',
+    likes: 0,
+    views: 0,
+  });
 
-  const dispatch = useAppDispatch();
+  const [comments, setComments] = useState<any>({});
 
   useEffect(() => {
-    instance.get(`https://localhost:44353/api/get-post/${postData.postData.id}`)
+    instance.get(`${BASE_URL}/get-post/${postData.postData.id}`)
       .then((res:any) => {
-        dispatch(setPost(res.data));
+        setPost({
+          id: res.data.id,
+          idUser: res.data.idUser,
+          idCategory: res.data.idCategory,
+          date: res.data.date,
+          content: res.data.content,
+          title: res.data.title,
+          likes: res.data.likes,
+          views: res.data.views,
+        });
       });
   }, [postData.postData.id]);
 
-  const [postLoadTime, setPostLoadTime] = useState('');
+  useEffect(() => {
+    instance.get(`${BASE_URL}/all-comments/${postData.postData.id}`)
+      .then((res:any) => {
+        setComments(res.data);
+      });
+  }, [postData.postData.id]);
+
   const [postAuthor, setPostAuthor] = useState<IUser>({
     biography: '',
     email: '',
@@ -337,27 +356,14 @@ function NewPost(postData: any) {
   const [postDataImage, setPostDataImage] = useState<any>();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const postDate = new Date(postData.postData.date);
-      const currentTime = new Date();
-      const timeDiff = currentTime.getTime() - postDate.getTime();
-      const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-      setPostLoadTime(`${hours}h ${minutes}m back`);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [postData.postData.date]);
-
-  useEffect(() => {
-    instance.get(`https://localhost:44353/api/get-user/${postData.postData.idUser}`)
+    instance.get(`${BASE_URL}/get-user/${postData.postData.idUser}`)
       .then((res: any) => {
-        setPostAuthor(res.data);
+        setPostAuthor(res.data.user);
 
-        instance.get(`https://localhost:44353/api/get-user-image/${postData.postData.idUser}`).then((res1: any) => {
+        instance.get(`${BASE_URL}/get-user-image`).then((res1: any) => {
           setPostAuthorImage(res1.data);
         }).then(() => {
-          instance.get(`https://localhost:44353/api/get-post-image/${postData.postData.id}`).then((res2: any) => {
+          instance.get(`${BASE_URL}/get-post-image/${postData.postData.id}`).then((res2: any) => {
             if (res2.data) {
               setPostDataImage(res2.data);
             } else {
@@ -386,8 +392,9 @@ function NewPost(postData: any) {
           </StyledLink>
         </PostHeaderTextWrapper>
         <PostHeaderDateContainer>
-          {`${postLoadTime}`}
-          {/* {new Date(postData.postData.date).toDateString()} */}
+          {
+            checkEvenOrOddTime(new Date(), new Date(post.date))
+          }
         </PostHeaderDateContainer>
       </PostHeader>
       <PostMainThemeContainer>
@@ -395,8 +402,6 @@ function NewPost(postData: any) {
       </PostMainThemeContainer>
       <PostMainImageContainer to={`post/${postData.postData.id}`}>
         {postDataImage && <PostMainImage style={{ backgroundImage: `url(${postDataImage})` }} />}
-
-        {/* <PostMainImage /> */}
 
       </PostMainImageContainer>
       <PostMainDescriptionContainer>
@@ -435,7 +440,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faThumbsUp} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>{likes}</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>{post.likes}</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>
@@ -445,7 +450,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faCommentDots} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>0</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>{comments.length}</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>
@@ -457,7 +462,7 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faEye} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>999к</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>0</PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>
