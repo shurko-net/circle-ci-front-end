@@ -18,7 +18,6 @@ export const registration = createAsyncThunk<IUser, {
     email, password, name, surname,
   }, { rejectWithValue }) => {
     const response = await AuthService.registration(email, password, name, surname);
-    console.log(response);
     if (response.status !== 200) {
       return rejectWithValue('Err');
     }
@@ -33,7 +32,6 @@ export const login = createAsyncThunk<IUser,
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     const response = await AuthService.login(email, password);
-    console.log(response);
     if (response.status !== 200) {
       return rejectWithValue('Err');
     }
@@ -57,11 +55,10 @@ export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
   async (_, { rejectWithValue }) => {
     const response = await axios.get<AuthResponse>(`${BASE_URL}/auth/refresh`, { withCredentials: true });
+
     if (response.status !== 200) {
-      console.log(response.status);
       return rejectWithValue('Err');
     }
-    console.log(response);
     localStorage.setItem('token', response.data.accessToken);
     return response.data.user;
   },

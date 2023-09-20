@@ -1,49 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import NewPost from '../NewPost/NewPost';
 import instance, { BASE_URL } from '../../http';
+import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 
-interface MainPostsProps {
-  setIsLoading: (e: boolean) => void
-}
+// interface MainPostsProps {
+//   setIsLoadingPage: (e: boolean) => void
+// }
 
-function MainPosts({ setIsLoading }:MainPostsProps) {
+function MainPosts() {
+  const [fetching, setFetching] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const { loadMoreRef, page } = useInfiniteScroll();
   const [posts, setPosts] = useState<any>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [fetching, setFetching] = useState(true);
 
-  const scrollHandler = (e:any) => {
-    if (e.target.documentElement.scrollHeight
-        - (e.target.documentElement.scrollTop + window.innerHeight) < 100) {
+  const getPosts = useCallback(() => {
+    if (totalCount === 0 || totalCount > posts.length) {
       setFetching(true);
-    }
-    // console.log('scroolHeight', e.target.documentElement.scrollHeight);
-    // console.log('scroolTop', e.target.documentElement.scrollTop);
-    // console.log('innerHeight', window.innerHeight);
-  };
-
-  useEffect(() => {
-    document.addEventListener('scroll', scrollHandler);
-
-    return function () {
-      document.removeEventListener('scroll', scrollHandler);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (fetching) {
-      instance.get(`${BASE_URL}/posts-filter/10/true`)
+      instance.get(`${BASE_URL}/get-posts/${page}`)
         .then((res: any) => {
-          console.log(res.data.posts);
-          setPosts(res.data.posts.sort((a: any, b: any) => b.idPost - a.idPost));
-          setIsLoading(false);
-        });
+          setPosts([...posts, ...res.data.sort((a: any, b: any) => b.idPost - a.idPost)]);
+          setTotalCount(res.headers['x-total-count']);
+          setFetching(false);
+        })
+        .finally(() => setFetching(false));
     }
-  }, [fetching]);
+  }, [page]);
+
+  useEffect(() => {
+    getPosts();
+  }, [getPosts]);
 
   return (
-    <div>
-      {posts.map((post: any, index: number) => <NewPost key={index} postData={post} />)}
-    </div>
+    <>
+      <div>
+        {posts.map((post: any, index: number) => <NewPost key={index} postData={post} />)}
+      </div>
+      <div ref={loadMoreRef}>{fetching && <div>Loading</div>}</div>
+    </>
   );
 }
 

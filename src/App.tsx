@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import './App.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -12,14 +12,13 @@ import NewPostCreator from './pages/NewPostCreator';
 import NewAuthwall from './pages/NewAuthwall';
 import {
   setUser,
-  setUserBackgroundImage,
-  setUserImage,
 } from './store/slices/userSlice';
 import Preloader from './preloader';
 import instance, { BASE_URL } from './http';
 import Post from './pages/Post';
 import LoginMain from './components/NewLogin/LoginMain';
 import RegisterMain from './components/NewRegister/RegisterMain';
+import ScrollToTop from './components/ScrollToTop';
 
 const Container = styled.div`
   display: flex;
@@ -27,17 +26,35 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
+export const BoxStyle = {
+  display: 'flex',
+  position: 'fixed',
+  width: '100%',
+  height: '100%',
+  zIndex: '9999',
+  top: '0',
+  left: '0',
+  backgroundColor: '#fff',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
 function App() {
-  const [isLoadingPage, setIsLoading] = React.useState(true);
   const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
 
   const dispatch = useAppDispatch();
-  const { isLoading, isAuth, user } = useAppSelector((state: any) => ({
+  const {
+    isLoading, isAuth, user, profileImageUrl,
+  } = useAppSelector((state: any) => ({
     isAuth: state.auth.isAuth,
     user: state.auth.user,
     isLoading: state.auth.isLoading,
+    backgroundImage: state.auth.isLoading,
+    profileImageUrl: state.auth.profileImageUrl,
   }));
-  const { userImage, userId, backgroundImage } = useAppSelector(
+  const {
+    userImage, userId, backgroundImage,
+  } = useAppSelector(
     (state: any) => ({
       userImage: state.user.image,
       userId: state.user.id,
@@ -94,24 +111,22 @@ function App() {
     instance
       .get(`${BASE_URL}/get-user-image`)
       .then((res) => {
-        setSelectedImage(res.data.imageUrl);
+        setSelectedImage(res.data);
       });
 
     instance
-      .get(`${BASE_URL}/get-background-image`)
+      .get(`${BASE_URL}/get-user-backimage`)
       .then((res) => {
-        setSelectedBackgroundImage(res.data.imageUrl);
-        setIsLoading(false);
+        setSelectedBackgroundImage(res.data);
       });
   }, []);
 
-  console.log(userImage);
-
   if (isLoading || !areImagesLoaded) {
-    return <Preloader />;
+    return <Preloader boxStyle={BoxStyle} />;
   }
 
   if (isAuth) {
+    // Loader Auth
     return (
       <Container>
         <Routes>
@@ -120,12 +135,12 @@ function App() {
               path="/"
               element={(
                 <NewMain
-                  isLoadingPage={isLoadingPage}
+                  // isLoadingPage={isLoadingPage}
                   selectedImage={selectedImage}
                 />
               )}
             >
-              <Route path="/" element={<MainPosts setIsLoading={setIsLoading} />} />
+              <Route path="/" element={<MainPosts />} />
 
               <Route
                 path="profile"
@@ -149,6 +164,7 @@ function App() {
           <Route path="*" element={<div>404... not found </div>} />
         </Routes>
       </Container>
+
     );
   }
 

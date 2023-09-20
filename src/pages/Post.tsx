@@ -1,35 +1,17 @@
 // import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
-import { useAppDispatch, useAppSelector } from '../hook';
+import { useAppDispatch } from '../hook';
 import instance, { BASE_URL } from '../http';
-import {
-  setComment, setLiked, setLikes, setPost,
-} from '../store/slices/postSlice';
-import checkEvenOrOddTime from '../lib/checkEvenOrOddTime';
-// import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-// import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
-// import BookmarkIcon from '@mui/icons-material/Bookmark';
-// import { useDispatch, useSelector } from 'react-redux';
-// import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-// import Container from '../components/Container';
-// import Flex from '../components/Flex';
-// import {
-//   setPost, setLikes, setLiked,
-// } from '../store/slices/postSlice';
-// import Button from '../components/Button';
-// import UserImg from '../components/UserImg';
-// import { setFolowers } from '../store/slices/userSlice';
-// import instance from '../http';
 
-// interface PostProps {
-//   fillIcon?: string;
-// }
+import Preloader from '../preloader';
+import { BoxStyle } from '../App';
+import formatDate from '../lib/formatDate';
 
 const Container = styled.div`
 
@@ -519,36 +501,46 @@ const CommentsEmpty = styled.div`
 `;
 
 function Post() {
-  const dispatch = useAppDispatch();
-  const {
-    idUser, date, postContent, title, likes, isLiked, comments,
-  } = useAppSelector((state:any) => ({
-    idUser: state.post.idUser,
-    date: state.post.date,
-    postContent: state.post.postContent,
-    title: state.post.title,
-    likes: state.post.likes,
-    isLiked: state.post.isLiked,
-    comments: state.post.comments,
-  }));
+  const initialPostData = {
+    id: 0,
+    createdAt: '',
+    title: '',
+    content: '',
+    likesAmount: 0,
+    viewsAmount: 0,
+    commentsAmount: 0,
+    imageUrl: '',
+    userId: 0,
+    name: '',
+    surname: '',
+    profileImageUrl: '',
+    isPostOwner: true,
+    isMyself: true,
+    isLiked: false,
+    isSaved: false,
+    category: [''],
+  };
 
-  const { id } = useAppSelector((state:any) => ({
-    id: state.user.id,
-  }));
-  const [postAuthorImage, setPostAuthorImage] = useState('');
-  const [postMainImage, setPostMainImage] = useState<any>();
-  const [user, setUser] = useState<any>({});
+  const [postData, setPostData] = useState(initialPostData);
   const { postId } = useParams();
-  const [save, setSave] = useState(false);
-  const [followed, setFollowed] = useState();
-  const [activeModal, setActiveModal] = useState(false);
   const [commentsTitel, setCommentsTitel] = useState('');
-  const [postComments, setPostComments] = useState(comments);
+  const [postComments, setPostComments] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
+  const inputCommentRef = useRef(null);
+
+  useEffect(() => {
+    instance.get(`${BASE_URL}/get-post/${postId}`)
+      .then((res:any) => {
+        console.log('res', res.data);
+        // dispatch(setPost(res.data));
+        setPostData(res.data);
+        setLoading(false);
+      });
+  }, []);
 
   const handleLike = () => {
     instance.put(`${BASE_URL}/like/${Number(postId)}`).then((resp) => {
-      dispatch(setLikes(resp.data.likes));
-      dispatch(setLiked(resp.data.liked));
+      setPostData(resp.data);
     });
   };
 
@@ -559,239 +551,201 @@ function Post() {
   const handleSendComment = () => {
     instance.post(`${BASE_URL}/save-comment`, {
       content: commentsTitel,
-      idUser,
-      idPost: postId,
+      postId,
     }).then((res: any) => {
+      console.log(res);
       setPostComments([res.data, ...postComments]);
-      dispatch(setComment([res.data, ...postComments]));
       setCommentsTitel('');
     });
   };
 
+  const handleClickComment = () => {
+    inputCommentRef.current.focus();
+  };
+
   useEffect(() => {
-    instance.get(`${BASE_URL}/all-comments/${postId}`)
+    instance.get(`${BASE_URL}/get-comments/${postId}`)
       .then((res:any) => {
-        dispatch(setComment(res.data.map((item:any) => ({
-          ...item,
-          created: new Date(item.created),
-        })).sort((a:any, b:any) => b.created - a.created)));
         setPostComments((res.data.map((item:any) => ({
           ...item,
           created: new Date(item.created),
         })).sort((a:any, b:any) => b.created - a.created)));
+      })
+      .catch((e) => {
+        if (e.response.status === 404) console.log('errComents', e.response.status);
       });
   }, [postId]);
 
-  useEffect(() => {
-    instance.get(`${BASE_URL}/get-post/${postId}`)
-      .then((res:any) => {
-        dispatch(setPost(res.data.post));
-
-        instance.get(`${BASE_URL}/get-user-image`).then((img: any) => {
-          setPostAuthorImage(img.data.imageUrl);
-        });
-        instance.get(`${BASE_URL}/get-user/${idUser}`).then((userRes: any) => {
-          setUser(userRes.data.user);
-        });
-        instance.get(`${BASE_URL}/is-liked/${postId}`).then((resLike: any) => {
-          dispatch(setLikes(resLike.data.likes));
-          dispatch(setLiked(resLike.data.liked));
-        });
-        instance.get(`${BASE_URL}/is-sub/${idUser}`).then((resFollow: any) => {
-          // setUser(resFollow.data.isOwner);
-          setFollowed(resFollow.data.followed);
-        });
-        instance.get(`${BASE_URL}/get-post-image/${postId}`).then((res2: any) => {
-          if (res2.data) {
-            setPostMainImage(`data:image/jpeg;base64,${res2.data}`);
-          } else {
-            setPostMainImage(null);
-          }
-        });
-      });
-  }, [postId, idUser, id]);
-
-  const months = [
-    'january',
-    'february',
-    'march',
-    'april',
-    'may',
-    'june',
-    'july',
-    'august',
-    'september',
-    'october',
-    'november',
-    'december',
-  ];
-  const dateNew = new Date(date);
-  const month = months[dateNew.getMonth()];
-
-  const day = dateNew.getDate();
-  const hours = dateNew.getHours();
-  const minutes = dateNew.getMinutes();
+  const formattedDatePost = formatDate(postData.createdAt);
 
   return (
-    <Container>
-      <PostBody>
-        <PostContent>
-          <PostContentContainer>
-            <PostContentHeader>
-              <PostContentHeaderBody>
-                <PostContentHeaderHeaderContainer>
-                  <PostContentHeaderHeaderBody>
-                    <PostContentHeaderHeaderUser>
-                      <PostContentHeaderHeaderUserImgLink to="/user">
-                        <PostContentHeaderHeaderUserImgDiv>
-                          <PostContentHeaderHeaderUserImg src={postAuthorImage} />
-                        </PostContentHeaderHeaderUserImgDiv>
-                      </PostContentHeaderHeaderUserImgLink>
-                      <PostContentHeaderHeaderUserInfo>
-                        <PostContentHeaderHeaderUserInfoUsername to="/user">
-                          {`${user.name} ${user.surname}`}
-                        </PostContentHeaderHeaderUserInfoUsername>
-                        <PostContentHeaderHeaderUserInfoDateTimePublished>
-                          <PostContentHeaderHeaderUserInfoDateTime>
-                            {`${day} ${month} in ${hours}:${minutes}`}
-                          </PostContentHeaderHeaderUserInfoDateTime>
-                        </PostContentHeaderHeaderUserInfoDateTimePublished>
-                      </PostContentHeaderHeaderUserInfo>
-                    </PostContentHeaderHeaderUser>
-                  </PostContentHeaderHeaderBody>
-                </PostContentHeaderHeaderContainer>
-                <PostTitleH1>
-                  <span>
-                    {title}
-                  </span>
-                </PostTitleH1>
-              </PostContentHeaderBody>
-              <ArticleBody>
-                <ArticleFormattedBody dangerouslySetInnerHTML={{ __html: postContent }} />
-              </ArticleBody>
-            </PostContentHeader>
-            <ArticlePresenterMeta>
-              <ArticlePresenterMetaList>
-                <ArticlePresenterMetaTitle>Tegs:</ArticlePresenterMetaTitle>
-                <SeparatedListList>
-                  <SeparatedListItem>jwt</SeparatedListItem>
-                </SeparatedListList>
-              </ArticlePresenterMetaList>
-              <ArticlePresenterMetaList />
-            </ArticlePresenterMeta>
-          </PostContentContainer>
-        </PostContent>
-        <PostPanel>
-          <PostPanelIcons>
-            <PostPanelButton onClick={handleLike}>
-              <ImgIconWrapper>
-                {isLiked ? <ImgIcon icon={faThumbsUp} style={{ color: ' #000000' }} /> : <ImgIcon icon={faThumbsUp} /> }
-                {/* <ImgIcon icon={faThumbsUp} /> */}
-              </ImgIconWrapper>
-              <ButtonCounter>
-                {likes}
-              </ButtonCounter>
-            </PostPanelButton>
-            <PostPanelButton>
-              <ImgIconWrapper>
-                <ImgIcon icon={faCommentDots} />
-              </ImgIconWrapper>
-              <ButtonCounter>{postComments.length}</ButtonCounter>
-            </PostPanelButton>
-            <PostPanelButton>
-              <ImgIconWrapper>
-                <ImgIcon icon={faStar} />
-              </ImgIconWrapper>
-            </PostPanelButton>
-            <PostPanelButton>
-              <ImgIconWrapper>
-                <ImgIcon icon={faEye} />
-              </ImgIconWrapper>
-              <ButtonCounter>0</ButtonCounter>
-            </PostPanelButton>
-          </PostPanelIcons>
-        </PostPanel>
-      </PostBody>
-      <ArticleBlocksComments>
-        <CommentsWrapper>
-          <CommentsWrapperWrapper>
-            <CommentsWrapperHeader>
-              <CommentsWrapperTitle>
-                Comments
-                <CommentsWrapperCommentsCount>{postComments.length}</CommentsWrapperCommentsCount>
-              </CommentsWrapperTitle>
-            </CommentsWrapperHeader>
-            <CommentsWrapperInner>
-              {postComments.length
-                ? (
-                  postComments.map((comment:any) => (
-                    <CommentsTree>
-                      <CommentThread>
-                        <CommentThreadComment>
-                          <CommentThreadIndent>
-                            <Comment>
-                              <CommentHeader>
-                                <CommentHeaderinner>
-                                  <CommentUserInfo>
-                                    <UserInfoUserpic to="">
-                                      <EntityImage>
-                                        <EntityImagePic src={comment.imageUrl} />
-                                      </EntityImage>
-                                    </UserInfoUserpic>
-                                    <UserInfoUser>
-                                      <UserInfoUserName to="">{comment.user.name}</UserInfoUserName>
-                                      <ComentThreadCommentTime>
-                                        {
-                                          checkEvenOrOddTime(new Date(), new Date(comment.created))
-                                        }
-                                      </ComentThreadCommentTime>
-                                    </UserInfoUser>
-                                  </CommentUserInfo>
-                                </CommentHeaderinner>
-                              </CommentHeader>
-                              <CommentBodyContent>
-                                {comment.content}
-                              </CommentBodyContent>
-                            </Comment>
-                          </CommentThreadIndent>
-                        </CommentThreadComment>
-                      </CommentThread>
-                    </CommentsTree>
-                  ))
+    <>
+      {loading && <Preloader boxStyle={BoxStyle} />}
+      <Container>
+        <PostBody>
+          <PostContent>
+            <PostContentContainer>
+              <PostContentHeader>
+                <PostContentHeaderBody>
+                  <PostContentHeaderHeaderContainer>
+                    <PostContentHeaderHeaderBody>
+                      <PostContentHeaderHeaderUser>
+                        <PostContentHeaderHeaderUserImgLink to="/user">
+                          <PostContentHeaderHeaderUserImgDiv>
+                            <PostContentHeaderHeaderUserImg src={postData.profileImageUrl} />
+                          </PostContentHeaderHeaderUserImgDiv>
+                        </PostContentHeaderHeaderUserImgLink>
+                        <PostContentHeaderHeaderUserInfo>
+                          <PostContentHeaderHeaderUserInfoUsername to="/user">
+                            {`${postData.name} ${postData.surname}`}
+                          </PostContentHeaderHeaderUserInfoUsername>
+                          <PostContentHeaderHeaderUserInfoDateTimePublished>
+                            <PostContentHeaderHeaderUserInfoDateTime>
+                              {`${formattedDatePost.day} ${formattedDatePost.month} in ${formattedDatePost.hours}:${formattedDatePost.minutes}`}
+                            </PostContentHeaderHeaderUserInfoDateTime>
+                          </PostContentHeaderHeaderUserInfoDateTimePublished>
+                        </PostContentHeaderHeaderUserInfo>
+                      </PostContentHeaderHeaderUser>
+                    </PostContentHeaderHeaderBody>
+                  </PostContentHeaderHeaderContainer>
+                  <PostTitleH1>
+                    <span>
+                      {postData.title}
+                    </span>
+                  </PostTitleH1>
+                </PostContentHeaderBody>
+                <ArticleBody>
+                  <ArticleFormattedBody dangerouslySetInnerHTML={{ __html: postData.content }} />
+                </ArticleBody>
+              </PostContentHeader>
+              <ArticlePresenterMeta>
+                <ArticlePresenterMetaList>
+                  <ArticlePresenterMetaTitle>Tegs:</ArticlePresenterMetaTitle>
+                  <SeparatedListList>
+                    <SeparatedListItem>jwt</SeparatedListItem>
+                  </SeparatedListList>
+                </ArticlePresenterMetaList>
+                <ArticlePresenterMetaList />
+              </ArticlePresenterMeta>
+            </PostContentContainer>
+          </PostContent>
+          <PostPanel>
+            <PostPanelIcons>
+              <PostPanelButton onClick={handleLike}>
+                <ImgIconWrapper>
+                  {postData.isLiked ? <ImgIcon icon={faThumbsUp} style={{ color: ' #000000' }} /> : <ImgIcon icon={faThumbsUp} /> }
+                  {/* <ImgIcon icon={faThumbsUp} /> */}
+                </ImgIconWrapper>
+                <ButtonCounter>
+                  {postData.likesAmount}
+                </ButtonCounter>
+              </PostPanelButton>
+              <PostPanelButton onClick={handleClickComment}>
+                <ImgIconWrapper>
+                  <ImgIcon icon={faCommentDots} />
+                </ImgIconWrapper>
+                <ButtonCounter>{postData.commentsAmount}</ButtonCounter>
+              </PostPanelButton>
+              <PostPanelButton>
+                <ImgIconWrapper>
+                  <ImgIcon icon={faStar} />
+                </ImgIconWrapper>
+              </PostPanelButton>
+              <PostPanelButton>
+                <ImgIconWrapper>
+                  <ImgIcon icon={faEye} />
+                </ImgIconWrapper>
+                <ButtonCounter>0</ButtonCounter>
+              </PostPanelButton>
+            </PostPanelIcons>
+          </PostPanel>
+        </PostBody>
+        <ArticleBlocksComments>
+          <CommentsWrapper>
+            <CommentsWrapperWrapper>
+              <CommentsWrapperHeader>
+                <CommentsWrapperTitle>
+                  Comments
+                  <CommentsWrapperCommentsCount>
+                    {postData.commentsAmount}
+                  </CommentsWrapperCommentsCount>
+                </CommentsWrapperTitle>
+              </CommentsWrapperHeader>
+              <CommentsWrapperInner>
+                {postComments.length
+                  ? (
+                    postComments.map((comment:any, index:number) => {
+                      const formattedDateComment = formatDate(comment.createdAt);
+                      return (
+                        <CommentsTree key={index}>
+                          <CommentThread>
+                            <CommentThreadComment>
+                              <CommentThreadIndent>
+                                <Comment>
+                                  <CommentHeader>
+                                    <CommentHeaderinner>
+                                      <CommentUserInfo>
+                                        <UserInfoUserpic to="">
+                                          <EntityImage>
+                                            <EntityImagePic src={comment.profileImageUrl} />
+                                          </EntityImage>
+                                        </UserInfoUserpic>
+                                        <UserInfoUser>
+                                          <UserInfoUserName to="">{comment.name}</UserInfoUserName>
+                                          <ComentThreadCommentTime>
+                                            {
+                                                `${formattedDateComment.day} ${formattedDateComment.month} in ${formattedDateComment.hours}:${formattedDateComment.minutes}`
+                                              }
+                                          </ComentThreadCommentTime>
+                                        </UserInfoUser>
+                                      </CommentUserInfo>
+                                    </CommentHeaderinner>
+                                  </CommentHeader>
+                                  <CommentBodyContent>
+                                    {comment.content}
+                                  </CommentBodyContent>
+                                </Comment>
+                              </CommentThreadIndent>
+                            </CommentThreadComment>
+                          </CommentThread>
+                        </CommentsTree>
+                      );
+                    })
 
-                ) : (
-                  <CommentsEmpty>
-                    <span>There are no comments yet, you can be the first!</span>
-                  </CommentsEmpty>
-                )}
+                  ) : (
+                    <CommentsEmpty>
+                      <span>There are no comments yet, you can be the first!</span>
+                    </CommentsEmpty>
+                  )}
 
-            </CommentsWrapperInner>
-          </CommentsWrapperWrapper>
-          <CommentForm>
-            <CommentFormField>
-              <CommentFormLabel>
-                Your comment
-              </CommentFormLabel>
-              <CommentFormEditor>
-                <Editor value={commentsTitel} onChange={handleCommentChange} placeholder="Leave your comment" />
-              </CommentFormEditor>
+              </CommentsWrapperInner>
+            </CommentsWrapperWrapper>
+            <CommentForm>
+              <CommentFormField>
+                <CommentFormLabel>
+                  Your comment
+                </CommentFormLabel>
+                <CommentFormEditor>
+                  <Editor ref={inputCommentRef} value={commentsTitel} onChange={handleCommentChange} placeholder="Leave your comment" />
+                </CommentFormEditor>
 
-            </CommentFormField>
-            <CommentFormControls>
-              <CommentFormControlsButton>
-                <CommentFormButtonSend
-                  disabled={commentsTitel === ''}
-                  style={commentsTitel ? { cursor: 'pointer' } : { cursor: 'not-allowed' }}
-                  onClick={handleSendComment}
-                >
-                  Send
-                </CommentFormButtonSend>
-              </CommentFormControlsButton>
-            </CommentFormControls>
-          </CommentForm>
-        </CommentsWrapper>
-      </ArticleBlocksComments>
-    </Container>
+              </CommentFormField>
+              <CommentFormControls>
+                <CommentFormControlsButton>
+                  <CommentFormButtonSend
+                    disabled={commentsTitel === ''}
+                    style={commentsTitel ? { cursor: 'pointer' } : { cursor: 'not-allowed' }}
+                    onClick={handleSendComment}
+                  >
+                    Send
+                  </CommentFormButtonSend>
+                </CommentFormControlsButton>
+              </CommentFormControls>
+            </CommentForm>
+          </CommentsWrapper>
+        </ArticleBlocksComments>
+      </Container>
+    </>
   );
 }
 

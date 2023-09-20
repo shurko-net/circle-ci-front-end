@@ -442,12 +442,12 @@ function NewHeader() {
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    instance.get(`${BASE_URL}/posts-filter/10/true`)
-      .then((res: any) => {
-        setPosts(res.data.posts.sort((a: any, b: any) => b.idPost - a.idPost));
-      });
-  }, []);
+  // useEffect(() => {
+  //   instance.get(`${BASE_URL}/get-posts/${0}`)
+  //     .then((res: any) => {
+  //       setPosts(res.data.posts.sort((a: any, b: any) => b.idPost - a.idPost));
+  //     });
+  // }, []);
 
   const isLogged = useSelector((state: RootState) => ({
     isLogged: state.user.isLogged,
