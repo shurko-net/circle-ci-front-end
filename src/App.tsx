@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import './App.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -15,10 +15,9 @@ import {
 } from './store/slices/userSlice';
 import Preloader from './preloader';
 import instance, { BASE_URL } from './http';
-import Post from './pages/Post';
 import LoginMain from './components/NewLogin/LoginMain';
 import RegisterMain from './components/NewRegister/RegisterMain';
-import ScrollToTop from './components/ScrollToTop';
+import Post from './pages/Post';
 
 const Container = styled.div`
   display: flex;
@@ -26,32 +25,16 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
-export const BoxStyle = {
-  display: 'flex',
-  position: 'fixed',
-  width: '100%',
-  height: '100%',
-  zIndex: '9999',
-  top: '0',
-  left: '0',
-  backgroundColor: '#fff',
-  justifyContent: 'center',
-  alignItems: 'center',
-};
-
 function App() {
   const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
 
-<<<<<<< HEAD
   const dispatch = useAppDispatch();
   const {
-    isLoading, isAuth, user, profileImageUrl,
+    isLoading, isAuth, user,
   } = useAppSelector((state: any) => ({
     isAuth: state.auth.isAuth,
     user: state.auth.user,
     isLoading: state.auth.isLoading,
-    backgroundImage: state.auth.isLoading,
-    profileImageUrl: state.auth.profileImageUrl,
   }));
   const {
     userImage, userId, backgroundImage,
@@ -82,23 +65,6 @@ function App() {
         const img = new Image();
         img.onloadeddata = () => {
           loadedCount += 1;
-=======
-  if (userEmail && userPassword) {
-    axios.post('https://localhost:44353/auth/Login', {
-      email: userEmail,
-      password: userPassword,
-    })
-      .then((data:any) => {
-        const userObj: IUser = {
-          id: data.idUser,
-          firstName: data.name,
-          secondName: data.surname,
-          email: data.email,
-          password: data.password,
-          biography: data.biography,
-          phoneNumber: data.tNumber,
-          subscribed: data.subscribed,
->>>>>>> master
         };
         img.src = image;
       }
@@ -140,7 +106,7 @@ function App() {
   }, []);
 
   if (isLoading || !areImagesLoaded) {
-    return <Preloader boxStyle={BoxStyle} />;
+    return <Preloader />;
   }
 
   if (isAuth) {

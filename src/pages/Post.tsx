@@ -6,11 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
-import { useAppDispatch } from '../hook';
 import instance, { BASE_URL } from '../http';
 
 import Preloader from '../preloader';
-import { BoxStyle } from '../App';
 import formatDate from '../lib/formatDate';
 
 const Container = styled.div`
@@ -531,8 +529,6 @@ function Post() {
   useEffect(() => {
     instance.get(`${BASE_URL}/get-post/${postId}`)
       .then((res:any) => {
-        console.log('res', res.data);
-        // dispatch(setPost(res.data));
         setPostData(res.data);
         setLoading(false);
       });
@@ -560,7 +556,9 @@ function Post() {
   };
 
   const handleClickComment = () => {
-    inputCommentRef.current.focus();
+    if (inputCommentRef?.current) {
+      (inputCommentRef?.current as any).focus();
+    }
   };
 
   useEffect(() => {
@@ -580,7 +578,7 @@ function Post() {
 
   return (
     <>
-      {loading && <Preloader boxStyle={BoxStyle} />}
+      {loading && <Preloader />}
       <Container>
         <PostBody>
           <PostContent>

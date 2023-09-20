@@ -15,10 +15,8 @@ export default function Tags({
 }:any) {
   const [open, setOpen] = React.useState(false);
   const handleCategoriesChange = ((e:any, newValue:any) => {
-    console.log('newValue', newValue);
     setSelectedCategoriesValues(newValue);
   });
-  // const filteredCategories = categories.filter((option:any) => option.title.toLowerCase().includes(inputValue.toLowerCase())).slice(0, 3);
   return (
     <Stack
       spacing={3}
@@ -52,6 +50,7 @@ export default function Tags({
         renderOption={(props, option:any) => (
           <li {...props}>
             <img
+              alt=""
               src={option.imageUrl}
               style={{
                 width: '35px',
