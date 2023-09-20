@@ -12,14 +12,12 @@ import NewPostCreator from './pages/NewPostCreator';
 import NewAuthwall from './pages/NewAuthwall';
 import {
   setUser,
-  setUserBackgroundImage,
-  setUserImage,
 } from './store/slices/userSlice';
 import Preloader from './preloader';
 import instance, { BASE_URL } from './http';
-import Post from './pages/Post';
 import LoginMain from './components/NewLogin/LoginMain';
 import RegisterMain from './components/NewRegister/RegisterMain';
+import Post from './pages/Post';
 
 const Container = styled.div`
   display: flex;
@@ -28,17 +26,19 @@ const Container = styled.div`
 `;
 
 function App() {
-  const [isLoadingPage, setIsLoading] = React.useState(true);
   const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
 
-<<<<<<< HEAD
   const dispatch = useAppDispatch();
-  const { isLoading, isAuth, user } = useAppSelector((state: any) => ({
+  const {
+    isLoading, isAuth, user,
+  } = useAppSelector((state: any) => ({
     isAuth: state.auth.isAuth,
     user: state.auth.user,
     isLoading: state.auth.isLoading,
   }));
-  const { userImage, userId, backgroundImage } = useAppSelector(
+  const {
+    userImage, userId, backgroundImage,
+  } = useAppSelector(
     (state: any) => ({
       userImage: state.user.image,
       userId: state.user.id,
@@ -65,23 +65,6 @@ function App() {
         const img = new Image();
         img.onloadeddata = () => {
           loadedCount += 1;
-=======
-  if (userEmail && userPassword) {
-    axios.post('https://localhost:44353/auth/Login', {
-      email: userEmail,
-      password: userPassword,
-    })
-      .then((data:any) => {
-        const userObj: IUser = {
-          id: data.idUser,
-          firstName: data.name,
-          secondName: data.surname,
-          email: data.email,
-          password: data.password,
-          biography: data.biography,
-          phoneNumber: data.tNumber,
-          subscribed: data.subscribed,
->>>>>>> master
         };
         img.src = image;
       }
@@ -112,24 +95,22 @@ function App() {
     instance
       .get(`${BASE_URL}/get-user-image`)
       .then((res) => {
-        setSelectedImage(res.data.imageUrl);
+        setSelectedImage(res.data);
       });
 
     instance
-      .get(`${BASE_URL}/get-background-image`)
+      .get(`${BASE_URL}/get-user-backimage`)
       .then((res) => {
-        setSelectedBackgroundImage(res.data.imageUrl);
-        setIsLoading(false);
+        setSelectedBackgroundImage(res.data);
       });
   }, []);
-
-  console.log(userImage);
 
   if (isLoading || !areImagesLoaded) {
     return <Preloader />;
   }
 
   if (isAuth) {
+    // Loader Auth
     return (
       <Container>
         <Routes>
@@ -138,12 +119,12 @@ function App() {
               path="/"
               element={(
                 <NewMain
-                  isLoadingPage={isLoadingPage}
+                  // isLoadingPage={isLoadingPage}
                   selectedImage={selectedImage}
                 />
               )}
             >
-              <Route path="/" element={<MainPosts setIsLoading={setIsLoading} />} />
+              <Route path="/" element={<MainPosts />} />
 
               <Route
                 path="profile"
@@ -167,6 +148,7 @@ function App() {
           <Route path="*" element={<div>404... not found </div>} />
         </Routes>
       </Container>
+
     );
   }
 

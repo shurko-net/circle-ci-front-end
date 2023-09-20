@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 // import { useDropzone } from 'react-dropzone';
 // import { useSelector } from 'react-redux';
@@ -9,6 +9,8 @@ import { Editor } from 'react-draft-wysiwyg';
 //   EditorState,
 // } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import Tags from './MultipleValues';
+import instance, { BASE_URL } from '../../http';
 
 interface MainPostCreatorProps {
   getInputProps: any;
@@ -22,6 +24,7 @@ interface MainPostCreatorProps {
   handleTitleChange: any;
   handleTitleKeyDown: any;
   title: any;
+  setSelectedCategoriesValues:any;
 }
 
 const Main = styled.main`
@@ -136,11 +139,45 @@ const EditorFooterText = styled.p`
   color: #A39E9E;
 `;
 
+const TegsContent = styled.div`
+    min-height: 39px;
+    display: flex;
+  align-items: center;
+`;
+
+// const TegsInput = styled.input`
+//     height: 30px;
+//     z-index: 0;
+//     width: 100%;
+//     font-size: 15px;
+//     color: #333;
+//     border-radius: 5px;
+//     line-height: 1.5em;
+//     border-color: #d2d6d7;
+// `;
+
+const CategoryDate = [{
+  name: '',
+  imageUrl: '',
+}];
+
 function MainPostCreator({
   getInputProps, getRootProps, isImageUploaded, postImageLoad,
   editorState, setEditorState, toolbar, editorLabels, handleTitleChange,
-  handleTitleKeyDown, title,
+  handleTitleKeyDown, title, setSelectedCategoriesValues,
 }:MainPostCreatorProps) {
+  const [inputValue, setInputValue] = React.useState('');
+  const [categories, setCategories] = React.useState(CategoryDate);
+
+  useEffect(() => {
+    if (inputValue) {
+      instance
+        .get(`${BASE_URL}/tag-search/${inputValue}`)
+        .then((resp:any) => {
+          setCategories(resp.data);
+        });
+    }
+  }, [inputValue]);
   return (
     <Main>
       <BlockContainer>
@@ -153,6 +190,17 @@ function MainPostCreator({
           value={title}
         />
       </BlockContainer>
+      <BlockContainer>
+        <TegsContent>
+          <Tags
+            setInputValue={setInputValue}
+            inputValue={inputValue}
+            categories={categories}
+            setSelectedCategoriesValues={setSelectedCategoriesValues}
+          />
+        </TegsContent>
+      </BlockContainer>
+
       <PublishingCoverImage>
         <div {...getRootProps()}>
           <PublishingCoverInput {...getInputProps()} />

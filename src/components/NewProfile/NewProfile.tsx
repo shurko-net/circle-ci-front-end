@@ -255,7 +255,7 @@ function NewProfile({
 
   const handleDeleteUserBackgroundImage = () => {
     instance.delete(
-      `${BASE_URL}/delete-background-image/`,
+      `${BASE_URL}/delete-user-backimage`,
     );
     setSelectedBackgroundImage('');
   };
@@ -271,7 +271,7 @@ function NewProfile({
     const formData = new FormData();
     // formData.append('id', userId);
     formData.append('file', e.target.files[0]);
-    instance.put(`${BASE_URL}/upload-user-image`, formData, {
+    instance.post(`${BASE_URL}/upload-user-image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -289,8 +289,8 @@ function NewProfile({
     const formData = new FormData();
     formData.append('id', userId);
     formData.append('file', e.target.files[0]);
-    instance.put(
-      `${BASE_URL}/upload-background-image`,
+    instance.post(
+      `${BASE_URL}/upload-user-backimage`,
       formData,
       {
         headers: {

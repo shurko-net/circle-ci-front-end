@@ -7,11 +7,9 @@ import Button from '../NewButton';
 import PanelButton from './PanelButton';
 import { logout } from '../../store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../../hook';
-import Preloader from '../../preloader';
 
 interface UserPanelProps {
   selectedImage?: string;
-  isLoadingPage: boolean;
 }
 
 const StyledLink = styled(Link)`
@@ -23,7 +21,7 @@ const StyledLink = styled(Link)`
     font-family: inherit;
     border: inherit;
     font-size: inherit;
-    fill: inherit;
+    fill: none;
     color: inherit;
     display: flex;
     text-decoration: none;
@@ -104,7 +102,7 @@ const UserPanelButtonContainer = styled.div`
   }
 `;
 
-function UserPanel({ selectedImage, isLoadingPage }: UserPanelProps) {
+function UserPanel({ selectedImage }: UserPanelProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -116,9 +114,6 @@ function UserPanel({ selectedImage, isLoadingPage }: UserPanelProps) {
         navigate('/auth/login');
       });
   };
-  if (isLoadingPage) {
-    return <Preloader />;
-  }
 
   return (
     <UserPanelContainer>
@@ -128,7 +123,7 @@ function UserPanel({ selectedImage, isLoadingPage }: UserPanelProps) {
             <UserPanelImgContainer>
               <UserPanelImgFlex>
                 <UserPanelImg
-                  style={{ backgroundImage: `url(${selectedImage})` }}
+                  style={{ backgroundImage: `url(${(selectedImage) || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'})` }}
                 />
               </UserPanelImgFlex>
             </UserPanelImgContainer>

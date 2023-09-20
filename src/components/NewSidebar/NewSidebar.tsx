@@ -11,8 +11,7 @@ import UserPanel from './UserPanel';
 import Suggestions from './Suggestions';
 
 interface NewSidebarProps {
-  selectedImage?: string
-  isLoadingPage: boolean;
+  selectedImage?: string;
 }
 
 const StyledLink = styled(Link)`
@@ -116,7 +115,7 @@ const SmallCreatePostButtonText = styled.span`
 
 `;
 
-function NewSidebar({ selectedImage, isLoadingPage }:NewSidebarProps) {
+function NewSidebar({ selectedImage }:NewSidebarProps) {
   const subdomain = useSelector((state: any) => state.user.subdomain);
   return (
     <LayoutSidebar>
@@ -142,7 +141,7 @@ function NewSidebar({ selectedImage, isLoadingPage }:NewSidebarProps) {
           </SmallCreatePostButton>
         </SmallCreatePostContainer>
       </SmallCreatePostBody>
-      <UserPanel isLoadingPage={isLoadingPage} selectedImage={selectedImage} />
+      <UserPanel selectedImage={selectedImage} />
       <Themes />
       <Suggestions />
     </LayoutSidebar>

@@ -334,6 +334,69 @@ div.rdw-text-align-wrapper {
   margin-bottom: 0;
 }
 
+.css-1q60rmi-MuiAutocomplete-endAdornment {
+  display: none;
+}
+
+.css-1a1fmpi-MuiInputBase-root-MuiInput-root:before {
+  display: none;
+}
+
+.css-1a1fmpi-MuiInputBase-root-MuiInput-root:after {
+  display: none;
+  text-transform: uppercase;
+}
+
+.css-6od3lo-MuiChip-label {
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 22px;
+  color: #333;
+  cursor: pointer;
+}
+
+.css-1lwbda4-MuiStack-root {
+  width: 100%;
+}
+
+.MuiAutocomplete-popper.MuiPopperUnstyled-root {
+  display: block;
+  left: 552px;
+  top: 482px;
+  width: 301px;
+}
+
+.MuiAutocomplete-popper {
+  /*width: 200px;*/
+}
+
+.MuiAutocomplete-popper.MuiPopperUnstyled-root .MuiAutocomplete-listbox {
+  /* Стилизация списка элементов в выпадающем окне */
+  /*width: 200px;*/
+}
+
+.MuiAutocomplete-popper.MuiPopperUnstyled-root {
+  /*width: 200px;*/
+}
+
+/*.MuiAutocomplete-popper.MuiPopperUnstyled-root .MuiAutocomplete-paper {*/
+/*  */
+/*  display: block;*/
+/*  left: 552px;*/
+/*  top: 482px;*/
+/*  width: 301px;*/
+/*  !*position: absolute;*!*/
+/*  cursor: default;*/
+/*  !*z-index: 300;*!*/
+/*  margin: 0;*/
+/*  padding: 0 1px;*/
+/*  list-style: none;*/
+/*  overflow: hidden;*/
+/*  background-color: #fff;*/
+/*  border-radius: 5px;*/
+/*  box-shadow: 0 0 5px #999;*/
+
+/*}*/
 
 
 

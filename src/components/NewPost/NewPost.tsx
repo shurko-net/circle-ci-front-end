@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,7 +6,7 @@ import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
 import instance, { BASE_URL } from '../../http';
-import checkEvenOrOddTime from '../../lib/checkEvenOrOddTime';
+import formatDate from '../../lib/formatDate';
 
 interface IUser {
   idUser: number,
@@ -306,102 +306,36 @@ const PostMainPanelButtonText = styled.span`
 `;
 
 function NewPost(postData: any) {
-  const [post, setPost] = useState({
-    id: 0,
-    idUser: 0,
-    idCategory: 0,
-    date: 0,
-    content: '',
-    title: '',
-    likes: 0,
-    views: 0,
-  });
-
-  const [comments, setComments] = useState<any>({});
-
-  useEffect(() => {
-    instance.get(`${BASE_URL}/get-post/${postData.postData.id}`)
-      .then((res:any) => {
-        setPost({
-          id: res.data.id,
-          idUser: res.data.idUser,
-          idCategory: res.data.idCategory,
-          date: res.data.date,
-          content: res.data.content,
-          title: res.data.title,
-          likes: res.data.likes,
-          views: res.data.views,
-        });
-      });
-  }, [postData.postData.id]);
-
-  useEffect(() => {
-    instance.get(`${BASE_URL}/all-comments/${postData.postData.id}`)
-      .then((res:any) => {
-        setComments(res.data);
-      });
-  }, [postData.postData.id]);
-
-  const [postAuthor, setPostAuthor] = useState<IUser>({
-    biography: '',
-    email: '',
-    idUser: 0,
-    name: '',
-    password: '',
-    subscribed: 0,
-    surname: '',
-    tNumber: '',
-  });
-  const [postAuthorImage, setPostAuthorImage] = useState('');
-  const [postDataImage, setPostDataImage] = useState<any>();
-
-  useEffect(() => {
-    instance.get(`${BASE_URL}/get-user/${postData.postData.idUser}`)
-      .then((res: any) => {
-        setPostAuthor(res.data.user);
-
-        instance.get(`${BASE_URL}/get-user-image`).then((res1: any) => {
-          setPostAuthorImage(res1.data);
-        }).then(() => {
-          instance.get(`${BASE_URL}/get-post-image/${postData.postData.id}`).then((res2: any) => {
-            if (res2.data) {
-              setPostDataImage(res2.data);
-            } else {
-              setPostDataImage(null);
-            }
-          });
-        });
-      });
-  }, []);
-
+  const formattedDate = formatDate((postData.postData.createdAt));
   return (
     <Post>
       <PostHeader>
         <PostHeaderTextWrapper>
-          <StyledLink to={`post/${postData.postData.idPost}`}>
+          <StyledLink to={`post/${postData.postData.id}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
-                <PostHeaderImg style={{ backgroundImage: `url(${postAuthorImage})` }} />
+                <PostHeaderImg style={{
+                  backgroundImage: `url(${(postData.postData.profileImageUrl) || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'})`,
+                }}
+                />
               </PostHeaderImgWrapper>
             </PostHeaderImgBlock>
             <PostHeaderText>
-              <PostHeaderNickname>{`${postAuthor.name ?? 'Yarik'} ${postAuthor.surname}`}</PostHeaderNickname>
+              <PostHeaderNickname>{`${postData.postData.name ?? 'Yarik'} ${postData.postData.surname}`}</PostHeaderNickname>
               <PostHeaderDotContainer />
               <PostHeaderSubscribe>Subscribe</PostHeaderSubscribe>
             </PostHeaderText>
           </StyledLink>
         </PostHeaderTextWrapper>
         <PostHeaderDateContainer>
-          {
-            checkEvenOrOddTime(new Date(), new Date(post.date))
-          }
+          {`${formattedDate.day} ${formattedDate.month} in ${formattedDate.hours}:${formattedDate.minutes}`}
         </PostHeaderDateContainer>
       </PostHeader>
       <PostMainThemeContainer>
         <PostMainTheme>{postData.postData.title}</PostMainTheme>
       </PostMainThemeContainer>
       <PostMainImageContainer to={`post/${postData.postData.id}`}>
-        {postDataImage && <PostMainImage style={{ backgroundImage: `url(${postDataImage})` }} />}
+        {postData.postData.imageUrl && <PostMainImage style={{ backgroundImage: `url(${postData.postData.imageUrl})` }} />}
 
       </PostMainImageContainer>
       <PostMainDescriptionContainer>
@@ -440,7 +374,9 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faThumbsUp} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>{post.likes}</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>
+                      {postData.postData.likesAmount}
+                    </PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>
@@ -450,7 +386,9 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faCommentDots} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>{comments.length}</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>
+                      {postData.postData.commentsAmount}
+                    </PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>

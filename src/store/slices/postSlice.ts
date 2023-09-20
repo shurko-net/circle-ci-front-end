@@ -3,45 +3,61 @@ import { createSlice } from '@reduxjs/toolkit';
 const postSlice = createSlice({
   name: 'Post',
   initialState: {
-    idPost: 0,
-    idUser: 0,
-    idCategory: 0,
-    date: '',
-    postContent: '',
-    title: '',
-    likes: 0,
+    category: [],
+    commentsAmount: 0,
+    content: '',
+    createdAt: '',
+    id: 0,
+    imageUrl: '',
     isLiked: false,
-    image: '',
-    comments: [],
+    isMyself: true,
+    isPostOwner: true,
+    isSaved: false,
+    likesAmount: 0,
+    name: '',
+    profileImageUrl: '',
+    surname: '',
+    title: '',
+    userId: 0,
+    viewsAmount: 0,
   },
   reducers: {
     setPost(state, action) {
-      state.idPost = action.payload.id;
-      state.idUser = action.payload.idUser;
-      state.idCategory = action.payload.idCategory;
-      state.date = action.payload.date;
-      state.postContent = action.payload.content;
+      state.category = action.payload.category;
+      state.commentsAmount = action.payload.commentsAmount;
+      state.content = action.payload.content;
+      state.createdAt = action.payload.createdAt;
+      state.id = action.payload.id;
+      state.imageUrl = action.payload.imageUrl;
+      state.isLiked = action.payload.isLiked;
+      state.isMyself = action.payload.isMyself;
+      state.isPostOwner = action.payload.isPostOwner;
+      state.isSaved = action.payload.isSaved;
+      state.likesAmount = action.payload.likesAmount;
+      state.name = action.payload.name;
+      state.profileImageUrl = action.payload.profileImageUrl;
+      state.surname = action.payload.surname;
       state.title = action.payload.title;
-      state.likes = action.payload.likes;
-      state.comments = action.payload;
+      state.userId = action.payload.userId;
+      state.viewsAmount = action.payload.viewsAmount;
     },
     setComment(state, action) {
-      state.comments = action.payload;
+      state.commentsAmount = action.payload;
     },
     setLikes(state, action) {
-      state.likes = action.payload;
+      state.likesAmount = action.payload;
     },
     setLiked(state, action) {
       state.isLiked = action.payload;
     },
     setPostImage(state, action) {
-      state.image = `data:image/jpeg;base64,${action.payload}`;
+      state.imageUrl = `data:image/jpeg;base64,${action.payload}`;
     },
     setPostId(state, action) {
-      state.idPost = action.payload;
+      state.id = action.payload;
     },
     setPostDate(state, action) {
-      state.date = action.payload;
+      state.createdAt = action.payload;
     },
 
   },

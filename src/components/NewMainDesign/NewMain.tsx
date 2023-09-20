@@ -6,7 +6,6 @@ import NewSidebar from '../NewSidebar/NewSidebar';
 
 interface NewMainProps {
   selectedImage: string;
-  isLoadingPage: boolean;
 }
 
 // const StyledLink = styled(Link)`
@@ -90,7 +89,7 @@ const MainRelative = styled.div`
   position: relative;
 `;
 
-function NewMain({ selectedImage, isLoadingPage }:NewMainProps) {
+function NewMain({ selectedImage }:NewMainProps) {
   return (
     <MainContainer>
       <Container>
@@ -100,7 +99,7 @@ function NewMain({ selectedImage, isLoadingPage }:NewMainProps) {
               <Outlet />
             </MainRelative>
           </Main>
-          <NewSidebar isLoadingPage={isLoadingPage} selectedImage={selectedImage} />
+          <NewSidebar selectedImage={selectedImage} />
         </Body>
       </Container>
     </MainContainer>

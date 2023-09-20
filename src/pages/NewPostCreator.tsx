@@ -6,6 +6,7 @@ import {
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { useDropzone } from 'react-dropzone';
+import { Navigate, useNavigate } from 'react-router-dom';
 import MainPostCreator from '../components/NewPostCreator/MainPostCreator';
 import SideBarPostCreator from '../components/NewPostCreator/SideBarPostCreator';
 import instance, { BASE_URL } from '../http';
@@ -76,7 +77,11 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
   const user = useAppSelector((state: any) => state.auth);
   const [postImageLoad, setPostImageLoad] = useState<any>();
   const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
-  const [imageFile, setImageFile] = useState<any>();
+  const [imageFile, setImageFile] = useState<any>('');
+  const [selectedCategoriesValues, setSelectedCategoriesValues] = React.useState([]);
+  const navigate = useNavigate();
+  const [postId, setPostId] = useState(0);
+
   const onDrop = (acceptedFiles:any) => {
     setIsImageUploaded(false);
     setImageFile(acceptedFiles[0]);
@@ -91,29 +96,33 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
 
   const [title, setTitle] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  console.log(user.id);
 
   const onButtonClick = () => {
-    instance.post(`${BASE_URL}/create-post`, {
-      idUser: userId,
-      idCategory: 1,
-      Content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-      title,
-      likes: 0,
-    }).then((res: any) => {
-      setTitle('');
-      setEditorState(EditorState.createEmpty());
-      const formData = new FormData();
-      formData.append('id', res.data.id);
-      formData.append('file', imageFile);
-      instance.put(`${BASE_URL}/upload-post-image`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    formData.append('file', imageFile);
+    formData.append('categories', selectedCategoriesValues.map((e:any) => e.id).join());
+    instance.post(`${BASE_URL}/create-post`, formData)
+      // .then((res: any) => {
+      //   setPostId(res.data.id);
+      //   setTitle('');
+      //   setEditorState(EditorState.createEmpty());
+      //   if (imageFile) {
+      //     instance.put(`${BASE_URL}/upload-post-image`, formData, {
+      //       headers: {
+      //         'Content-Type': 'multipart/form-data',
+      //       },
+      //     });
+      //   }
+      // })
+      .then((resp) => {
+        window.location.href = `post/${resp.data.id}`;
+        debugger;
+      })
+      .catch((err: any) => {
+        console.log(err);
       });
-    }).catch((err: any) => {
-      console.log(err);
-    });
   };
 
   const handleTitleChange = (e: any) => {
@@ -155,8 +164,6 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
     },
   };
 
-  //   console.log(postImageLoad);
-
   return (
     <Body>
       <Container>
@@ -173,6 +180,7 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
             handleTitleChange={handleTitleChange}
             handleTitleKeyDown={handleTitleKeyDown}
             title={title}
+            setSelectedCategoriesValues={setSelectedCategoriesValues}
           />
           <SideBarPostCreator
             onButtonClick={onButtonClick}
