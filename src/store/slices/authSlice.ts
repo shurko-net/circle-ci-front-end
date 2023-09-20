@@ -5,7 +5,6 @@ import AuthService from '../../services/AuthService';
 import { BASE_URL } from '../../http';
 import { IUser } from '../../models/IUser';
 import { AuthResponse } from '../../models/responce/AuthResponse';
-// import { setUser } from './userSlice';
 
 export const registration = createAsyncThunk<IUser, {
   name: string,
@@ -94,7 +93,7 @@ const authSlice = createSlice({
         state.user = {} as IUser;
         state.isLoading = false;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.rejected, (state) => {
         state.isAuth = false;
         state.user = {} as IUser;
         state.isLoading = false;

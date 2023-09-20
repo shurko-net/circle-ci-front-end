@@ -6,15 +6,9 @@ import {
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { useDropzone } from 'react-dropzone';
-import { Navigate, useNavigate } from 'react-router-dom';
 import MainPostCreator from '../components/NewPostCreator/MainPostCreator';
 import SideBarPostCreator from '../components/NewPostCreator/SideBarPostCreator';
 import instance, { BASE_URL } from '../http';
-import { useAppSelector } from '../hook';
-
-interface NewPostCreatorProps {
-  userId: string;
-}
 
 const Body = styled.div`
     padding-top: 100px;
@@ -73,14 +67,11 @@ const GridContainer = styled.div`
   }
 `;
 
-function NewPostCreator({ userId }: NewPostCreatorProps) {
-  const user = useAppSelector((state: any) => state.auth);
+function NewPostCreator() {
   const [postImageLoad, setPostImageLoad] = useState<any>();
   const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
   const [imageFile, setImageFile] = useState<any>('');
   const [selectedCategoriesValues, setSelectedCategoriesValues] = React.useState([]);
-  const navigate = useNavigate();
-  const [postId, setPostId] = useState(0);
 
   const onDrop = (acceptedFiles:any) => {
     setIsImageUploaded(false);
@@ -104,18 +95,6 @@ function NewPostCreator({ userId }: NewPostCreatorProps) {
     formData.append('file', imageFile);
     formData.append('categories', selectedCategoriesValues.map((e:any) => e.id).join());
     instance.post(`${BASE_URL}/create-post`, formData)
-      // .then((res: any) => {
-      //   setPostId(res.data.id);
-      //   setTitle('');
-      //   setEditorState(EditorState.createEmpty());
-      //   if (imageFile) {
-      //     instance.put(`${BASE_URL}/upload-post-image`, formData, {
-      //       headers: {
-      //         'Content-Type': 'multipart/form-data',
-      //       },
-      //     });
-      //   }
-      // })
       .then((resp) => {
         window.location.href = `post/${resp.data.id}`;
         debugger;

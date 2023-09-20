@@ -142,7 +142,7 @@ function App() {
             </Route>
             <Route
               path="create-post"
-              element={<NewPostCreator userId={userId} />}
+              element={<NewPostCreator />}
             />
           </Route>
           <Route path="*" element={<div>404... not found </div>} />
