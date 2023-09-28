@@ -5,6 +5,10 @@ import styled from 'styled-components';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import NewProfileModal from './NewProfileModal';
 import instance, { BASE_URL } from '../../http';
+import UserProfileInfoBlock from '../UserProfile/UserProfileInfoBlock';
+import BackgroundImage from '../UserProfile/BackgroundImage';
+import ProfileContent from '../UserProfile/ProfileContent';
+import { useAppSelector } from '../../hook';
 
 interface NewProfileProps {
   userId: string;
@@ -13,37 +17,6 @@ interface NewProfileProps {
   selectedBackgroundImage: string;
   setSelectedBackgroundImage: (e: any) => void;
 }
-
-const UserCard = styled.section`
-  @media screen and (min-width: 576px) {
-    border-radius: 1.25rem;
-  }
-  background: #ffffff;
-  border: 1px solid #cfcfcf;
-  box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.1);
-`;
-
-const BackgroundImageContainer = styled.div`
-  min-height: 203px;
-  max-height: 203px;
-  border-top-left-radius: 1.25rem;
-  border-top-right-radius: 1.25rem;
-  position: relative;
-  overflow-y: hidden;
-`;
-
-const ProfileBackgroundImageEdit = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  transition-duration: 0.4s;
-  transition-timing-function: ease-in-out;
-  transition-property: opacity;
-  transition-delay: 1s;
-  opacity: 1;
-`;
 
 const ProfileBackgroundImage = styled.div`
   position: relative;
@@ -67,7 +40,7 @@ const ProfileBackgroundImageContainer = styled.div`
   align-items: center;
   border-top-left-radius: 1.25rem;
   border-top-right-radius: 1.25rem;
-  background: rgba(117, 117, 117, 1);
+  background: #B8DBE0;
 `;
 
 const ProfileBackgroundImageRelative = styled.img`
@@ -76,39 +49,6 @@ const ProfileBackgroundImageRelative = styled.img`
   position: relative;
   height: 100%;
   width: 100%;
-`;
-
-const ProfileContentContainer = styled.div`
-  padding-left: 2.375rem;
-  padding-right: 2.375rem;
-`;
-
-const DisplayFlex = styled.div`
-  display: flex;
-`;
-
-const ProfileContentRelative = styled.div`
-  margin-top: 0.5rem;
-  position: relative;
-`;
-
-const UserCardPhoto = styled.div`
-  margin-top: -112px;
-  z-index: 4;
-  text-align: left;
-`;
-
-const UserCardPhotoWrapper = styled.div`
-  width: 160px;
-  height: 160px;
-  box-sizing: border-box;
-  border-radius: 50%;
-  background-clip: border-box;
-  background-color: #fff;
-  border: 4px solid #fff;
-  box-shadow: none;
-  margin: auto;
-  position: relative;
 `;
 
 const UserCardPhotoEdit = styled.div`
@@ -162,10 +102,6 @@ const IconWrapper = styled.div<{ visible?: boolean; icon?: any }>`
   opacity: ${(props) => (props.visible ? 1 : 0)};
 `;
 
-// const Icon = styled(FontAwesomeIcon)`
-//   opacity: ${({ visible }) => (visible ? 1 : 0)};
-// `;
-
 const Icon = styled(FontAwesomeIcon)`
   width: 24px;
   height: 24px;
@@ -217,12 +153,6 @@ const InputEditBackgroundImg = styled.input`
   cursor: pointer;
   border: none;
 `;
-// const ProfilePhotoEditPreview = styled.img`
-//     width: 152px;
-//     height: 152px;
-//     border-radius: 50%;
-//     outline: 0;
-// `;
 
 const NotBackgroundImg = styled.p`
   color: #fff;
@@ -239,6 +169,16 @@ function NewProfile({
   const [modalOpen, setModalOpen] = useState(false);
 
   const [isHovered, setIsHovered] = useState(false);
+
+  const {
+    isLoading, isAuth, user,
+  } = useAppSelector((state: any) => ({
+    isAuth: state.auth.isAuth,
+    user: state.auth.user,
+    isLoading: state.auth.isLoading,
+  }));
+
+  console.log(user);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -309,80 +249,74 @@ function NewProfile({
   };
 
   return (
-    <UserCard>
-      <BackgroundImageContainer>
-        <ProfileBackgroundImageEdit>
-          <ProfileBackgroundImage>
-            <ProfileBackgroundImageContainer>
-              {selectedBackgroundImage === '' ? (
-                <NotBackgroundImg>
-                  Upload a background for your profile
-                </NotBackgroundImg>
-              ) : (
-                <ProfileBackgroundImageRelative src={selectedBackgroundImage} />
-              )}
-            </ProfileBackgroundImageContainer>
-          </ProfileBackgroundImage>
-          <ProfileTopcardIamgeEditIcon>
+    <UserProfileInfoBlock>
+      <BackgroundImage>
+        <ProfileBackgroundImage>
+          <ProfileBackgroundImageContainer>
             {selectedBackgroundImage === '' ? (
-              <ButtonEditBackgroundImg>
-                <InputEditBackgroundImg
-                  type="file"
-                  onChange={onBackgroundImageChange}
-                />
-                <FontAwesomeIcon icon={faPen} />
-              </ButtonEditBackgroundImg>
+              <NotBackgroundImg>
+                Upload a background for your profile
+              </NotBackgroundImg>
             ) : (
-              <ButtonEditBackgroundImg
-                onClick={handleDeleteUserBackgroundImage}
-              >
-                <FontAwesomeIcon icon={faTrashCan} />
-              </ButtonEditBackgroundImg>
+              <ProfileBackgroundImageRelative src={selectedBackgroundImage} />
             )}
-          </ProfileTopcardIamgeEditIcon>
-        </ProfileBackgroundImageEdit>
-      </BackgroundImageContainer>
-      <ProfileContentContainer>
-        <DisplayFlex>
-          <UserCardPhoto>
-            <UserCardPhotoWrapper>
-              {selectedImage === '' ? (
-                <UserCardPhotoEdit>
-                  <ProfilePhotoEditCamera icon={faCamera} />
-                  <ProfilePhotoEditButton onClick={openModal} type="button" />
-                  <NewProfileModal
-                    modalOpen={modalOpen}
-                    closenModal={closenModal}
-                    onImageChange={onImageChange}
-                    src="https://storage.googleapis.com/circle-ci-bucket/img1.png"
-                  />
-                </UserCardPhotoEdit>
-              ) : (
-                <UserCardPhotoEdit>
-                  <ProfilePhotoEditButton onClick={openModal} type="button">
-                    <UserImage
-                      style={{ backgroundImage: `url(${selectedImage})` }}
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                    />
-                    <IconWrapper
-                      visible={isHovered}
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                      onClick={handleDeleteUserImg}
-                    >
-                      <Icon icon={faTrashCan} />
-                    </IconWrapper>
-                  </ProfilePhotoEditButton>
-                  {/* <NewProfileModal modalOpen={modalOpen} closenModal={closenModal} /> */}
-                </UserCardPhotoEdit>
-              )}
-            </UserCardPhotoWrapper>
-          </UserCardPhoto>
-        </DisplayFlex>
-        <ProfileContentRelative />
-      </ProfileContentContainer>
-    </UserCard>
+          </ProfileBackgroundImageContainer>
+        </ProfileBackgroundImage>
+        <ProfileTopcardIamgeEditIcon>
+          {selectedBackgroundImage === '' ? (
+            <ButtonEditBackgroundImg>
+              <InputEditBackgroundImg
+                type="file"
+                onChange={onBackgroundImageChange}
+              />
+              <FontAwesomeIcon icon={faPen} />
+            </ButtonEditBackgroundImg>
+          ) : (
+            <ButtonEditBackgroundImg
+              onClick={handleDeleteUserBackgroundImage}
+            >
+              <FontAwesomeIcon icon={faTrashCan} />
+            </ButtonEditBackgroundImg>
+          )}
+        </ProfileTopcardIamgeEditIcon>
+      </BackgroundImage>
+      <ProfileContent
+        name={user.name}
+        surname={user.surname}
+        followersAmount={user.followersAmount}
+      >
+        {selectedImage === '' ? (
+          <UserCardPhotoEdit>
+            <ProfilePhotoEditCamera icon={faCamera} />
+            <ProfilePhotoEditButton onClick={openModal} type="button" />
+            <NewProfileModal
+              modalOpen={modalOpen}
+              closenModal={closenModal}
+              onImageChange={onImageChange}
+              src="https://storage.googleapis.com/circle-ci-bucket/img1.png"
+            />
+          </UserCardPhotoEdit>
+        ) : (
+          <UserCardPhotoEdit>
+            <ProfilePhotoEditButton onClick={openModal} type="button">
+              <UserImage
+                style={{ backgroundImage: `url(${selectedImage})` }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              />
+              <IconWrapper
+                visible={isHovered}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleDeleteUserImg}
+              >
+                <Icon icon={faTrashCan} />
+              </IconWrapper>
+            </ProfilePhotoEditButton>
+          </UserCardPhotoEdit>
+        )}
+      </ProfileContent>
+    </UserProfileInfoBlock>
   );
 }
 

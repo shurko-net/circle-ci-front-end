@@ -167,7 +167,6 @@ function NewPostCreator() {
         </GridContainer>
       </Container>
     </Body>
-
   );
 }
 

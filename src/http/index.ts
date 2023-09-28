@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { AuthResponse } from '../models/responce/AuthResponse';
 
-export const BASE_URL = 'http://localhost:5059/api';
+export const BASE_URL = 'https://localhost:7176/api';
 
 const instance: AxiosInstance = axios.create({
   withCredentials: true,
@@ -14,7 +14,6 @@ instance.interceptors.request.use((config: AxiosRequestConfig) => {
   }
   return config;
 });
-
 instance.interceptors.response.use((config) => config, async (err) => {
   const originRequest = err.config;
   if (err.response.status === 401 && err.config && !err.config._isRetry) {

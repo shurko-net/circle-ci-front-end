@@ -59,7 +59,6 @@ const postSlice = createSlice({
     setPostDate(state, action) {
       state.createdAt = action.payload;
     },
-
   },
 });
 

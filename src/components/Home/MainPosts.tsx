@@ -3,11 +3,15 @@ import NewPost from '../NewPost/NewPost';
 import instance, { BASE_URL } from '../../http';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 
+interface MainPostsProps {
+  userId: number
+}
+
 // interface MainPostsProps {
 //   setIsLoadingPage: (e: boolean) => void
 // }
 
-function MainPosts() {
+function MainPosts({ userId }:MainPostsProps) {
   const [fetching, setFetching] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const { loadMoreRef, page } = useInfiniteScroll();
@@ -33,7 +37,14 @@ function MainPosts() {
   return (
     <>
       <div>
-        {posts.map((post: any, index: number) => <NewPost key={index} postData={post} />)}
+        {posts.map((post: any, index: number) => (
+          <NewPost
+            key={index}
+            postData={post}
+            setPosts={setPosts}
+            userId={userId}
+          />
+        ))}
       </div>
       <div ref={loadMoreRef}>{fetching && <div>Loading</div>}</div>
     </>

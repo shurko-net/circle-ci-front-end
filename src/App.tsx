@@ -18,6 +18,7 @@ import instance, { BASE_URL } from './http';
 import LoginMain from './components/NewLogin/LoginMain';
 import RegisterMain from './components/NewRegister/RegisterMain';
 import Post from './pages/Post';
+import UserProfile from './pages/UserProfile';
 
 const Container = styled.div`
   display: flex;
@@ -45,6 +46,8 @@ function App() {
       backgroundImage: state.user.backgroundImage,
     }),
   );
+
+  console.log('userId', userId !== undefined ? userId : 'Loading...');
 
   const [selectedImage, setSelectedImage] = React.useState(userImage);
   const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(backgroundImage);
@@ -76,6 +79,7 @@ function App() {
 
   useEffect(() => {
     if (isAuth && user) {
+      console.log('good');
       dispatch(
         setUser({
           id: user.id,
@@ -90,27 +94,27 @@ function App() {
       );
     }
   }, [isAuth, user]);
-
+  // voice:.idea/1695888496747.wav
   useEffect(() => {
-    instance
-      .get(`${BASE_URL}/get-user-image`)
-      .then((res) => {
-        setSelectedImage(res.data);
-      });
-
-    instance
-      .get(`${BASE_URL}/get-user-backimage`)
-      .then((res) => {
-        setSelectedBackgroundImage(res.data);
-      });
-  }, []);
+    if (isAuth) {
+      instance
+        .get(`${BASE_URL}/get-user-image`)
+        .then((res) => {
+          setSelectedImage(res.data);
+        });
+      instance
+        .get(`${BASE_URL}/get-user-backimage`)
+        .then((res) => {
+          setSelectedBackgroundImage(res.data);
+        });
+    }
+  }, [isAuth]);
 
   if (isLoading || !areImagesLoaded) {
     return <Preloader />;
   }
 
   if (isAuth) {
-    // Loader Auth
     return (
       <Container>
         <Routes>
@@ -119,12 +123,11 @@ function App() {
               path="/"
               element={(
                 <NewMain
-                  // isLoadingPage={isLoadingPage}
                   selectedImage={selectedImage}
                 />
               )}
             >
-              <Route path="/" element={<MainPosts />} />
+              <Route path="/" element={<MainPosts userId={userId} />} />
 
               <Route
                 path="profile"
@@ -139,6 +142,7 @@ function App() {
                 )}
               />
               <Route path="post/:postId" element={<Post />} />
+              <Route path="profile/:userId" element={<UserProfile />} />
             </Route>
             <Route
               path="create-post"

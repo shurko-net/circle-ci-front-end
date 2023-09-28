@@ -5,18 +5,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
-import instance, { BASE_URL } from '../../http';
-import formatDate from '../../lib/formatDate';
 
-interface IUser {
-  idUser: number,
-  name?: string,
-  surname?: string,
-  email?: string,
-  password?: string,
-  tNumber?: string,
-  biography?: string,
-  subscribed?: number,
+import formatDate from '../../lib/formatDate';
+import instance, { BASE_URL } from '../../http';
+import { useAppSelector } from '../../hook';
+
+interface NewPostProps {
+  postData: {
+    id: number;
+    createdAt: string;
+    title: string;
+    content: string;
+    likesAmount: number;
+    viewsAmount: number;
+    commentsAmount: number;
+    imageUrl: string;
+    userId: number;
+    name: string;
+    surname: string;
+    profileImageUrl: string;
+    isPostOwner: boolean;
+    isLiked: boolean;
+    isSaved: boolean;
+    isFollow: boolean;
+    category: {
+      id: number;
+      name: string;
+      imageUrl: string;
+    }[];
+  };
+  setPosts: any;
+  userId: number;
 }
 
 const StyledLink = styled(Link)`
@@ -103,6 +122,7 @@ const PostHeaderSubscribe = styled.div`
   @media screen and (min-width: 576px) {
     font-size: 1.125rem;
   }
+  cursor: pointer;
 `;
 
 const PostHeaderDotContainer = styled.div`
@@ -305,44 +325,82 @@ const PostMainPanelButtonText = styled.span`
 
 `;
 
-function NewPost(postData: any) {
-  const formattedDate = formatDate((postData.postData.createdAt));
+function NewPost({ postData, setPosts, userId }: NewPostProps) {
+  const formattedDate = formatDate((postData.createdAt));
+  const mineId = useAppSelector((state:any) => state.auth.user);
+  const handleSubscribe = () => {
+    instance.put(`${BASE_URL}/follow/${postData.userId}`)
+      .then((resp: any) => {
+        setPosts((prevData: any) => prevData.map((post: any) => {
+          if (post.userId === postData.userId) {
+            return {
+              ...post,
+              isFollow: resp.data.isFollowed,
+            };
+          }
+          return post;
+        }));
+      });
+  };
+
+  const handleUnSubscribe = () => {
+    instance.put(`${BASE_URL}/follow/${postData.userId}`)
+      .then((resp: any) => {
+        setPosts((prevData: any) => prevData.map((post: any) => {
+          if (post.userId === postData.userId) {
+            return {
+              ...post,
+              isFollow: resp.data.isFollowed,
+            };
+          }
+          return post;
+        }));
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+  };
+
+  console.log(userId);
+
   return (
     <Post>
       <PostHeader>
         <PostHeaderTextWrapper>
-          <StyledLink to={`post/${postData.postData.id}`}>
+          <StyledLink to={postData.isPostOwner ? 'profile' : `profile/${postData.userId}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
                 <PostHeaderImg style={{
-                  backgroundImage: `url(${(postData.postData.profileImageUrl) || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'})`,
+                  backgroundImage: `url(${(postData.profileImageUrl) || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'})`,
                 }}
                 />
               </PostHeaderImgWrapper>
             </PostHeaderImgBlock>
             <PostHeaderText>
-              <PostHeaderNickname>{`${postData.postData.name ?? 'Yarik'} ${postData.postData.surname}`}</PostHeaderNickname>
-              <PostHeaderDotContainer />
-              <PostHeaderSubscribe>Subscribe</PostHeaderSubscribe>
+              <PostHeaderNickname>{`${postData.name ?? 'Yarik'} ${postData.surname}`}</PostHeaderNickname>
+              {!postData.isPostOwner && <PostHeaderDotContainer />}
             </PostHeaderText>
           </StyledLink>
+          {postData.isPostOwner || (postData.isFollow
+            ? <PostHeaderSubscribe onClick={handleUnSubscribe}>UnSubscribe</PostHeaderSubscribe>
+            : <PostHeaderSubscribe onClick={handleSubscribe}>Subscribe</PostHeaderSubscribe>)}
         </PostHeaderTextWrapper>
         <PostHeaderDateContainer>
           {`${formattedDate.day} ${formattedDate.month} in ${formattedDate.hours}:${formattedDate.minutes}`}
         </PostHeaderDateContainer>
       </PostHeader>
       <PostMainThemeContainer>
-        <PostMainTheme>{postData.postData.title}</PostMainTheme>
+        <PostMainTheme>{postData.title}</PostMainTheme>
       </PostMainThemeContainer>
-      <PostMainImageContainer to={`post/${postData.postData.id}`}>
-        {postData.postData.imageUrl && <PostMainImage style={{ backgroundImage: `url(${postData.postData.imageUrl})` }} />}
+      <PostMainImageContainer to={`post/${postData.id}`}>
+        {postData.imageUrl && <PostMainImage style={{ backgroundImage: `url(${postData.imageUrl})` }} />}
 
       </PostMainImageContainer>
       <PostMainDescriptionContainer>
         <PostMainDescription>
           {(() => {
             const wordLimit = 28;
-            const html = postData.postData.content;
+            const html = postData.content;
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const text = doc.body.textContent || '';
@@ -351,7 +409,7 @@ function NewPost(postData: any) {
             return <div>{limitedWords}</div>;
           })()}
         </PostMainDescription>
-        <PostMainDescriptionButton to={`post/${postData.postData.id}`}>
+        <PostMainDescriptionButton to={`post/${postData.id}`}>
           <span>...Learn more</span>
         </PostMainDescriptionButton>
       </PostMainDescriptionContainer>
@@ -361,9 +419,9 @@ function NewPost(postData: any) {
           <span>Tags:</span>
         </PostMainTagstext>
         <PostMainTagsGroup>
-          <PostMainTags>#descriptions</PostMainTags>
-          <PostMainTags>#descriptions</PostMainTags>
-          <PostMainTags>#descriptions</PostMainTags>
+          {postData.category
+            .map((teg:any, index: number) => <PostMainTags key={index}>{teg.name}</PostMainTags>)}
+          <PostMainTags />
         </PostMainTagsGroup>
       </PostMainTagsContainer>
       <PostMainPanelBackground>
@@ -375,7 +433,7 @@ function NewPost(postData: any) {
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faThumbsUp} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
                     <PostMainPanelButtonText>
-                      {postData.postData.likesAmount}
+                      {postData.likesAmount}
                     </PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
@@ -387,7 +445,7 @@ function NewPost(postData: any) {
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faCommentDots} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
                     <PostMainPanelButtonText>
-                      {postData.postData.commentsAmount}
+                      {postData.commentsAmount}
                     </PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
@@ -400,7 +458,9 @@ function NewPost(postData: any) {
                 <PostMainPanelButtonContent>
                   <PostMainPanelButtonFlexBlock>
                     <FontAwesomeIcon icon={faEye} style={{ width: '1.5rem', height: '1.5rem', margin: '0 4px 0 -2px' }} />
-                    <PostMainPanelButtonText>0</PostMainPanelButtonText>
+                    <PostMainPanelButtonText>
+                      {postData.viewsAmount}
+                    </PostMainPanelButtonText>
                   </PostMainPanelButtonFlexBlock>
                 </PostMainPanelButtonContent>
               </PostMainPanelButton>

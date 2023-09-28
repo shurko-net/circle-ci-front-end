@@ -22,5 +22,4 @@ const AuthService = {
     return instance.get('auth/refresh');
   },
 };
-
 export default AuthService;

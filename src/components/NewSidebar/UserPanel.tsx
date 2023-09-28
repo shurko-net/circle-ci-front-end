@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Button from '../NewButton';
 import PanelButton from './PanelButton';
 import { logout } from '../../store/slices/authSlice';
@@ -41,7 +42,7 @@ const UserPanelContainer = styled.div`
 `;
 
 const UserPanelHeaderContainer = styled.div`
-  padding: 1.375rem 1.75rem 0;
+  padding: 1.375rem 1.375rem 0;
   display: flex;
   margin-bottom: 1rem;
 `;
@@ -115,6 +116,8 @@ function UserPanel({ selectedImage }: UserPanelProps) {
       });
   };
 
+  console.log(selectedImage);
+
   return (
     <UserPanelContainer>
       <UserPanelHeaderContainer>
@@ -133,7 +136,7 @@ function UserPanel({ selectedImage }: UserPanelProps) {
           </StyledLink>
         </UserPanelUserLinkFlex>
         <SettingsButtonContainer>
-          <FontAwesomeIcon icon={faGear} style={{ width: '1.8125rem', height: '1.8125rem' }} />
+          <SettingsOutlinedIcon sx={{ color: '#808080' }} />
         </SettingsButtonContainer>
       </UserPanelHeaderContainer>
       <UserPanelButtonContainer>

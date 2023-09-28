@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Link, NavLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
@@ -7,7 +7,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import instance, { BASE_URL } from '../../http';
 
 interface RootState {
   user: {
@@ -426,14 +425,14 @@ const DivBlock = styled.div`
   flex: 1 0 auto;
 }
 `;
-
-// const posts = [{ name: 'Yaroslav' }, { name: 'stas' }, { name: 'Dima' }, { name: 'Any' }, { name: 'Katy' }];
+// const posts = [{ name: 'Yaroslav' }, { name: 'stas' },
+// { name: 'Dima' }, { name: 'Any' }, { name: 'Katy' }];
 
 function NewHeader() {
-  const [posts, setPosts] = useState<any>([]);
+  // const [posts, setPosts] = useState<any>([]);
 
   const [searchIsOpen, setSearchIsOpen] = useState('');
-  const [search, setSearch] = useState('');
+  // const [search, setSearch] = useState('');
   const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
   const [showSecondComponent, setShowSecondComponent] = useState<boolean>(false);
   const [activeComponent, setActiveComponent] = useState<number>(1);
@@ -485,15 +484,15 @@ function NewHeader() {
     setMenuIsOpen(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearch(e.target.value);
+  // };
 
-  const filtrePosts = posts.filter(
-    (post: any) => search.length
-      && post.title.toLowerCase()
-        .includes(search.toLowerCase()),
-  );
+  // const filtrePosts = posts.filter(
+  //   (post: any) => search.length
+  //     && post.title.toLowerCase()
+  //       .includes(search.toLowerCase()),
+  // );
 
   return (
     <Header>
@@ -552,7 +551,7 @@ function NewHeader() {
               <SearchMobile className={`search ${searchIsOpen}`}>
                 <input
                   ref={inputRef}
-                  onChange={handleChange}
+                  // onChange={handleChange}
                   placeholder="Search"
                   type="text"
                   onTransitionEnd={handleTransitionEnd}
@@ -573,16 +572,16 @@ function NewHeader() {
               <SearchItemsMobile
                 className={`items ${searchIsOpen}`}
               >
-                {Boolean(filtrePosts.length)
-                    && filtrePosts?.map(
-                      (item:any, index: any) => index < 3
-                        && (
-                          <button type="submit" key={item.title}>
-                            {item.title.split(' ').slice(0, 3).join(' ')}
-                            ...
-                          </button>
-                        ),
-                    )}
+                {/* {Boolean(filtrePosts.length) */}
+                {/*     && filtrePosts?.map( */}
+                {/*       (item:any, index: any) => index < 3 */}
+                {/*         && ( */}
+                {/*           <button type="submit" key={item.title}> */}
+                {/*             {item.title.split(' ').slice(0, 3).join(' ')} */}
+                {/*             ... */}
+                {/*           </button> */}
+                {/*         ), */}
+                {/*     )} */}
               </SearchItemsMobile>
             </SearchGroup>
             )}
