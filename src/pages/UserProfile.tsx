@@ -31,19 +31,20 @@ const ProfileBackgroundImageContainer = styled.div`
   background: #B8DBE0;
 `;
 
-const ProfileBackgroundImageRelative = styled.img`
+const ProfileBackgroundImageRelative = styled.div`
   left: 0;
   top: 0;
   position: relative;
   height: 100%;
   width: 100%;
+  background-size: cover;
+  background-position: center;
 `;
 
 const UserCardPhotoEdit = styled.div`
   width: 100%;
   height: 100%;
   background-color: #f9fafb;
-  display: block;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -59,21 +60,24 @@ const UserImage = styled.div`
   background-position: center;
 `;
 
-const initialStateUserData = {
-  backgroundImageUrl: '',
-  biography: '',
-  email: '',
-  followersAmount: 0,
-  name: '',
-  profileImageUrl: '',
-  surname: '',
-  tNumber: '',
-};
+interface UserData {
+  name: string;
+  surname: string;
+  followersAmount: number;
+  commentsAmount: number;
+  postsAmount: number;
+  isMyself: boolean;
+  isFollowed: boolean;
+  biography: string,
+  profileImageUrl: string,
+  backgroundImageUrl: string
+
+}
 
 function userProfile() {
   const { userId } = useParams();
 
-  const [userData, setUserData] = useState(initialStateUserData);
+  const [userData, setUserData] = useState({} as UserData);
 
   useEffect(() => {
     instance.get(`${BASE_URL}/get-user/${userId}`)
@@ -89,7 +93,7 @@ function userProfile() {
           <ProfileBackgroundImageContainer>
             {userData.backgroundImageUrl === ''
                || (
-               <ProfileBackgroundImageRelative src={userData.backgroundImageUrl} />
+               <ProfileBackgroundImageRelative style={{ backgroundImage: `url(${userData.backgroundImageUrl})` }} />
                )}
           </ProfileBackgroundImageContainer>
         </ProfileBackgroundImage>

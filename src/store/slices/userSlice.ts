@@ -4,63 +4,54 @@ const userSlice = createSlice({
   name: 'User',
   initialState: {
     id: 0,
-    firstName: '',
-    secondName: '',
-    password: '',
-    email: '',
+    name: '',
+    surname: '',
     biography: '',
-    phoneNumber: '',
-    subscribed: 0,
-    subdomain: '',
-    image: '',
-    backgroundImage: '',
-    followers: 0,
+    profileImageUrl: '',
+    backgroundImageUrl: '',
+    followersAmount: 0,
   },
   reducers: {
-    setUserImage(state, action) {
-      state.image = action.payload;
-    },
-    setUserBackgroundImage(state, action) {
-      state.backgroundImage = action.payload;
-    },
-    setUserEmail(state, action) {
-      state.email = action.payload;
-    },
-    setUserSubdomain(state, action) {
-      state.subdomain = action.payload;
-    },
-    setUserName(state, action) {
-      const userNameArr = action.payload.split(' ');
-      state.firstName = userNameArr[0];
-      state.secondName = userNameArr[1];
-    },
+    // setUserImage(state, action) {
+    //   state.image = action.payload;
+    // },
+    // setUserBackgroundImage(state, action) {
+    //   state.backgroundImage = action.payload;
+    // },
+    // setUserEmail(state, action) {
+    //   state.email = action.payload;
+    // },
+    // setUserSubdomain(state, action) {
+    //   state.subdomain = action.payload;
+    // },
+    // setUserName(state, action) {
+    //   const userNameArr = action.payload.split(' ');
+    //   state.firstName = userNameArr[0];
+    //   state.secondName = userNameArr[1];
+    // },
     setUserBio(state, action) {
       state.biography = action.payload;
     },
-    setUserPhone(state, action) {
-      state.phoneNumber = action.payload;
-    },
-    setFolowers(state, action) {
-      state.followers = action.payload;
-    },
+    // setUserPhone(state, action) {
+    //   state.phoneNumber = action.payload;
+    // },
+    // setFolowers(state, action) {
+    //   state.followers = action.payload;
+    // },
     setUser(state, action) {
       state.id = action.payload.id;
-      state.firstName = action.payload.firstName;
-      state.secondName = action.payload.secondName;
-      state.password = action.payload.password;
+      state.name = action.payload.name;
+      state.surname = action.payload.surname;
       state.biography = action.payload.biography;
-      state.phoneNumber = action.payload.phoneNumber;
-      state.subscribed = action.payload.subscribed;
-      state.subdomain = action.payload.subdomain;
-      state.image = action.payload.image;
-      state.followers = action.payload.followers;
+      state.backgroundImageUrl = action.payload.backgroundImageUrl;
+      state.profileImageUrl = action.payload.profileImageUrl;
+      state.followersAmount = action.payload.followersAmount;
     },
   },
 });
 
 export const {
-  setUserImage, setUserEmail, setUserSubdomain, setUserName, setUserBio,
-  setUserPhone, setFolowers, setUser, setUserBackgroundImage,
+  setUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

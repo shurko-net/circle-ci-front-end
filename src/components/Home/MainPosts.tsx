@@ -12,19 +12,18 @@ interface MainPostsProps {
 // }
 
 function MainPosts({ userId }:MainPostsProps) {
-  const [fetching, setFetching] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const { loadMoreRef, page } = useInfiniteScroll();
   const [posts, setPosts] = useState<any>([]);
 
   const getPosts = useCallback(() => {
     if (totalCount === 0 || totalCount > posts.length) {
-      setFetching(true);
+      // setFetching(true);
       instance.get(`${BASE_URL}/get-posts/${page}`)
         .then((res: any) => {
           setPosts([...posts, ...res.data.sort((a: any, b: any) => b.idPost - a.idPost)]);
           setTotalCount(res.headers['x-total-count']);
-          setFetching(false);
         })
         .finally(() => setFetching(false));
     }
@@ -43,10 +42,11 @@ function MainPosts({ userId }:MainPostsProps) {
             postData={post}
             setPosts={setPosts}
             userId={userId}
+            fetching={fetching}
           />
         ))}
       </div>
-      <div ref={loadMoreRef}>{fetching && <div>Loading</div>}</div>
+      <div ref={loadMoreRef} />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,9 +6,9 @@ import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
 
+import Skeleton from '@mui/material/Skeleton';
 import formatDate from '../../lib/formatDate';
 import instance, { BASE_URL } from '../../http';
-import { useAppSelector } from '../../hook';
 
 interface NewPostProps {
   postData: {
@@ -36,6 +36,7 @@ interface NewPostProps {
   };
   setPosts: any;
   userId: number;
+  fetching: boolean;
 }
 
 const StyledLink = styled(Link)`
@@ -47,7 +48,6 @@ const StyledLink = styled(Link)`
     font-family: inherit;
     border: inherit;
     font-size: inherit;
-    fill: inherit;
     color: inherit;
     display: flex;
     text-decoration: none;
@@ -87,13 +87,19 @@ const PostHeaderImgBlock = styled.div`
 
 const PostHeaderImgWrapper = styled.div`
   display: flex;
-`;
-
-const PostHeaderImg = styled.div`
+  position: relative;
   height: 48px;
   width: 48px;
+`;
+
+const PostHeaderImg = styled.img`
+  height: 100%;
+  width: 100%;
   border-radius: 50%;
-  background-size: cover;
+  object-fit: cover;
+  object-position: center;
+  background: no-repeat;
+  position: absolute;
 `;
 
 const PostHeaderText = styled.div`
@@ -167,16 +173,16 @@ const PostMainImageContainer = styled(StyledLink)`
   padding: 0px 0px 67.2% 0px;
 `;
 
-const PostMainImage = styled.div`
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+const PostMainImage = styled.img`
+  object-fit: cover;
+  object-position: center;
   width: 100%;
   height: 100%;
   color: #FFFFFF;
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 10;
 `;
 
 const PostMainDescriptionContainer = styled.div`
@@ -286,7 +292,6 @@ const PostMainPanelButton = styled.button`
   width: 100%;
   min-height: 1.875rem;
   line-height: 3.375rem;
-  /* cursor: pointer; */
   border: none;
   overflow: hidden;
   max-width: 480px;
@@ -325,9 +330,20 @@ const PostMainPanelButtonText = styled.span`
 
 `;
 
-function NewPost({ postData, setPosts, userId }: NewPostProps) {
+function NewPost({
+  postData, setPosts, fetching,
+}: NewPostProps) {
+  const [userImgIsLoaded, setUserImgIsLoaded] = useState(false);
+  const [userPostImgIsLoaded, setUserPostImgIsLoaded] = useState(false);
+  const handleUserImageLoad = () => {
+    setUserImgIsLoaded(true);
+    console.log('картинка загрузилась');
+  };
+
+  const handlePostImageLoad = () => {
+    setUserPostImgIsLoaded(true);
+  };
   const formattedDate = formatDate((postData.createdAt));
-  const mineId = useAppSelector((state:any) => state.auth.user);
   const handleSubscribe = () => {
     instance.put(`${BASE_URL}/follow/${postData.userId}`)
       .then((resp: any) => {
@@ -361,7 +377,8 @@ function NewPost({ postData, setPosts, userId }: NewPostProps) {
       });
   };
 
-  console.log(userId);
+  console.log(fetching);
+  console.log(userImgIsLoaded, 'userImgIsLoaded');
 
   return (
     <Post>
@@ -370,10 +387,13 @@ function NewPost({ postData, setPosts, userId }: NewPostProps) {
           <StyledLink to={postData.isPostOwner ? 'profile' : `profile/${postData.userId}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
-                <PostHeaderImg style={{
-                  backgroundImage: `url(${(postData.profileImageUrl) || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'})`,
-                }}
+                <PostHeaderImg
+                  onLoad={handleUserImageLoad}
+                  src={postData.profileImageUrl || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'}
                 />
+                {(fetching || !userImgIsLoaded)
+                  && <Skeleton variant="circular" width={45} height={45} />}
+
               </PostHeaderImgWrapper>
             </PostHeaderImgBlock>
             <PostHeaderText>
@@ -393,9 +413,22 @@ function NewPost({ postData, setPosts, userId }: NewPostProps) {
         <PostMainTheme>{postData.title}</PostMainTheme>
       </PostMainThemeContainer>
       <PostMainImageContainer to={`post/${postData.id}`}>
-        {postData.imageUrl && <PostMainImage style={{ backgroundImage: `url(${postData.imageUrl})` }} />}
 
+        {(!userPostImgIsLoaded || fetching)
+            && (
+            <Skeleton
+              width="100%"
+              height="100%"
+              variant="rectangular"
+              style={{ position: 'absolute' }}
+            />
+            )}
+        <PostMainImage
+          onLoad={handlePostImageLoad}
+          src={postData.imageUrl}
+        />
       </PostMainImageContainer>
+
       <PostMainDescriptionContainer>
         <PostMainDescription>
           {(() => {

@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { faGear } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Button from '../NewButton';
 import PanelButton from './PanelButton';
@@ -67,6 +65,7 @@ const UserPanelImg = styled.div`
   border-radius: 50%;
   outline: 0;
   background-size: cover;
+  background-position: center;
 `;
 
 const UserNicknameContainer = styled.div`
@@ -107,7 +106,7 @@ function UserPanel({ selectedImage }: UserPanelProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const userFullName = useAppSelector((state: any) => `${state.user.firstName} ${state.user.secondName}`);
+  const userFullName = useAppSelector((state: any) => `${state.user.name} ${state.user.surname}`);
 
   const signOut = () => {
     dispatch(logout())
@@ -115,8 +114,6 @@ function UserPanel({ selectedImage }: UserPanelProps) {
         navigate('/auth/login');
       });
   };
-
-  console.log(selectedImage);
 
   return (
     <UserPanelContainer>

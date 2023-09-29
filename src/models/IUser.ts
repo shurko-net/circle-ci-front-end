@@ -1,10 +1,9 @@
 export interface IUser {
+  id: number,
   name: string,
   surname: string,
-  email: string,
   profileImageUrl: string,
   backgroundImageUrl: string,
-  tNumber: string,
   biography: string,
   followersAmount: number
   // id: string,

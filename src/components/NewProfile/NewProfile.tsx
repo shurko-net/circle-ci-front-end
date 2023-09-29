@@ -1,6 +1,6 @@
 import { faCamera, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import NewProfileModal from './NewProfileModal';
@@ -8,7 +8,6 @@ import instance, { BASE_URL } from '../../http';
 import UserProfileInfoBlock from '../UserProfile/UserProfileInfoBlock';
 import BackgroundImage from '../UserProfile/BackgroundImage';
 import ProfileContent from '../UserProfile/ProfileContent';
-import { useAppSelector } from '../../hook';
 
 interface NewProfileProps {
   userId: string;
@@ -43,19 +42,21 @@ const ProfileBackgroundImageContainer = styled.div`
   background: #B8DBE0;
 `;
 
-const ProfileBackgroundImageRelative = styled.img`
+const ProfileBackgroundImageRelative = styled.div`
   left: 0;
   top: 0;
   position: relative;
   height: 100%;
   width: 100%;
+  background-size: cover;
+  background-position: center;
+  
 `;
 
 const UserCardPhotoEdit = styled.div`
   width: 100%;
   height: 100%;
   background-color: #f9fafb;
-  display: block;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -159,6 +160,20 @@ const NotBackgroundImg = styled.p`
   font-size: 1rem;
 `;
 
+interface UserDate {
+  id: number,
+  name: string,
+  surname: string,
+  profileImageUrl: string,
+  backgroundImageUrl: string,
+  biography: string,
+  followersAmount: number,
+  commentsAmount: number,
+  postsAmount: number,
+  isMyself: boolean,
+  isFollowed: boolean
+}
+
 function NewProfile({
   userId,
   selectedImage,
@@ -169,16 +184,20 @@ function NewProfile({
   const [modalOpen, setModalOpen] = useState(false);
 
   const [isHovered, setIsHovered] = useState(false);
+  const [user, setUser] = useState({} as UserDate);
 
-  const {
-    isLoading, isAuth, user,
-  } = useAppSelector((state: any) => ({
-    isAuth: state.auth.isAuth,
-    user: state.auth.user,
-    isLoading: state.auth.isLoading,
-  }));
+  useEffect(() => {
+    instance.get(`${BASE_URL}/get-user/${userId}`)
+      .then((resp: any) => {
+        setUser(resp.data);
+      });
+  }, []);
 
-  console.log(user);
+  // const {
+  //   user,
+  // } = useAppSelector((state: any) => ({
+  //   user: state.auth.user,
+  // }));
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -258,7 +277,9 @@ function NewProfile({
                 Upload a background for your profile
               </NotBackgroundImg>
             ) : (
-              <ProfileBackgroundImageRelative src={selectedBackgroundImage} />
+              <ProfileBackgroundImageRelative
+                style={{ backgroundImage: `url(${selectedBackgroundImage})` }}
+              />
             )}
           </ProfileBackgroundImageContainer>
         </ProfileBackgroundImage>
@@ -284,6 +305,10 @@ function NewProfile({
         name={user.name}
         surname={user.surname}
         followersAmount={user.followersAmount}
+        postsAmount={user.postsAmount}
+        isFollowed={user.isFollowed}
+        isMyself={user.isMyself}
+        commentsAmount={user.commentsAmount}
       >
         {selectedImage === '' ? (
           <UserCardPhotoEdit>

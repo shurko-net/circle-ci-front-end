@@ -531,7 +531,6 @@ function Post() {
       .then((res:any) => {
         setPostData(res.data);
         instance.put(`${BASE_URL}/update-views/${postId}`).then((resp:any) => {
-          console.log(resp);
           setPostData((prevData:any) => ({
             ...prevData,
             id: resp.data.id,
@@ -557,7 +556,6 @@ function Post() {
       content: commentsTitel,
       postId,
     }).then((res: any) => {
-      console.log(res);
       setPostComments([res.data, ...postComments]);
       setCommentsTitel('');
       instance.get(`${BASE_URL}/get-post/${postId}`)

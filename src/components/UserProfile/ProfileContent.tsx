@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import ProfileInfoContentSection from './ProfileInfoContentSection';
 
 interface ProfileContentProps {
@@ -99,6 +101,7 @@ const ProfileButton = styled.button`
     vertical-align: center;
     align-items: center;
     margin-top: 12px;
+  
 `;
 
 const ProfileButtonIcon = styled.div`
@@ -118,6 +121,14 @@ function ProfileContent({
   children, name, surname, followersAmount, commentsAmount, postsAmount,
   isMyself, isFollowed,
 }:ProfileContentProps) {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   return (
     <>
       <ProfileContentContainer>
@@ -154,13 +165,22 @@ function ProfileContent({
           />
         </ProfileInfoContentFlex>
         {isMyself || (isFollowed ? (
-          <ProfileButton>
+          <ProfileButton
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              transition: 'transform 0.8s ease',
+            }}
+          >
             <ProfileButtonIcon>
-              <AddIcon
-                sx={{ color: '#fff', width: '1rem', height: '1rem' }}
-              />
+              {isHovered ? (
+                <CloseIcon sx={{ color: '#fff', width: '1rem', height: '1rem' }} />
+
+              ) : (
+                <CheckIcon sx={{ color: '#fff', width: '1rem', height: '1rem' }} />
+              )}
             </ProfileButtonIcon>
-            <ProfileButtonText>UnSubscribe</ProfileButtonText>
+            <ProfileButtonText>{!isHovered ? 'Signed' : 'UnSubscribe'}</ProfileButtonText>
           </ProfileButton>
         )
           : (

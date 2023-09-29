@@ -27,7 +27,7 @@ const Container = styled.div`
 `;
 
 function App() {
-  const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
+  // const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
 
   const dispatch = useAppDispatch();
   const {
@@ -37,6 +37,7 @@ function App() {
     user: state.auth.user,
     isLoading: state.auth.isLoading,
   }));
+
   const {
     userImage, userId, backgroundImage,
   } = useAppSelector(
@@ -46,8 +47,6 @@ function App() {
       backgroundImage: state.user.backgroundImage,
     }),
   );
-
-  console.log('userId', userId !== undefined ? userId : 'Loading...');
 
   const [selectedImage, setSelectedImage] = React.useState(userImage);
   const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(backgroundImage);
@@ -59,37 +58,16 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const images = [selectedImage, selectedBackgroundImage];
-    let loadedCount = 0;
-    images.forEach((image) => {
-      if (image === '') {
-        loadedCount += 1;
-      } else {
-        const img = new Image();
-        img.onloadeddata = () => {
-          loadedCount += 1;
-        };
-        img.src = image;
-      }
-    });
-    if (loadedCount === images.length) {
-      setAreImagesLoaded(true);
-    }
-  }, [selectedImage, selectedBackgroundImage]);
-
-  useEffect(() => {
     if (isAuth && user) {
-      console.log('good');
       dispatch(
         setUser({
           id: user.id,
-          firstName: user.name,
-          secondName: user.surname,
-          password: user.passwordHash,
-          email: user.email,
+          name: user.name,
+          surname: user.surname,
           biography: user.biography,
-          phoneNumber: user.tNumber,
-          followers: user.followers,
+          followersAmount: user.followersAmount,
+          backgroundImageUrl: user.backgroundImageUrl,
+          profileImageUrl: user.profileImageUrl,
         }),
       );
     }
@@ -110,7 +88,7 @@ function App() {
     }
   }, [isAuth]);
 
-  if (isLoading || !areImagesLoaded) {
+  if (isLoading) {
     return <Preloader />;
   }
 
@@ -163,7 +141,6 @@ function App() {
         <Route path="/auth" element={<NewAuthwall />}>
           <Route path="login" element={<LoginMain />} />
           <Route path="register" element={<RegisterMain />} />
-
         </Route>
         <Route path="*" element={<div>404... not found </div>} />
       </Routes>
