@@ -86,7 +86,7 @@ function App() {
                 />
               )}
             >
-              <Route path="/" element={<MainPosts userId={user.id} />} />
+              <Route path="/" element={<MainPosts />} />
 
               <Route
                 path="profile"
