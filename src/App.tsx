@@ -4,19 +4,16 @@ import './App.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './hook';
 import { checkAuth, setIsLoading } from './store/slices/authSlice';
-import NewMain from './components/NewMainDesign/NewMain';
+import Main from './components/MainDesign/Main';
 import MainPosts from './components/Home/MainPosts';
-import NewProfile from './components/NewProfile/NewProfile';
+import Profile from './components/Profile/Profile';
 import Layout from './components/Layout';
-import NewPostCreator from './pages/NewPostCreator';
-import NewAuthwall from './pages/NewAuthwall';
-import {
-  setUser,
-} from './store/slices/userSlice';
+import PostCreator from './pages/PostCreator';
+import Authwall from './pages/Authwall';
 import Preloader from './preloader';
 import instance, { BASE_URL } from './http';
-import LoginMain from './components/NewLogin/LoginMain';
-import RegisterMain from './components/NewRegister/RegisterMain';
+import LoginMain from './components/Login/LoginMain';
+import RegisterMain from './components/Register/RegisterMain';
 import Post from './pages/Post';
 import UserProfile from './pages/UserProfile';
 
@@ -39,40 +36,15 @@ function App() {
     isLoading: state.auth.isLoading,
   }));
 
-  const {
-    userImage, userId, backgroundImageUrl,
-  } = useAppSelector(
-    (state: any) => ({
-      userImage: state.user.profileImageUrl,
-      userId: state.user.id,
-      backgroundImageUrl: state.user.backgroundImageUrl,
-    }),
-  );
-
-  const [selectedImage, setSelectedImage] = React.useState(userImage);
-  const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(backgroundImageUrl);
-
+  const [selectedImage, setSelectedImage] = React.useState(user.profileImageUrl);
+  const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(user
+    .backgroundImageUrl);
   useEffect(() => {
     if (localStorage.getItem('token')) {
       dispatch(checkAuth());
     }
   }, []);
 
-  useEffect(() => {
-    if (isAuth && user) {
-      dispatch(
-        setUser({
-          id: user.id,
-          name: user.name,
-          surname: user.surname,
-          biography: user.biography,
-          followersAmount: user.followersAmount,
-          backgroundImageUrl: user.backgroundImageUrl,
-          profileImageUrl: user.profileImageUrl,
-        }),
-      );
-    }
-  }, [isAuth, user]);
   // voice:.idea/1695888496747.wav
   useEffect(() => {
     if (isAuth) {
@@ -81,7 +53,6 @@ function App() {
         .get(`${BASE_URL}/get-user-image`)
         .then((res) => {
           setSelectedImage(res.data);
-          console.log(res.data);
         }).finally(() => {
           setSidebarImgLoad(false);
         });
@@ -109,20 +80,19 @@ function App() {
             <Route
               path="/"
               element={(
-                <NewMain
+                <Main
                   selectedImage={selectedImage}
                   sidebarImgLoad={sidebarImgLoad}
                 />
               )}
             >
-              <Route path="/" element={<MainPosts userId={userId} />} />
+              <Route path="/" element={<MainPosts userId={user.id} />} />
 
               <Route
                 path="profile"
                 element={(
-                  <NewProfile
+                  <Profile
                     selectedImage={selectedImage}
-                    userId={userId}
                     setSelectedImage={setSelectedImage}
                     selectedBackgroundImage={selectedBackgroundImage}
                     setSelectedBackgroundImage={setSelectedBackgroundImage}
@@ -134,7 +104,7 @@ function App() {
             </Route>
             <Route
               path="create-post"
-              element={<NewPostCreator />}
+              element={<PostCreator />}
             />
           </Route>
           <Route path="*" element={<div>404... not found </div>} />
@@ -148,7 +118,7 @@ function App() {
     <Container>
       <Routes>
         <Route path="/" element={<Navigate to="/auth/login" replace />} />
-        <Route path="/auth" element={<NewAuthwall />}>
+        <Route path="/auth" element={<Authwall />}>
           <Route path="login" element={<LoginMain />} />
           <Route path="register" element={<RegisterMain />} />
         </Route>

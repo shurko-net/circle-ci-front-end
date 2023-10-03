@@ -53,7 +53,7 @@ const StyledLink = styled(Link)`
     text-decoration: none;
 `;
 
-const Post = styled.div`
+const PostContent = styled.div`
   padding: 0;
   margin: 0 0 30px;
   position: relative;
@@ -334,7 +334,7 @@ const PostMainPanelButtonText = styled.span`
 
 `;
 
-function NewPost({
+function Post({
   postData, setPosts, fetching,
 }: NewPostProps) {
   const [userImgIsLoaded, setUserImgIsLoaded] = useState(false);
@@ -380,11 +380,8 @@ function NewPost({
       });
   };
 
-  console.log(fetching);
-  console.log(userImgIsLoaded, 'userImgIsLoaded');
-
   return (
-    <Post>
+    <PostContent>
       <PostHeader>
         <PostHeaderTextWrapper>
           <StyledLink to={postData.isPostOwner ? 'profile' : `profile/${postData.userId}`}>
@@ -447,7 +444,7 @@ function NewPost({
             return <div>{limitedWords}</div>;
           })()}
         </PostMainDescription>
-        <PostMainDescriptionButton to={`post/${postData.id}`}>
+        <PostMainDescriptionButton to={`/post/${postData.id}`}>
           <span>...Learn more</span>
         </PostMainDescriptionButton>
       </PostMainDescriptionContainer>
@@ -515,8 +512,8 @@ function NewPost({
           </PostMainPanelRight>
         </PostMainPanelContainer>
       </PostMainPanelBackground>
-    </Post>
+    </PostContent>
   );
 }
 
-export default NewPost;
+export default Post;

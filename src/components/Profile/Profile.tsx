@@ -1,18 +1,19 @@
 import { faCamera, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-import NewProfileModal from './NewProfileModal';
+import ProfileModal from './ProfileModal';
 import instance, { BASE_URL } from '../../http';
 import UserProfileInfoBlock from '../UserProfile/UserProfileInfoBlock';
 import BackgroundImage from '../UserProfile/BackgroundImage';
 import ProfileContent from '../UserProfile/ProfileContent';
-import NewPost from '../NewPost/NewPost';
+import Post from '../Post/Post';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
+import { useAppSelector } from '../../hook';
+import { RootState } from '../../store';
 
 interface NewProfileProps {
-  userId: string;
   selectedImage: string;
   setSelectedImage: (e: any) => void;
   selectedBackgroundImage: string;
@@ -162,37 +163,36 @@ const NotBackgroundImg = styled.p`
   font-size: 1rem;
 `;
 
-interface UserDate {
-  id: number,
-  name: string,
-  surname: string,
-  profileImageUrl: string,
-  backgroundImageUrl: string,
-  biography: string,
-  followersAmount: number,
-  commentsAmount: number,
-  postsAmount: number,
-  isMyself: boolean,
-  isFollowed: boolean
-}
-
-function NewProfile({
-  userId,
+function Profile({
   selectedImage,
   setSelectedImage,
   selectedBackgroundImage,
   setSelectedBackgroundImage,
 }: NewProfileProps) {
+  const userData = useAppSelector((state: RootState) => state.auth.user);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [user, setUser] = useState({} as UserDate);
+  const [user, setUser] = useState(userData);
   const [fetching, setFetching] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const { loadMoreRef, page } = useInfiniteScroll();
   const [posts, setPosts] = useState<any>([]);
 
+  // useEffect(() => {
+  //   const handleLoad = () => {
+  //     setFetching(false);
+  //     dispatch(setIsLoading(false));
+  //   };
+  //
+  //   window.addEventListener('load', handleLoad);
+  //
+  //   return () => {
+  //     window.removeEventListener('load', handleLoad);
+  //   };
+  // }, []);
   useEffect(() => {
-    instance.get(`${BASE_URL}/get-user/${userId}`)
+    instance.get(`${BASE_URL}/get-user/${userData.id}`)
       .then((resp: any) => {
         setUser(resp.data);
       })
@@ -229,7 +229,7 @@ function NewProfile({
   };
 
   const handleSubscribe = () => {
-    instance.put(`${BASE_URL}/follow/${userId}`)
+    instance.put(`${BASE_URL}/follow/${userData.id}`)
       .then((resp: any) => {
         setUser(resp.data);
       });
@@ -261,7 +261,7 @@ function NewProfile({
     setSelectedBackgroundImage(URL.createObjectURL(file));
 
     const formData = new FormData();
-    formData.append('id', userId);
+    formData.append('id', String(userData.id));
     formData.append('file', e.target.files[0]);
     instance.post(
       `${BASE_URL}/upload-user-backimage`,
@@ -281,22 +281,6 @@ function NewProfile({
   const closenModal = () => {
     setModalOpen(false);
   };
-
-  // const getPosts = useCallback(() => {
-  //   if (totalCount === 0 || totalCount > posts.length) {
-  //     instance.get(`${BASE_URL}/get-user-posts/${user.name}/${page}`)
-  //       .then((res: any) => {
-  //         debugger;
-  //         setPosts([...posts, ...res.data.sort((a: any, b: any) => b.idPost - a.idPost)]);
-  //         setTotalCount(res.headers['x-total-count']);
-  //       })
-  //       .finally(() => setFetching(false));
-  //   }
-  // }, [page]);
-  //
-  // useEffect(() => {
-  //   getPosts();
-  // }, [getPosts]);
 
   return (
     <>
@@ -347,7 +331,7 @@ function NewProfile({
             <UserCardPhotoEdit>
               <ProfilePhotoEditCamera icon={faCamera} />
               <ProfilePhotoEditButton onClick={openModal} type="button" />
-              <NewProfileModal
+              <ProfileModal
                 modalOpen={modalOpen}
                 closenModal={closenModal}
                 onImageChange={onImageChange}
@@ -376,20 +360,24 @@ function NewProfile({
         </ProfileContent>
       </UserProfileInfoBlock>
       <>
-        <div>
+        <section>
           {posts.map((post: any, index: number) => (
-            <NewPost
+            <Post
               key={index}
               postData={post}
               setPosts={setPosts}
               fetching={fetching}
             />
           ))}
+        </section>
+        <div ref={loadMoreRef}>
+          {
+          fetching && <div>Loading...</div>
+        }
         </div>
-        <div ref={loadMoreRef} />
       </>
     </>
   );
 }
 
-export default NewProfile;
+export default Profile;

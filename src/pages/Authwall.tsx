@@ -1,13 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import LoginHeader from '../components/NewLogin/LoginHeader';
-import LoginFooter from '../components/NewLogin/LoginFooter';
+import LoginHeader from '../components/Login/LoginHeader';
+import LoginFooter from '../components/Login/LoginFooter';
 
 // interface NewLoginProps {
 
 // }
 
-function NewAuthwall() {
+function Authwall() {
   return (
     <>
       <LoginHeader />
@@ -17,4 +17,4 @@ function NewAuthwall() {
   );
 }
 
-export default NewAuthwall;
+export default Authwall;

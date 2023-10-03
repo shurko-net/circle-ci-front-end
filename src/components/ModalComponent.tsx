@@ -7,7 +7,7 @@ interface NewModalProps {
   closenModal: () => void;
 }
 
-function NewModal({ closenModal, isOpen, children }: NewModalProps) {
+function ModalComponent({ closenModal, isOpen, children }: NewModalProps) {
   if (!isOpen) {
     return null;
   }
@@ -25,4 +25,4 @@ function NewModal({ closenModal, isOpen, children }: NewModalProps) {
   );
 }
 
-export default NewModal;
+export default ModalComponent;

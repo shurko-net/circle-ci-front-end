@@ -8,12 +8,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-interface RootState {
-  user: {
-    isLogged: boolean
-  }
-}
-
 const styleLink = {
   textDecoration: 'none',
   color: '#000',
@@ -33,7 +27,6 @@ const styleLinkLogo = {
 };
 
 const setActive = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '');
-
 const StyledNotificationsNoneIcon = styled(NotificationsNoneIcon)`
   opacity: 0.6;
   &:hover {
@@ -66,7 +59,7 @@ const StyledMenuLink = styled(NavLink)`
   }
 `;
 
-const Header = styled.header`
+const HeaderContent = styled.header`
     position: absolute;
     width: 100%;
     top: 0;
@@ -428,9 +421,7 @@ const DivBlock = styled.div`
 // const posts = [{ name: 'Yaroslav' }, { name: 'stas' },
 // { name: 'Dima' }, { name: 'Any' }, { name: 'Katy' }];
 
-function NewHeader() {
-  // const [posts, setPosts] = useState<any>([]);
-
+function Header() {
   const [searchIsOpen, setSearchIsOpen] = useState('');
   // const [search, setSearch] = useState('');
   const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
@@ -441,15 +432,8 @@ function NewHeader() {
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // useEffect(() => {
-  //   instance.get(`${BASE_URL}/get-posts/${0}`)
-  //     .then((res: any) => {
-  //       setPosts(res.data.posts.sort((a: any, b: any) => b.idPost - a.idPost));
-  //     });
-  // }, []);
-
-  const isLogged = useSelector((state: RootState) => ({
-    isLogged: state.user.isLogged,
+  const isLogged = useSelector((state: any) => ({
+    isLogged: state.auth.user.isAuth,
   }));
 
   const handleActiveClick = (componentNumber: number) => {
@@ -495,7 +479,7 @@ function NewHeader() {
   // );
 
   return (
-    <Header>
+    <HeaderContent>
       <HeaderWrapper>
         <HeaderContainerContainer>
           <HeaderBody>
@@ -661,8 +645,8 @@ function NewHeader() {
           </HeaderBody>
         </HeaderContainerContainer>
       </HeaderWrapper>
-    </Header>
+    </HeaderContent>
   );
 }
 
-export default NewHeader;
+export default Header;

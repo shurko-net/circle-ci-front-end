@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hook';
 import { login } from '../../store/slices/authSlice';
-import { setUser } from '../../store/slices/userSlice';
 
 interface LoginButtonSectionProps {
   email: string;
@@ -63,8 +62,7 @@ function LoginButtonSection({ email, password }: LoginButtonSectionProps) {
   const navigate = useNavigate();
   const handleLogin = (e:any) => {
     e.preventDefault();
-    dispatch(login({ email, password })).then((resp:any) => {
-      dispatch(setUser(resp.payload));
+    dispatch(login({ email, password })).then(() => {
       navigate('/');
     });
   };

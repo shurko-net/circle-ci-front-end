@@ -105,13 +105,10 @@ const UserPanelButtonContainer = styled.div`
 function UserPanel({ selectedImage }: UserPanelProps) {
   const dispatch = useAppDispatch();
 
-  const userFullName = useAppSelector((state: any) => `${state.user.name} ${state.user.surname}`);
+  const userFullName = useAppSelector((state: any) => `${state.auth.user.name} ${state.auth.user.surname}`);
 
   const signOut = () => {
-    dispatch(logout())
-      .then(() => {
-        window.location.reload();
-      });
+    dispatch(logout());
   };
 
   return (

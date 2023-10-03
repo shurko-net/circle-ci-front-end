@@ -42,11 +42,8 @@ export const login = createAsyncThunk<IUser,
 export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
-    const response = await AuthService.logout();
-    if (response.status !== 200) {
-      return rejectWithValue('Err');
-    }
-    localStorage.removeItem('token');
+    await AuthService.logout();
+    return rejectWithValue('Err');
   },
 );
 
@@ -66,13 +63,38 @@ export const checkAuth = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: {} as IUser,
+    user: {
+      id: 0,
+      name: '',
+      surname: '',
+      profileImageUrl: '',
+      backgroundImageUrl: '',
+      biography: '',
+      followersAmount: 0,
+      commentsAmount: 0,
+      postsAmount: 0,
+      isMyself: false,
+      isFollowed: false,
+    } as IUser,
     isAuth: false,
     isLoading: true,
   },
   reducers: {
     setIsLoading(state, action) {
       state.isLoading = action.payload;
+    },
+    setUser(state, action) {
+      state.user.id = action.payload.id;
+      state.user.name = action.payload.name;
+      state.user.surname = action.payload.surname;
+      state.user.biography = action.payload.biography;
+      state.user.backgroundImageUrl = action.payload.backgroundImageUrl;
+      state.user.profileImageUrl = action.payload.profileImageUrl;
+      state.user.followersAmount = action.payload.followersAmount;
+      state.user.commentsAmount = action.payload.commentsAmount;
+      state.user.postsAmount = action.payload.postsAmount;
+      state.user.isMyself = action.payload.isMyself;
+      state.user.isFollowed = action.payload.isFollowed;
     },
   },
   extraReducers(builder) {
@@ -101,6 +123,8 @@ const authSlice = createSlice({
         state.isAuth = false;
         state.user = {} as IUser;
         state.isLoading = false;
+        localStorage.removeItem('token');
+        window.location.reload();
       })
       .addCase(logout.pending, (state) => {
         state.isLoading = true;

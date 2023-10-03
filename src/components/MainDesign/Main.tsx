@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 
-import NewSidebar from '../NewSidebar/NewSidebar';
+import Sidebar from '../Sidebar/Sidebar';
 
 interface NewMainProps {
   selectedImage: string;
@@ -82,7 +82,7 @@ const Body = styled.div`
  
 `;
 
-const Main = styled.main`
+const MainContent = styled.main`
   grid-area: main;
 `;
 
@@ -90,17 +90,17 @@ const MainRelative = styled.div`
   position: relative;
 `;
 
-function NewMain({ selectedImage, sidebarImgLoad }:NewMainProps) {
+function Main({ selectedImage, sidebarImgLoad }:NewMainProps) {
   return (
     <MainContainer>
       <Container>
         <Body>
-          <Main>
+          <MainContent>
             <MainRelative>
               <Outlet />
             </MainRelative>
-          </Main>
-          <NewSidebar
+          </MainContent>
+          <Sidebar
             sidebarImgLoad={sidebarImgLoad}
             selectedImage={selectedImage}
           />
@@ -110,4 +110,4 @@ function NewMain({ selectedImage, sidebarImgLoad }:NewMainProps) {
   );
 }
 
-export default NewMain;
+export default Main;

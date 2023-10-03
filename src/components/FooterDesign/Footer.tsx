@@ -11,13 +11,12 @@ const StyledLink = styled(Link)`
     font-family: inherit;
     border: inherit;
     font-size: inherit;
-    fill: inherit;
     color: inherit;
     display: flex;
     text-decoration: none;
 `;
 
-const Footer = styled.footer`
+const FooterContent = styled.footer`
   /* bottom: 0; */
   width: 100%;
   /* left: 0; */
@@ -90,9 +89,9 @@ const MenuFooterColumn = styled.div`
 const MenuFooterLink = styled.a`
 `;
 
-function NewFooter() {
+function Footer() {
   return (
-    <Footer>
+    <FooterContent>
       <FooterContainerContainer>
         <FooterBody>
           <FooterMenuContainer>
@@ -130,8 +129,8 @@ function NewFooter() {
           </FooterMenuContainer>
         </FooterBody>
       </FooterContainerContainer>
-    </Footer>
+    </FooterContent>
   );
 }
 
-export default NewFooter;
+export default Footer;

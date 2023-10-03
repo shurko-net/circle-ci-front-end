@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import NewModal from '../NewModal';
+import Modal from '../ModalComponent';
 
-interface NewProfileModalProps {
+interface ProfileModalProps {
   modalOpen: boolean;
   closenModal: () => void;
   onImageChange?: (e?: any) => void,
@@ -197,11 +197,11 @@ const ModalFooterLabel = styled.label`
   color: #fff;
 `;
 
-function NewProfileModal({
+function ProfileModal({
   src, modalOpen, closenModal, onImageChange,
-}: NewProfileModalProps) {
+}: ProfileModalProps) {
   return (
-    <NewModal isOpen={modalOpen} closenModal={closenModal}>
+    <Modal isOpen={modalOpen} closenModal={closenModal}>
       <ModalContainer>
         <Button type="submit" onClick={closenModal}>
           <FontAwesomeIcon icon={faXmark} style={{ width: '1.25rem', height: '1.25rem' }} />
@@ -239,8 +239,8 @@ function NewProfileModal({
           </ModalFooterContainer>
         </ModalFooter>
       </ModalContainer>
-    </NewModal>
+    </Modal>
   );
 }
 
-export default NewProfileModal;
+export default ProfileModal;

@@ -130,8 +130,7 @@ const UserPanelContainer = styled.div`
   margin-bottom: 2.9375rem;
 `;
 
-function NewSidebar({ selectedImage, sidebarImgLoad }:NewSidebarProps) {
-  const subdomain = useSelector((state: any) => state.user.subdomain);
+function Sidebar({ selectedImage, sidebarImgLoad }:NewSidebarProps) {
   return (
     <LayoutSidebar>
       <CreatePost to="/create-post">
@@ -146,7 +145,7 @@ function NewSidebar({ selectedImage, sidebarImgLoad }:NewSidebarProps) {
       </CreatePost>
       <SmallCreatePostBody>
         <SmallCreatePostContainer>
-          <SmallCreatePostLink to={`/${subdomain}/home`}>
+          <SmallCreatePostLink to="/profile">
             <SmallCreatePostImgContainer>
               <SmallCreatePostImg src="https://i.pinimg.com/564x/70/b1/2e/70b12ec6ed5010cf53b2ee5c014bba4d.jpg" />
             </SmallCreatePostImgContainer>
@@ -173,4 +172,4 @@ function NewSidebar({ selectedImage, sidebarImgLoad }:NewSidebarProps) {
   );
 }
 
-export default NewSidebar;
+export default Sidebar;

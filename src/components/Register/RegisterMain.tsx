@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import FormSection from '../NewLogin/FormSection';
+import FormSection from '../Login/FormSection';
 import RegisterButtonSection from './RegisterButtonSection';
 
 const Main = styled.main`
