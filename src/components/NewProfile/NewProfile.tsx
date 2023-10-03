@@ -1,6 +1,6 @@
 import { faCamera, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import NewProfileModal from './NewProfileModal';
@@ -8,6 +8,8 @@ import instance, { BASE_URL } from '../../http';
 import UserProfileInfoBlock from '../UserProfile/UserProfileInfoBlock';
 import BackgroundImage from '../UserProfile/BackgroundImage';
 import ProfileContent from '../UserProfile/ProfileContent';
+import NewPost from '../NewPost/NewPost';
+import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 
 interface NewProfileProps {
   userId: string;
@@ -182,22 +184,29 @@ function NewProfile({
   setSelectedBackgroundImage,
 }: NewProfileProps) {
   const [modalOpen, setModalOpen] = useState(false);
-
   const [isHovered, setIsHovered] = useState(false);
   const [user, setUser] = useState({} as UserDate);
+  const [fetching, setFetching] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const { loadMoreRef, page } = useInfiniteScroll();
+  const [posts, setPosts] = useState<any>([]);
 
   useEffect(() => {
     instance.get(`${BASE_URL}/get-user/${userId}`)
       .then((resp: any) => {
         setUser(resp.data);
+      })
+      .then(() => {
+        if (totalCount === 0 || totalCount > posts.length) {
+          instance.get(`${BASE_URL}/get-user-posts/${user.id}/${page}`)
+            .then((res: any) => {
+              setPosts([...posts, ...res.data.sort((a: any, b: any) => b.idPost - a.idPost)]);
+              setTotalCount(res.headers['x-total-count']);
+            })
+            .finally(() => setFetching(false));
+        }
       });
-  }, []);
-
-  // const {
-  //   user,
-  // } = useAppSelector((state: any) => ({
-  //   user: state.auth.user,
-  // }));
+  }, [user.name]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -219,6 +228,13 @@ function NewProfile({
     setSelectedBackgroundImage('');
   };
 
+  const handleSubscribe = () => {
+    instance.put(`${BASE_URL}/follow/${userId}`)
+      .then((resp: any) => {
+        setUser(resp.data);
+      });
+  };
+
   const onImageChange = (e: any) => {
     if (!e.target.files[0]) {
       return;
@@ -228,7 +244,6 @@ function NewProfile({
     setSelectedImage(URL.createObjectURL(file));
 
     const formData = new FormData();
-    // formData.append('id', userId);
     formData.append('file', e.target.files[0]);
     instance.post(`${BASE_URL}/upload-user-image`, formData, {
       headers: {
@@ -267,81 +282,113 @@ function NewProfile({
     setModalOpen(false);
   };
 
+  // const getPosts = useCallback(() => {
+  //   if (totalCount === 0 || totalCount > posts.length) {
+  //     instance.get(`${BASE_URL}/get-user-posts/${user.name}/${page}`)
+  //       .then((res: any) => {
+  //         debugger;
+  //         setPosts([...posts, ...res.data.sort((a: any, b: any) => b.idPost - a.idPost)]);
+  //         setTotalCount(res.headers['x-total-count']);
+  //       })
+  //       .finally(() => setFetching(false));
+  //   }
+  // }, [page]);
+  //
+  // useEffect(() => {
+  //   getPosts();
+  // }, [getPosts]);
+
   return (
-    <UserProfileInfoBlock>
-      <BackgroundImage>
-        <ProfileBackgroundImage>
-          <ProfileBackgroundImageContainer>
+    <>
+      <UserProfileInfoBlock>
+        <BackgroundImage>
+          <ProfileBackgroundImage>
+            <ProfileBackgroundImageContainer>
+              {selectedBackgroundImage === '' ? (
+                <NotBackgroundImg>
+                  Upload a background for your profile
+                </NotBackgroundImg>
+              ) : (
+                <ProfileBackgroundImageRelative
+                  style={{ backgroundImage: `url(${selectedBackgroundImage})` }}
+                />
+              )}
+            </ProfileBackgroundImageContainer>
+          </ProfileBackgroundImage>
+          <ProfileTopcardIamgeEditIcon>
             {selectedBackgroundImage === '' ? (
-              <NotBackgroundImg>
-                Upload a background for your profile
-              </NotBackgroundImg>
+              <ButtonEditBackgroundImg>
+                <InputEditBackgroundImg
+                  type="file"
+                  onChange={onBackgroundImageChange}
+                />
+                <FontAwesomeIcon icon={faPen} />
+              </ButtonEditBackgroundImg>
             ) : (
-              <ProfileBackgroundImageRelative
-                style={{ backgroundImage: `url(${selectedBackgroundImage})` }}
-              />
-            )}
-          </ProfileBackgroundImageContainer>
-        </ProfileBackgroundImage>
-        <ProfileTopcardIamgeEditIcon>
-          {selectedBackgroundImage === '' ? (
-            <ButtonEditBackgroundImg>
-              <InputEditBackgroundImg
-                type="file"
-                onChange={onBackgroundImageChange}
-              />
-              <FontAwesomeIcon icon={faPen} />
-            </ButtonEditBackgroundImg>
-          ) : (
-            <ButtonEditBackgroundImg
-              onClick={handleDeleteUserBackgroundImage}
-            >
-              <FontAwesomeIcon icon={faTrashCan} />
-            </ButtonEditBackgroundImg>
-          )}
-        </ProfileTopcardIamgeEditIcon>
-      </BackgroundImage>
-      <ProfileContent
-        name={user.name}
-        surname={user.surname}
-        followersAmount={user.followersAmount}
-        postsAmount={user.postsAmount}
-        isFollowed={user.isFollowed}
-        isMyself={user.isMyself}
-        commentsAmount={user.commentsAmount}
-      >
-        {selectedImage === '' ? (
-          <UserCardPhotoEdit>
-            <ProfilePhotoEditCamera icon={faCamera} />
-            <ProfilePhotoEditButton onClick={openModal} type="button" />
-            <NewProfileModal
-              modalOpen={modalOpen}
-              closenModal={closenModal}
-              onImageChange={onImageChange}
-              src="https://storage.googleapis.com/circle-ci-bucket/img1.png"
-            />
-          </UserCardPhotoEdit>
-        ) : (
-          <UserCardPhotoEdit>
-            <ProfilePhotoEditButton onClick={openModal} type="button">
-              <UserImage
-                style={{ backgroundImage: `url(${selectedImage})` }}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              />
-              <IconWrapper
-                visible={isHovered}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                onClick={handleDeleteUserImg}
+              <ButtonEditBackgroundImg
+                onClick={handleDeleteUserBackgroundImage}
               >
-                <Icon icon={faTrashCan} />
-              </IconWrapper>
-            </ProfilePhotoEditButton>
-          </UserCardPhotoEdit>
-        )}
-      </ProfileContent>
-    </UserProfileInfoBlock>
+                <FontAwesomeIcon icon={faTrashCan} />
+              </ButtonEditBackgroundImg>
+            )}
+          </ProfileTopcardIamgeEditIcon>
+        </BackgroundImage>
+        <ProfileContent
+          name={user.name}
+          surname={user.surname}
+          followersAmount={user.followersAmount}
+          postsAmount={user.postsAmount}
+          isFollowed={user.isFollowed}
+          isMyself={user.isMyself}
+          commentsAmount={user.commentsAmount}
+          handleSubscribe={handleSubscribe}
+        >
+          {selectedImage === '' ? (
+            <UserCardPhotoEdit>
+              <ProfilePhotoEditCamera icon={faCamera} />
+              <ProfilePhotoEditButton onClick={openModal} type="button" />
+              <NewProfileModal
+                modalOpen={modalOpen}
+                closenModal={closenModal}
+                onImageChange={onImageChange}
+                src="https://storage.googleapis.com/circleci-bucket/IconsForCategory/addPhotoPlaceHolder.png"
+              />
+            </UserCardPhotoEdit>
+          ) : (
+            <UserCardPhotoEdit>
+              <ProfilePhotoEditButton onClick={openModal} type="button">
+                <UserImage
+                  style={{ backgroundImage: `url(${selectedImage})` }}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                />
+                <IconWrapper
+                  visible={isHovered}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={handleDeleteUserImg}
+                >
+                  <Icon icon={faTrashCan} />
+                </IconWrapper>
+              </ProfilePhotoEditButton>
+            </UserCardPhotoEdit>
+          )}
+        </ProfileContent>
+      </UserProfileInfoBlock>
+      <>
+        <div>
+          {posts.map((post: any, index: number) => (
+            <NewPost
+              key={index}
+              postData={post}
+              setPosts={setPosts}
+              fetching={fetching}
+            />
+          ))}
+        </div>
+        <div ref={loadMoreRef} />
+      </>
+    </>
   );
 }
 

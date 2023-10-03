@@ -70,7 +70,11 @@ const authSlice = createSlice({
     isAuth: false,
     isLoading: true,
   },
-  reducers: {},
+  reducers: {
+    setIsLoading(state, action) {
+      state.isLoading = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(registration.fulfilled, (state, action) => {
@@ -117,5 +121,9 @@ const authSlice = createSlice({
       });
   },
 });
+
+export const {
+  setIsLoading,
+} = authSlice.actions;
 
 export default authSlice.reducer;

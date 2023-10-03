@@ -34,9 +34,9 @@ interface NewPostProps {
       imageUrl: string;
     }[];
   };
-  setPosts: any;
-  userId: number;
-  fetching: boolean;
+  setPosts?: any;
+  userId?: number;
+  fetching?: boolean;
 }
 
 const StyledLink = styled(Link)`
@@ -183,6 +183,10 @@ const PostMainImage = styled.img`
   top: 0;
   left: 0;
   z-index: 10;
+  &:not([src]) {
+    display: none;
+  }
+  
 `;
 
 const PostMainDescriptionContainer = styled.div`
@@ -337,7 +341,6 @@ function NewPost({
   const [userPostImgIsLoaded, setUserPostImgIsLoaded] = useState(false);
   const handleUserImageLoad = () => {
     setUserImgIsLoaded(true);
-    console.log('картинка загрузилась');
   };
 
   const handlePostImageLoad = () => {
@@ -412,10 +415,14 @@ function NewPost({
       <PostMainThemeContainer>
         <PostMainTheme>{postData.title}</PostMainTheme>
       </PostMainThemeContainer>
-      <PostMainImageContainer to={`post/${postData.id}`}>
-
-        {(!userPostImgIsLoaded || fetching)
-            && (
+      {
+          postData.imageUrl && (
+          <PostMainImageContainer to={`post/${postData.id}`}>
+            <PostMainImage
+              onLoad={handlePostImageLoad}
+              src={postData.imageUrl}
+            />
+            {(fetching || !userPostImgIsLoaded) && (
             <Skeleton
               width="100%"
               height="100%"
@@ -423,11 +430,9 @@ function NewPost({
               style={{ position: 'absolute' }}
             />
             )}
-        <PostMainImage
-          onLoad={handlePostImageLoad}
-          src={postData.imageUrl}
-        />
-      </PostMainImageContainer>
+          </PostMainImageContainer>
+          )
+      }
 
       <PostMainDescriptionContainer>
         <PostMainDescription>

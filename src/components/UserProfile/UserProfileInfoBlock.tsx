@@ -5,6 +5,7 @@ const UserCard = styled.section`
   @media screen and (min-width: 576px) {
     border-radius: 1.25rem 1.25rem ;
   }
+  margin-bottom: 25px;
   background: #ffffff;
   //border: 1px solid #cfcfcf;
   box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.1);

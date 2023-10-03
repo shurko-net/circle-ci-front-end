@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Button from '../NewButton';
 import PanelButton from './PanelButton';
@@ -104,14 +104,13 @@ const UserPanelButtonContainer = styled.div`
 
 function UserPanel({ selectedImage }: UserPanelProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const userFullName = useAppSelector((state: any) => `${state.user.name} ${state.user.surname}`);
 
   const signOut = () => {
     dispatch(logout())
       .then(() => {
-        navigate('/auth/login');
+        window.location.reload();
       });
   };
 
@@ -123,7 +122,7 @@ function UserPanel({ selectedImage }: UserPanelProps) {
             <UserPanelImgContainer>
               <UserPanelImgFlex>
                 <UserPanelImg
-                  style={{ backgroundImage: `url(${(selectedImage) || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'})` }}
+                  style={{ backgroundImage: `url(${(selectedImage) || 'https://storage.googleapis.com/circleci-bucket/IconsForCategory/profilePlaceholder.png'})` }}
                 />
               </UserPanelImgFlex>
             </UserPanelImgContainer>

@@ -14,6 +14,7 @@ interface ProfileContentProps {
   postsAmount?: number;
   isMyself?: boolean;
   isFollowed?: boolean;
+  handleSubscribe:() => void;
 }
 
 const ProfileContentContainer = styled.div`
@@ -119,7 +120,7 @@ const ProfileButtonText = styled.span`
 
 function ProfileContent({
   children, name, surname, followersAmount, commentsAmount, postsAmount,
-  isMyself, isFollowed,
+  isMyself, isFollowed, handleSubscribe,
 }:ProfileContentProps) {
   const [isHovered, setIsHovered] = React.useState(false);
   const handleMouseEnter = () => {
@@ -166,6 +167,7 @@ function ProfileContent({
         </ProfileInfoContentFlex>
         {isMyself || (isFollowed ? (
           <ProfileButton
+            onClick={handleSubscribe}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             style={{
@@ -190,7 +192,11 @@ function ProfileContent({
                   sx={{ color: '#fff', width: '1rem', height: '1rem' }}
                 />
               </ProfileButtonIcon>
-              <ProfileButtonText>Subscribe</ProfileButtonText>
+              <ProfileButtonText
+                onClick={handleSubscribe}
+              >
+                Subscribe
+              </ProfileButtonText>
             </ProfileButton>
           )
         )}

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Skeleton from '@mui/material/Skeleton';
 import Themes from './Themes';
 
 import Button from '../NewButton';
@@ -12,6 +13,7 @@ import Suggestions from './Suggestions';
 
 interface NewSidebarProps {
   selectedImage?: string;
+  sidebarImgLoad: boolean;
 }
 
 const StyledLink = styled(Link)`
@@ -23,7 +25,6 @@ const StyledLink = styled(Link)`
     font-family: inherit;
     border: inherit;
     font-size: inherit;
-    fill: inherit;
     color: inherit;
     display: flex;
     text-decoration: none;
@@ -115,7 +116,21 @@ const SmallCreatePostButtonText = styled.span`
 
 `;
 
-function NewSidebar({ selectedImage }:NewSidebarProps) {
+const UserPanelContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: inherit;
+  align-items: flex-end;
+  &> *:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  @media screen and (min-width: 576px) {
+    display: flex;
+  }
+  margin-bottom: 2.9375rem;
+`;
+
+function NewSidebar({ selectedImage, sidebarImgLoad }:NewSidebarProps) {
   const subdomain = useSelector((state: any) => state.user.subdomain);
   return (
     <LayoutSidebar>
@@ -141,7 +156,17 @@ function NewSidebar({ selectedImage }:NewSidebarProps) {
           </SmallCreatePostButton>
         </SmallCreatePostContainer>
       </SmallCreatePostBody>
-      <UserPanel selectedImage={selectedImage} />
+      {sidebarImgLoad
+        ? (
+          <UserPanelContainer>
+            <Skeleton variant="circular" sx={{ bgcolor: '#C8D6DA' }} width={63} height={63} />
+            <Skeleton variant="rectangular" sx={{ bgcolor: '#C8D6DA' }} width={110} height={10} />
+            <Skeleton variant="rectangular" sx={{ bgcolor: '#C8D6DA' }} width={150} height={10} />
+          </UserPanelContainer>
+        )
+        : (
+          <UserPanel selectedImage={selectedImage} />
+        )}
       <Themes />
       <Suggestions />
     </LayoutSidebar>

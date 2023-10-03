@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import './App.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './hook';
-import { checkAuth } from './store/slices/authSlice';
+import { checkAuth, setIsLoading } from './store/slices/authSlice';
 import NewMain from './components/NewMainDesign/NewMain';
 import MainPosts from './components/Home/MainPosts';
 import NewProfile from './components/NewProfile/NewProfile';
@@ -28,6 +28,7 @@ const Container = styled.div`
 
 function App() {
   // const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
+  const [sidebarImgLoad, setSidebarImgLoad] = useState(false);
 
   const dispatch = useAppDispatch();
   const {
@@ -39,17 +40,17 @@ function App() {
   }));
 
   const {
-    userImage, userId, backgroundImage,
+    userImage, userId, backgroundImageUrl,
   } = useAppSelector(
     (state: any) => ({
-      userImage: state.user.image,
+      userImage: state.user.profileImageUrl,
       userId: state.user.id,
-      backgroundImage: state.user.backgroundImage,
+      backgroundImageUrl: state.user.backgroundImageUrl,
     }),
   );
 
   const [selectedImage, setSelectedImage] = React.useState(userImage);
-  const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(backgroundImage);
+  const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(backgroundImageUrl);
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -75,10 +76,14 @@ function App() {
   // voice:.idea/1695888496747.wav
   useEffect(() => {
     if (isAuth) {
+      setSidebarImgLoad(true);
       instance
         .get(`${BASE_URL}/get-user-image`)
         .then((res) => {
           setSelectedImage(res.data);
+          console.log(res.data);
+        }).finally(() => {
+          setSidebarImgLoad(false);
         });
       instance
         .get(`${BASE_URL}/get-user-backimage`)
@@ -87,6 +92,10 @@ function App() {
         });
     }
   }, [isAuth]);
+
+  if (localStorage.getItem('token') === null) {
+    dispatch(setIsLoading(false));
+  }
 
   if (isLoading) {
     return <Preloader />;
@@ -102,6 +111,7 @@ function App() {
               element={(
                 <NewMain
                   selectedImage={selectedImage}
+                  sidebarImgLoad={sidebarImgLoad}
                 />
               )}
             >

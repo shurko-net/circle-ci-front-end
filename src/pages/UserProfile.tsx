@@ -71,7 +71,6 @@ interface UserData {
   biography: string,
   profileImageUrl: string,
   backgroundImageUrl: string
-
 }
 
 function userProfile() {
@@ -85,6 +84,25 @@ function userProfile() {
         setUserData(resp.data);
       });
   }, []);
+
+  const handleSubscribe = () => {
+    instance.put(`${BASE_URL}/follow/${userId}`)
+      .then((resp: any) => {
+        console.log(resp.data);
+        setUserData({
+          name: resp.data.mappedUser.name,
+          surname: resp.data.mappedUser.surname,
+          followersAmount: resp.data.mappedUser.followersAmount,
+          commentsAmount: 0,
+          postsAmount: 0,
+          isMyself: false,
+          isFollowed: resp.data.isFollowed,
+          biography: resp.data.mappedUser.biography,
+          profileImageUrl: resp.data.mappedUser.profileImageUrl,
+          backgroundImageUrl: resp.data.mappedUser.backgroundImageUrl,
+        });
+      });
+  };
 
   return (
     <UserProfileInfoBlock>
@@ -106,6 +124,7 @@ function userProfile() {
         postsAmount={userData.postsAmount}
         isFollowed={userData.isFollowed}
         isMyself={userData.isMyself}
+        handleSubscribe={handleSubscribe}
       >
         {userData.profileImageUrl === '' ? (
           <UserCardPhotoEdit>
