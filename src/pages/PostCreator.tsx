@@ -1,108 +1,78 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
   convertToRaw, EditorState,
 } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
+import MainPostCreator from '../components/PostCreator/MainPostCreator';
+import SideBarPostCreator from '../components/PostCreator/SideBarPostCreator';
+import instance, { BASE_URL } from '../http';
 
-const Page = styled.div`
-    margin-top: 70px;
+const Body = styled.div`
+    padding-top: 100px;
+    flex: 1 1 auto;
+    max-width: 100%;
+    background-color: #e8e8e8;
 `;
 
-const BodyEditor = styled.div`
-    width: 50%;
-    margin: auto;
-    padding: 20px;
-`;
-
-const TitleTextArea = styled.textarea`
-  width: 100%;
-  border: none;
-  outline: none;
-  font-size: 24px;
-  font-family: 'Soehne web buch', sans-serif;
-  resize: none;
-`;
-
-const Button = styled.button`
-    display: block;
-  font-weight: normal;
-  background: #7DE2D1;
-  border: none;
-  padding: 7px 16px 9px;
-  border-radius: 18px;
-  cursor:pointer;
-  transition: all .07s ease-in-out;
-  margin-top:12px;
-  float: right;
-  &:hover {
-    box-shadow:0 4px 10px rgba(0, 0, 0, .1);
-    background:#7DE2D1;
-  }
-  a {
-    text-decoration: none;
-    color: none;
-  }
-`;
-
-const PublishingCoverImage = styled.section`
-  @media screen and (min-width: 768px){
-    width: 840px;
-  }
-  position: relative;
-  transition: 334ms height ease;
-  margin: auto;
-  margin-bottom: 12px;
-`;
-
-const PublishingCoverInput = styled.input`
-    position: fixed;
-    right: 100%;
-    bottom: 100%;
-`;
-
-const PublishingCoverImagePlaceholder = styled.div`
-    @media screen and (min-width: 768px){
-      height: 405px;
-      width: 100%;
+const Container = styled.div`
+    margin: -100px auto 0;
+    padding: 100px 0 0;
+    max-width: 100%;
+    max-width: 576px;
+    margin-left: auto;
+    margin-right: auto;
+    @media screen and (min-width: 576px) {
+      overflow: unset;
+    }
+    @media screen and (min-width: 767.98px) {
+      max-width: unset;
+      width: 720px;
+    }
+    @media screen and (min-width: 991.98px) {
+      width: 960px;
+    }
+    @media screen and (min-width: 1300px) {
+      width: 1330px;
+      padding: 100px 15px 0;
     }
 `;
 
-const PublishingCoverImageLabel = styled.label`
-    align-items: center;
-    background: 0 0;
-    background-size: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    text-indent: 0;
-    position: relative;
-    cursor: pointer;
-`;
-
-const Img = styled.img`
-  background-color: rgba(242, 242, 242, 1);
-  box-sizing: border-box;
-  display: block;
-  background-size: 100%;
-  height: 100%;
-  width: 100%;
+const GridContainer = styled.div`
+    display: grid;
+  
+  row-gap: 26px;
+  
+  
+  grid-template-columns: minmax(0,1fr);
+  grid-template-areas:
+    "main ."
+    "sidebar .";
+  ;
+  @media screen and (min-width: 576px) {
+    column-gap: 26px;
+    margin: 54px 0;
+  }
+  @media screen and (min-width: 767.98px) {
+    grid-template-areas:
+        "sidebar ."
+        "main .";
+    grid-template-columns: minmax(0,786px) minmax(0,auto);
+  }
+  @media screen and (min-width: 991.98px) {
+    grid-template-areas: "main sidebar";
+    grid-template-columns: minmax(0,786px) minmax(0,378px);
+  }
 `;
 
 function PostCreator() {
-  const user = useSelector((state: any) => state.user);
-
   const [postImageLoad, setPostImageLoad] = useState<any>();
   const [isImageUploaded, setIsImageUploaded] = useState<boolean>(true);
-  const [imageFile, setImageFile] = useState<any>();
+  const [imageFile, setImageFile] = useState<any>('');
+  const [selectedCategoriesValues, setSelectedCategoriesValues] = React.useState([]);
+
   const onDrop = (acceptedFiles:any) => {
     setIsImageUploaded(false);
     setImageFile(acceptedFiles[0]);
@@ -119,32 +89,19 @@ function PostCreator() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const onButtonClick = () => {
-    axios.put('https://localhost:44353/api/Category', {
-      idCategory: 1,
-      name: 'Puppet',
-    }).then(() => {
-      axios.post('https://localhost:44353/api/Post', {
-        idUser: user.id,
-        idCategory: 1,
-        date: new Date(),
-        postContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-        title,
-        likes: 0,
-      }).then((res: any) => {
-        setTitle('');
-        setEditorState(EditorState.createEmpty());
-        const formData = new FormData();
-        formData.append('id', res.data.idPost);
-        formData.append('file', imageFile);
-        axios.post('https://localhost:44353/api/PostImage', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      }).catch((err: any) => {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    formData.append('file', imageFile);
+    formData.append('categories', selectedCategoriesValues.map((e:any) => e.id).join());
+    instance.post(`${BASE_URL}/create-post`, formData)
+      .then((resp) => {
+        window.location.href = `post/${resp.data.id}`;
+        debugger;
+      })
+      .catch((err: any) => {
         console.log(err);
       });
-    });
   };
 
   const handleTitleChange = (e: any) => {
@@ -182,41 +139,34 @@ function PostCreator() {
       options: ['unordered', 'ordered'],
     },
     textAlign: {
-      options: [],
+      options: ['left', 'center', 'right', 'justify'],
     },
   };
 
   return (
-    <Page>
-      <BodyEditor>
-        <TitleTextArea
-          onChange={handleTitleChange}
-          onKeyDown={handleTitleKeyDown}
-          value={title}
-          placeholder="Title"
-        />
-        <PublishingCoverImage>
-          <div {...getRootProps()}>
-            <PublishingCoverInput {...getInputProps()} />
-            <PublishingCoverImagePlaceholder>
-              <PublishingCoverImageLabel>
-                {isImageUploaded && <div style={{ position: 'absolute', fontSize: '32px' }}>Click to upload the image</div>}
-                <Img style={{ backgroundImage: `url(${postImageLoad})` }} />
-              </PublishingCoverImageLabel>
-            </PublishingCoverImagePlaceholder>
-          </div>
-        </PublishingCoverImage>
-        <Editor
-          editorState={editorState}
-          wrapperClassName=""
-          onEditorStateChange={setEditorState}
-          placeholder="Tell your story..."
-          toolbar={toolbar}
-          localization={{ locale: 'en', translations: editorLabels }}
-        />
-        <Button type="submit" onClick={onButtonClick}>Post</Button>
-      </BodyEditor>
-    </Page>
+    <Body>
+      <Container>
+        <GridContainer>
+          <MainPostCreator
+            getRootProps={getRootProps}
+            getInputProps={getInputProps}
+            isImageUploaded={isImageUploaded}
+            postImageLoad={postImageLoad}
+            editorState={editorState}
+            setEditorState={setEditorState}
+            toolbar={toolbar}
+            editorLabels={editorLabels}
+            handleTitleChange={handleTitleChange}
+            handleTitleKeyDown={handleTitleKeyDown}
+            title={title}
+            setSelectedCategoriesValues={setSelectedCategoriesValues}
+          />
+          <SideBarPostCreator
+            onButtonClick={onButtonClick}
+          />
+        </GridContainer>
+      </Container>
+    </Body>
   );
 }
 

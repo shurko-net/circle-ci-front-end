@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import NewPost from '../NewPost/NewPost';
 import instance, { BASE_URL } from '../../http';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
+import Post from '../Post/Post';
 
 // interface MainPostsProps {
 //   setIsLoadingPage: (e: boolean) => void
@@ -33,7 +33,7 @@ function MainPosts() {
   return (
     <>
       <div>
-        {posts.map((post: any, index: number) => <NewPost key={index} postData={post} />)}
+        {posts.map((post: any, index: number) => <Post key={index} postData={post} />)}
       </div>
       <div ref={loadMoreRef}>{fetching && <div>Loading</div>}</div>
     </>

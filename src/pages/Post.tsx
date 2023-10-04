@@ -530,7 +530,14 @@ function Post() {
     instance.get(`${BASE_URL}/get-post/${postId}`)
       .then((res:any) => {
         setPostData(res.data);
-        setLoading(false);
+        instance.put(`${BASE_URL}/update-views/${postId}`).then((resp:any) => {
+          setPostData((prevData:any) => ({
+            ...prevData,
+            id: resp.data.id,
+            viewsAmount: resp.data.viewsAmount,
+          }));
+          setLoading(false);
+        });
       });
   }, []);
 
@@ -549,9 +556,13 @@ function Post() {
       content: commentsTitel,
       postId,
     }).then((res: any) => {
-      console.log(res);
       setPostComments([res.data, ...postComments]);
       setCommentsTitel('');
+      instance.get(`${BASE_URL}/get-post/${postId}`)
+        .then((newPostData:any) => {
+          setPostData(newPostData.data);
+          setLoading(false);
+        });
     });
   };
 
@@ -620,7 +631,9 @@ function Post() {
                 <ArticlePresenterMetaList>
                   <ArticlePresenterMetaTitle>Tegs:</ArticlePresenterMetaTitle>
                   <SeparatedListList>
-                    <SeparatedListItem>jwt</SeparatedListItem>
+                    <SeparatedListItem>
+                      {postData.category.map((teg:any) => teg.name).join(', ')}
+                    </SeparatedListItem>
                   </SeparatedListList>
                 </ArticlePresenterMetaList>
                 <ArticlePresenterMetaList />
@@ -653,7 +666,7 @@ function Post() {
                 <ImgIconWrapper>
                   <ImgIcon icon={faEye} />
                 </ImgIconWrapper>
-                <ButtonCounter>0</ButtonCounter>
+                <ButtonCounter>{postData.viewsAmount}</ButtonCounter>
               </PostPanelButton>
             </PostPanelIcons>
           </PostPanel>

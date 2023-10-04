@@ -1,23 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import './App.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './hook';
-import { checkAuth } from './store/slices/authSlice';
-import NewMain from './components/NewMainDesign/NewMain';
+import { checkAuth, setIsLoading } from './store/slices/authSlice';
+import Main from './components/MainDesign/Main';
 import MainPosts from './components/Home/MainPosts';
-import NewProfile from './components/NewProfile/NewProfile';
+import Profile from './components/Profile/Profile';
 import Layout from './components/Layout';
-import NewPostCreator from './pages/NewPostCreator';
-import NewAuthwall from './pages/NewAuthwall';
-import {
-  setUser,
-} from './store/slices/userSlice';
+import PostCreator from './pages/PostCreator';
+import Authwall from './pages/Authwall';
 import Preloader from './preloader';
 import instance, { BASE_URL } from './http';
-import LoginMain from './components/NewLogin/LoginMain';
-import RegisterMain from './components/NewRegister/RegisterMain';
+import LoginMain from './components/Login/LoginMain';
+import RegisterMain from './components/Register/RegisterMain';
 import Post from './pages/Post';
+import UserProfile from './pages/UserProfile';
 
 const Container = styled.div`
   display: flex;
@@ -26,7 +24,8 @@ const Container = styled.div`
 `;
 
 function App() {
-  const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
+  // const [areImagesLoaded, setAreImagesLoaded] = React.useState(false);
+  const [sidebarImgLoad, setSidebarImgLoad] = useState(false);
 
   const dispatch = useAppDispatch();
   const {
@@ -36,81 +35,44 @@ function App() {
     user: state.auth.user,
     isLoading: state.auth.isLoading,
   }));
-  const {
-    userImage, userId, backgroundImage,
-  } = useAppSelector(
-    (state: any) => ({
-      userImage: state.user.image,
-      userId: state.user.id,
-      backgroundImage: state.user.backgroundImage,
-    }),
-  );
 
-  const [selectedImage, setSelectedImage] = React.useState(userImage);
-  const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(backgroundImage);
-
+  const [selectedImage, setSelectedImage] = React.useState(user.profileImageUrl);
+  const [selectedBackgroundImage, setSelectedBackgroundImage] = React.useState(user
+    .backgroundImageUrl);
   useEffect(() => {
     if (localStorage.getItem('token')) {
       dispatch(checkAuth());
     }
   }, []);
 
+  // voice:.idea/1695888496747.wav
   useEffect(() => {
-    const images = [selectedImage, selectedBackgroundImage];
-    let loadedCount = 0;
-    images.forEach((image) => {
-      if (image === '') {
-        loadedCount += 1;
-      } else {
-        const img = new Image();
-        img.onloadeddata = () => {
-          loadedCount += 1;
-        };
-        img.src = image;
-      }
-    });
-    if (loadedCount === images.length) {
-      setAreImagesLoaded(true);
+    if (isAuth) {
+      setSidebarImgLoad(true);
+      instance
+        .get(`${BASE_URL}/get-user-image`)
+        .then((res) => {
+          setSelectedImage(res.data);
+        }).finally(() => {
+          setSidebarImgLoad(false);
+        });
+      instance
+        .get(`${BASE_URL}/get-user-backimage`)
+        .then((res) => {
+          setSelectedBackgroundImage(res.data);
+        });
     }
-  }, [selectedImage, selectedBackgroundImage]);
+  }, [isAuth]);
 
-  useEffect(() => {
-    if (isAuth && user) {
-      dispatch(
-        setUser({
-          id: user.id,
-          firstName: user.name,
-          secondName: user.surname,
-          password: user.passwordHash,
-          email: user.email,
-          biography: user.biography,
-          phoneNumber: user.tNumber,
-          followers: user.followers,
-        }),
-      );
-    }
-  }, [isAuth, user]);
+  if (localStorage.getItem('token') === null) {
+    dispatch(setIsLoading(false));
+  }
 
-  useEffect(() => {
-    instance
-      .get(`${BASE_URL}/get-user-image`)
-      .then((res) => {
-        setSelectedImage(res.data);
-      });
-
-    instance
-      .get(`${BASE_URL}/get-user-backimage`)
-      .then((res) => {
-        setSelectedBackgroundImage(res.data);
-      });
-  }, []);
-
-  if (isLoading || !areImagesLoaded) {
+  if (isLoading) {
     return <Preloader />;
   }
 
   if (isAuth) {
-    // Loader Auth
     return (
       <Container>
         <Routes>
@@ -118,9 +80,9 @@ function App() {
             <Route
               path="/"
               element={(
-                <NewMain
-                  // isLoadingPage={isLoadingPage}
+                <Main
                   selectedImage={selectedImage}
+                  sidebarImgLoad={sidebarImgLoad}
                 />
               )}
             >
@@ -129,9 +91,8 @@ function App() {
               <Route
                 path="profile"
                 element={(
-                  <NewProfile
+                  <Profile
                     selectedImage={selectedImage}
-                    userId={userId}
                     setSelectedImage={setSelectedImage}
                     selectedBackgroundImage={selectedBackgroundImage}
                     setSelectedBackgroundImage={setSelectedBackgroundImage}
@@ -139,10 +100,11 @@ function App() {
                 )}
               />
               <Route path="post/:postId" element={<Post />} />
+              <Route path="profile/:userId" element={<UserProfile />} />
             </Route>
             <Route
               path="create-post"
-              element={<NewPostCreator />}
+              element={<PostCreator />}
             />
           </Route>
           <Route path="*" element={<div>404... not found </div>} />
@@ -156,10 +118,9 @@ function App() {
     <Container>
       <Routes>
         <Route path="/" element={<Navigate to="/auth/login" replace />} />
-        <Route path="/auth" element={<NewAuthwall />}>
+        <Route path="/auth" element={<Authwall />}>
           <Route path="login" element={<LoginMain />} />
           <Route path="register" element={<RegisterMain />} />
-
         </Route>
         <Route path="*" element={<div>404... not found </div>} />
       </Routes>
