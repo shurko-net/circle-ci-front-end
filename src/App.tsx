@@ -16,6 +16,8 @@ import LoginMain from './components/Login/LoginMain';
 import RegisterMain from './components/Register/RegisterMain';
 import Post from './pages/Post';
 import UserProfile from './pages/UserProfile';
+import Favorites from './pages/Favorites';
+import ProfilePosts from './pages/ProfilePosts';
 
 const Container = styled.div`
   display: flex;
@@ -92,15 +94,31 @@ function App() {
                 path="profile"
                 element={(
                   <Profile
-                    selectedImage={selectedImage}
                     setSelectedImage={setSelectedImage}
-                    selectedBackgroundImage={selectedBackgroundImage}
                     setSelectedBackgroundImage={setSelectedBackgroundImage}
                   />
                 )}
               />
               <Route path="post/:postId" element={<Post />} />
               <Route path="profile/:userId" element={<UserProfile />} />
+              <Route
+                path="profile/posts"
+                element={(
+                  <ProfilePosts
+                    setSelectedImage={setSelectedImage}
+                    setSelectedBackgroundImage={setSelectedBackgroundImage}
+                  />
+)}
+              />
+              <Route
+                path="profile/favorites"
+                element={(
+                  <Favorites
+                    setSelectedImage={setSelectedImage}
+                    setSelectedBackgroundImage={setSelectedBackgroundImage}
+                  />
+)}
+              />
             </Route>
             <Route
               path="create-post"

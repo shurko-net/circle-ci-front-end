@@ -165,7 +165,8 @@ function ProfileContent({
             downValue="Posts"
           />
         </ProfileInfoContentFlex>
-        {isMyself || (isFollowed ? (
+
+        {(isMyself || (isFollowed ? (
           <ProfileButton
             onClick={handleSubscribe}
             onMouseEnter={handleMouseEnter}
@@ -199,9 +200,9 @@ function ProfileContent({
               </ProfileButtonText>
             </ProfileButton>
           )
-        )}
-
+        ))}
       </ProfileInfoContentBlock>
+
     </>
   );
 }

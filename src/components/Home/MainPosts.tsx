@@ -1,7 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import styled from 'styled-components';
 import instance, { BASE_URL } from '../../http';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 import Post from '../Post/Post';
+
+const PreloaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 // interface MainPostsProps {
 //   setIsLoadingPage: (e: boolean) => void
@@ -20,7 +28,6 @@ function MainPosts() {
         .then((res: any) => {
           setPosts([...posts, ...res.data.sort((a: any, b: any) => b.idPost - a.idPost)]);
           setTotalCount(res.headers['x-total-count']);
-          setFetching(false);
         })
         .finally(() => setFetching(false));
     }
@@ -30,12 +37,20 @@ function MainPosts() {
     getPosts();
   }, [getPosts]);
 
+  if (fetching) {
+    return (
+      <PreloaderContainer>
+        <CircularProgress />
+      </PreloaderContainer>
+    );
+  }
+
   return (
     <>
       <div>
         {posts.map((post: any, index: number) => <Post key={index} postData={post} />)}
       </div>
-      <div ref={loadMoreRef}>{fetching && <div>Loading</div>}</div>
+      <div ref={loadMoreRef}>{fetching && <CircularProgress />}</div>
     </>
   );
 }

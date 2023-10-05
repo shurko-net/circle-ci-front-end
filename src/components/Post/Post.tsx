@@ -384,7 +384,7 @@ function Post({
     <PostContent>
       <PostHeader>
         <PostHeaderTextWrapper>
-          <StyledLink to={postData.isPostOwner ? 'profile' : `profile/${postData.userId}`}>
+          <StyledLink to={postData.isPostOwner ? '/profile' : `/profile/${postData.userId}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
                 <PostHeaderImg
