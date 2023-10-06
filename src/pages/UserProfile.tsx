@@ -104,6 +104,10 @@ function userProfile() {
       });
   };
 
+  if (!Object.keys(userData).length) {
+    return null;
+  }
+
   return (
     <UserProfileInfoBlock>
       <BackgroundImage>

@@ -547,6 +547,13 @@ function Post() {
     });
   };
 
+  const handleSavePost = () => {
+    instance.put(`${BASE_URL}/save/${postData.id}`)
+      .then((resp: any) => {
+        setPostData(resp.data);
+      });
+  };
+
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setCommentsTitel(e.target.value);
   };
@@ -556,7 +563,7 @@ function Post() {
       content: commentsTitel,
       postId,
     }).then((res: any) => {
-      setPostComments([res.data, ...postComments]);
+      setPostComments([...postComments, res.data]);
       setCommentsTitel('');
       instance.get(`${BASE_URL}/get-post/${postId}`)
         .then((newPostData:any) => {
@@ -645,7 +652,6 @@ function Post() {
               <PostPanelButton onClick={handleLike}>
                 <ImgIconWrapper>
                   {postData.isLiked ? <ImgIcon icon={faThumbsUp} style={{ color: ' #000000' }} /> : <ImgIcon icon={faThumbsUp} /> }
-                  {/* <ImgIcon icon={faThumbsUp} /> */}
                 </ImgIconWrapper>
                 <ButtonCounter>
                   {postData.likesAmount}
@@ -657,9 +663,9 @@ function Post() {
                 </ImgIconWrapper>
                 <ButtonCounter>{postData.commentsAmount}</ButtonCounter>
               </PostPanelButton>
-              <PostPanelButton>
+              <PostPanelButton onClick={handleSavePost}>
                 <ImgIconWrapper>
-                  <ImgIcon icon={faStar} />
+                  <ImgIcon icon={faStar} style={{ color: `${postData.isSaved ? 'rgb(0, 0, 0)' : ''} ` }} />
                 </ImgIconWrapper>
               </PostPanelButton>
               <PostPanelButton>
@@ -698,7 +704,7 @@ function Post() {
                                       <CommentUserInfo>
                                         <UserInfoUserpic to="">
                                           <EntityImage>
-                                            <EntityImagePic src={comment.profileImageUrl} />
+                                            <EntityImagePic src={comment.profileImageUrl || 'https://storage.googleapis.com/circleci-bucket/IconsForCategory/profilePlaceholder.png'} />
                                           </EntityImage>
                                         </UserInfoUserpic>
                                         <UserInfoUser>

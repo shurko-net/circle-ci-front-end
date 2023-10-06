@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormSection from '../Login/FormSection';
 import RegisterButtonSection from './RegisterButtonSection';
+import useForm from '../../hooks/useForm';
+import { useAppDispatch, useAppSelector } from '../../hook';
+import { registration } from '../../store/slices/authSlice';
 
 const Main = styled.main`
     display: flex;
@@ -90,47 +93,86 @@ const AuthWallSignButton = styled(Link)`
 `;
 
 function RegisterMain() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [surname, setSurname] = useState<string>('');
+  const errRespons = useAppSelector((state) => state.auth.error);
+  const email = useForm('', {
+    isEmpty: true, minLength: 3, maxLength: 320, isEmail: true, errRespons,
+  });
+  const password = useForm('', {
+    isEmpty: true, minLength: 8, maxLength: 128,
+  });
+  const name = useForm('', {
+    isEmpty: true, minLength: 8, maxLength: 128,
+  });
+  const surname = useForm('', {
+    isEmpty: true, minLength: 8, maxLength: 128,
+  });
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    dispatch(registration({
+      email: email.value, password: password.value, name: name.value, surname: surname.value,
+    }))
+      .then((response:any) => {
+        if (response && response.success) {
+          navigate('/');
+        } else {
+          console.error(response.error);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  console.log(email.errorMessage, 'email.errorMessage');
   return (
     <Main>
       <MainContainer>
         <MainBody>
           <MainHeaderText>Registration</MainHeaderText>
-          <form>
+          <form onSubmit={handleLogin}>
             <FormBody>
               <FormSection
-                onChange={(e: any) => setName(e.target.value)}
+                onChange={(e: any) => name.onChange(e)}
                 inputLabel="Name"
                 placeholder="Name"
-                value={name}
+                value={name.value}
+                onBlur={(e:any) => name.onBlur(e)}
+                errorMessage={name.errorMessage}
               />
               <FormSection
-                onChange={(e: any) => setSurname(e.target.value)}
+                onChange={(e: any) => surname.onChange(e)}
                 inputLabel="Surname"
                 placeholder="Surname"
-                value={surname}
+                value={surname.value}
+                onBlur={(e:any) => surname.onBlur(e)}
+                errorMessage={surname.errorMessage}
               />
               <FormSection
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={(e: any) => email.onChange(e)}
                 inputLabel="Email"
                 placeholder="Email"
-                value={email}
+                value={email.value}
+                onBlur={(e:any) => email.onBlur(e)}
+                errorMessage={email.errorMessage}
               />
               <FormSection
-                onChange={(e: any) => setPassword(e.target.value)}
+                onChange={(e: any) => password.onChange(e)}
                 inputLabel="Password"
                 placeholder="Password"
-                value={password}
+                value={password.value}
+                onBlur={(e:any) => password.onBlur(e)}
+                errorMessage={password.errorMessage}
               />
             </FormBody>
             <RegisterButtonSection
-              name={name}
-              surname={surname}
-              password={password}
-              email={email}
+              inputValidEmail={email.inputValid}
+              inputValidPassword={password.inputValid}
+              inputValidName={name.inputValid}
+              inputValidSurname={surname.inputValid}
             />
             <OrContainer>
               <OrText> or </OrText>

@@ -1,12 +1,15 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { bool } from 'yup';
 import { useAppDispatch } from '../../hook';
 import { login } from '../../store/slices/authSlice';
 
 interface LoginButtonSectionProps {
   email: string;
   password: string;
+  inputValidPassword: boolean;
+  inputValidEmail: boolean;
 }
 
 const Container = styled.div`
@@ -57,19 +60,11 @@ const Button = styled.button`
     }
 `;
 
-function LoginButtonSection({ email, password }: LoginButtonSectionProps) {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const handleLogin = (e:any) => {
-    e.preventDefault();
-    dispatch(login({ email, password })).then(() => {
-      navigate('/');
-    });
-  };
+function LoginButtonSection({ inputValidEmail, inputValidPassword }: LoginButtonSectionProps) {
   return (
     <Container>
       <StyledLink to="/register">Forgot password?</StyledLink>
-      <Button onClick={handleLogin} type="submit">Sign in</Button>
+      <Button disabled={!inputValidEmail || !inputValidPassword} type="submit">Sign in</Button>
     </Container>
   );
 }

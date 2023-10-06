@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import SuggestionsBlock from './SuggestionsBlock';
+import instance, { BASE_URL } from '../../http';
 
 const StyledLink = styled(Link)`
     cursor: pointer;
@@ -75,13 +76,21 @@ const LinkText = styled.p`
 `;
 
 function Suggestions() {
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
+  useEffect(() => {
+    instance.get(`${BASE_URL}/get-popular-people`)
+      .then((resp:any) => {
+        setSuggestedUsers(resp);
+        console.log(resp);
+      });
+  }, []);
+  console.log(suggestedUsers);
   return (
     <SuggestionsBody>
       <Container>
         <Header>
           <HeaderText>Suggestions for you</HeaderText>
         </Header>
-        {/* <Line /> */}
         <UserSuggestionContainer>
           <SuggestionsBlock
             img="https://i.pinimg.com/564x/a2/07/7d/a2077d4690a495b40769f4de5ebf4876.jpg"

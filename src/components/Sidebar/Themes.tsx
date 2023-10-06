@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ThemeBlock from './ThemeBlock';
+import instance, { BASE_URL } from '../../http';
 
 const StyledLink = styled(Link)`
     cursor: pointer;
@@ -80,6 +81,7 @@ const LinkText = styled.p`
 `;
 
 function Themes() {
+  // instance.get(`BASE_URL/${}`)
   return (
     <ThemesBlock>
       <ThemesContainer>

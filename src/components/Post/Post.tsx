@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,7 +6,6 @@ import {
   faStar, faCommentDots, faEye, faThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
 
-import Skeleton from '@mui/material/Skeleton';
 import formatDate from '../../lib/formatDate';
 import instance, { BASE_URL } from '../../http';
 
@@ -36,7 +35,6 @@ interface NewPostProps {
   };
   setPosts?: any;
   userId?: number;
-  fetching?: boolean;
 }
 
 const StyledLink = styled(Link)`
@@ -335,17 +333,8 @@ const PostMainPanelButtonText = styled.span`
 `;
 
 function Post({
-  postData, setPosts, fetching,
+  postData, setPosts,
 }: NewPostProps) {
-  const [userImgIsLoaded, setUserImgIsLoaded] = useState(false);
-  const [userPostImgIsLoaded, setUserPostImgIsLoaded] = useState(false);
-  const handleUserImageLoad = () => {
-    setUserImgIsLoaded(true);
-  };
-
-  const handlePostImageLoad = () => {
-    setUserPostImgIsLoaded(true);
-  };
   const formattedDate = formatDate((postData.createdAt));
   const handleSubscribe = () => {
     instance.put(`${BASE_URL}/follow/${postData.userId}`)
@@ -380,24 +369,22 @@ function Post({
       });
   };
 
+  console.log(postData.isFollow, 'isFollow');
+
   return (
     <PostContent>
       <PostHeader>
         <PostHeaderTextWrapper>
-          <StyledLink to={postData.isPostOwner ? 'profile' : `profile/${postData.userId}`}>
+          <StyledLink to={postData.isPostOwner ? '/profile' : `/profile/${postData.userId}`}>
             <PostHeaderImgBlock>
               <PostHeaderImgWrapper>
                 <PostHeaderImg
-                  onLoad={handleUserImageLoad}
-                  src={postData.profileImageUrl || 'https://storage.googleapis.com/circle-ci-bucket/IconsForCategory/profilePlaceholder.png'}
+                  src={postData.profileImageUrl || 'https://storage.googleapis.com/circleci-bucket/IconsForCategory/profilePlaceholder.png'}
                 />
-                {(fetching || !userImgIsLoaded)
-                  && <Skeleton variant="circular" width={45} height={45} />}
-
               </PostHeaderImgWrapper>
             </PostHeaderImgBlock>
             <PostHeaderText>
-              <PostHeaderNickname>{`${postData.name ?? 'Yarik'} ${postData.surname}`}</PostHeaderNickname>
+              <PostHeaderNickname>{`${postData.name} ${postData.surname}`}</PostHeaderNickname>
               {!postData.isPostOwner && <PostHeaderDotContainer />}
             </PostHeaderText>
           </StyledLink>
@@ -416,17 +403,8 @@ function Post({
           postData.imageUrl && (
           <PostMainImageContainer to={`post/${postData.id}`}>
             <PostMainImage
-              onLoad={handlePostImageLoad}
               src={postData.imageUrl}
             />
-            {(fetching || !userPostImgIsLoaded) && (
-            <Skeleton
-              width="100%"
-              height="100%"
-              variant="rectangular"
-              style={{ position: 'absolute' }}
-            />
-            )}
           </PostMainImageContainer>
           )
       }

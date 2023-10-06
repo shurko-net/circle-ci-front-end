@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormSection from './FormSection';
 import LoginButtonSection from './LoginButtonSection';
+import useForm from '../../hooks/useForm';
+import { useAppDispatch, useAppSelector } from '../../hook';
+import { login } from '../../store/slices/authSlice';
 
 const Main = styled.main`
     display: flex;
@@ -90,29 +93,52 @@ const AuthWallSignButton = styled(Link)`
 `;
 
 function LoginMain() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const email = useForm('', {
+    isEmpty: true, minLength: 3, maxLength: 320, isEmail: true,
+  });
+  const errRespons = useAppSelector((state) => state.auth.error);
+  console.log(errRespons, 'login');
+  const password = useForm('', {
+    isEmpty: true, minLength: 8, maxLength: 128, errRespons,
+  });
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const handleLogin = (e:any) => {
+    e.preventDefault();
+    dispatch(login({ email: email.value, password: password.value })).then(() => {
+      navigate('/');
+    });
+  };
   return (
     <Main>
       <MainContainer>
         <MainBody>
           <MainHeaderText>Sign in</MainHeaderText>
-          <form>
+          <form onSubmit={handleLogin}>
             <FormBody>
               <FormSection
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={(e: any) => email.onChange(e)}
                 inputLabel="Email"
                 placeholder="Email"
-                value={email}
+                value={email.value}
+                onBlur={(e:any) => email.onBlur(e)}
+                errorMessage={email.errorMessage}
               />
               <FormSection
-                onChange={(e: any) => setPassword(e.target.value)}
+                onChange={(e: any) => password.onChange(e)}
                 inputLabel="Password"
                 placeholder="Password"
-                value={password}
+                value={password.value}
+                errorMessage={password.errorMessage}
+                onBlur={(e:any) => password.onBlur(e)}
               />
             </FormBody>
-            <LoginButtonSection password={password} email={email} />
+            <LoginButtonSection
+              inputValidEmail={email.inputValid}
+              inputValidPassword={password.inputValid}
+              password={password.value}
+              email={email.value}
+            />
             <OrContainer>
               <OrText> or </OrText>
             </OrContainer>

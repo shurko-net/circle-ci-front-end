@@ -134,10 +134,10 @@ function UserPanel({ selectedImage }: UserPanelProps) {
       </UserPanelHeaderContainer>
       <UserPanelButtonContainer>
         <PanelButton text="Profile" url="/profile" />
-        <PanelButton text="Posts" url="/profile" />
+        <PanelButton text="Posts" url="/profile/posts" />
         <PanelButton text="Subscriptions" url="/profile" />
         <PanelButton text="Groups" url="/profile" />
-        <PanelButton text="Favorites" url="/profile" />
+        <PanelButton text="Favorites" url="/profile/favorites" />
         <PanelButton text="Settings" url="/profile" />
       </UserPanelButtonContainer>
       <LogOutButtonContainer>

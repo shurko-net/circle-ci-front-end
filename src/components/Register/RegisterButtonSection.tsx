@@ -5,10 +5,10 @@ import { useAppDispatch } from '../../hook';
 import { registration } from '../../store/slices/authSlice';
 
 interface RegisterButtonSectionProps {
-  email: string;
-  password: string;
-  name: string;
-  surname: string;
+  inputValidPassword: boolean;
+  inputValidEmail: boolean;
+  inputValidName: boolean;
+  inputValidSurname: boolean;
 }
 
 const Container = styled.div`
@@ -60,22 +60,14 @@ const Button = styled.button`
 `;
 
 function RegisterButtonSection({
-  email, password, name, surname,
+  inputValidEmail, inputValidPassword,
+  inputValidName, inputValidSurname,
+
 }: RegisterButtonSectionProps) {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const handleLogin = (e:any) => {
-    e.preventDefault();
-    dispatch(registration({
-      email, password, name, surname,
-    })).then(() => {
-      navigate('/');
-    });
-  };
   return (
     <Container>
       <StyledLink to="/auth/login">Forgot password?</StyledLink>
-      <Button onClick={handleLogin} type="submit">Register</Button>
+      <Button disabled={!inputValidEmail || !inputValidPassword || !inputValidName || !inputValidSurname} type="submit">Register</Button>
     </Container>
   );
 }

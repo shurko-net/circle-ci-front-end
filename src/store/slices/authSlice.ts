@@ -16,29 +16,35 @@ export const registration = createAsyncThunk<IUser, {
   async ({
     email, password, name, surname,
   }, { rejectWithValue }) => {
-    const response = await AuthService.registration(email, password, name, surname);
-    if (response.status !== 200) {
-      return rejectWithValue('Err');
+    try {
+      const response = await AuthService.registration(email, password, name, surname);
+      if (response.status !== 200) {
+        return rejectWithValue('Err');
+      }
+      localStorage.setItem('token', response.data.accessToken);
+      return response.data.user;
+    } catch (error:any) {
+      return rejectWithValue(error.response.data);
     }
-    localStorage.setItem('token', response.data.accessToken);
-    return response.data.user;
   },
 );
 
-export const login = createAsyncThunk<IUser,
-{ email: string, password: string },
-{ rejectValue : string }>(
+export const login = createAsyncThunk<IUser, { email: string, password: string },
+{ rejectValue: string }>(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
-    const response = await AuthService.login(email, password);
-    if (response.status !== 200) {
-      return rejectWithValue('Err');
+    try {
+      const response = await AuthService.login(email, password);
+      if (response.status !== 200) {
+        return rejectWithValue('Err');
+      }
+      localStorage.setItem('token', response.data.accessToken);
+      return response.data.user;
+    } catch (error:any) {
+      return rejectWithValue(error.response.data);
     }
-    localStorage.setItem('token', response.data.accessToken);
-    return response.data.user;
   },
 );
-
 export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
@@ -51,7 +57,6 @@ export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
   async (_, { rejectWithValue }) => {
     const response = await axios.get<AuthResponse>(`${BASE_URL}/auth/refresh`, { withCredentials: true });
-
     if (response.status !== 200) {
       return rejectWithValue('Err');
     }
@@ -78,6 +83,7 @@ const authSlice = createSlice({
     } as IUser,
     isAuth: false,
     isLoading: true,
+    error: '',
   },
   reducers: {
     setIsLoading(state, action) {
@@ -103,8 +109,9 @@ const authSlice = createSlice({
         state.isAuth = true;
         state.user = action.payload;
       })
-      .addCase(registration.rejected, (state) => {
+      .addCase(registration.rejected, (state, action) => {
         state.isAuth = false;
+        state.error = action.payload || '';
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isAuth = true;
@@ -114,7 +121,8 @@ const authSlice = createSlice({
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(login.rejected, (state, action) => {
+        state.error = action.payload || '';
         state.isAuth = false;
         state.user = {} as IUser;
         state.isLoading = false;
