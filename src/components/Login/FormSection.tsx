@@ -1,11 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAppSelector } from '../../hook';
 
 interface FormSectionProps {
   inputLabel: string;
   onChange: (e: any) => void;
   placeholder: string;
   value: string;
+  errorMessage: any;
+  onBlur: (e: any) => void;
 }
 
 const Container = styled.div`
@@ -66,7 +69,7 @@ const Input = styled.input`
 `;
 
 function FormSection({
-  inputLabel, value, onChange, placeholder,
+  inputLabel, value, onChange, placeholder, errorMessage, onBlur,
 }:FormSectionProps) {
   return (
     <Container>
@@ -78,8 +81,10 @@ function FormSection({
             placeholder={placeholder}
             value={value}
             onChange={onChange}
+            onBlur={onBlur}
           />
         </TextInputFlex>
+        <div style={{ color: 'red' }}>{errorMessage}</div>
       </Body>
     </Container>
   );

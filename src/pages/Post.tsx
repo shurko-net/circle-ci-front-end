@@ -652,7 +652,6 @@ function Post() {
               <PostPanelButton onClick={handleLike}>
                 <ImgIconWrapper>
                   {postData.isLiked ? <ImgIcon icon={faThumbsUp} style={{ color: ' #000000' }} /> : <ImgIcon icon={faThumbsUp} /> }
-                  {/* <ImgIcon icon={faThumbsUp} /> */}
                 </ImgIconWrapper>
                 <ButtonCounter>
                   {postData.likesAmount}
@@ -705,7 +704,7 @@ function Post() {
                                       <CommentUserInfo>
                                         <UserInfoUserpic to="">
                                           <EntityImage>
-                                            <EntityImagePic src={comment.profileImageUrl} />
+                                            <EntityImagePic src={comment.profileImageUrl || 'https://storage.googleapis.com/circleci-bucket/IconsForCategory/profilePlaceholder.png'} />
                                           </EntityImage>
                                         </UserInfoUserpic>
                                         <UserInfoUser>

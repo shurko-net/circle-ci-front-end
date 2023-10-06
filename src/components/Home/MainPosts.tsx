@@ -48,7 +48,13 @@ function MainPosts() {
   return (
     <>
       <div>
-        {posts.map((post: any, index: number) => <Post key={index} postData={post} />)}
+        {posts.map((post: any, index: number) => (
+          <Post
+            key={index}
+            postData={post}
+            setPosts={setPosts}
+          />
+        ))}
       </div>
       <div ref={loadMoreRef}>{fetching && <CircularProgress />}</div>
     </>
